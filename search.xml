@@ -19,6 +19,8 @@
 <p>Heading rule by <strong>#</strong> repeats<br>alternate<br> “== 表示#<br> “–” 表示 ##</p>
 </blockquote>
 <h1 id="heading-level-1"><a href="#heading-level-1" class="headerlink" title="heading level 1"></a>heading level 1</h1><h2 id="heading-level-2"><a href="#heading-level-2" class="headerlink" title="heading level 2"></a>heading level 2</h2><h3 id="heading-level-3"><a href="#heading-level-3" class="headerlink" title="heading level 3"></a>heading level 3</h3><h4 id="heading-level4"><a href="#heading-level4" class="headerlink" title="heading level4"></a>heading level4</h4><h5 id="heading-level-5"><a href="#heading-level-5" class="headerlink" title="heading level 5"></a>heading level 5</h5><h6 id="heading-level-6"><a href="#heading-level-6" class="headerlink" title="heading level 6"></a>heading level 6</h6><p>####### headiing level 7 is out of rule</p>
+<a id="more"></a>
+
 <blockquote>
 <p>分割线使用，上下留白，至少重复三次 _</p>
 </blockquote>
@@ -66,7 +68,6 @@
 <blockquote>
 <p>Code Sample<br> To denote a word or phrase as code, enclose it in tick marks (`).<br> Atthecommandprompt,type<code>nano</code>.</p>
 <pre><code>int a = 12 // code syntax require at lease 4 spaces on the left</code></pre></blockquote>
-<a id="more"></a>
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><blockquote>
 <p>See more samples from the <a href="https://www.markdownguide.org/assets/book/markdown-guide.pdf" target="_blank" rel="noopener" title="Ctrl/Command to open in new tab">official manual guide</a> with pdf</p>
 </blockquote>
