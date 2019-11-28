@@ -49,28 +49,32 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Fayhot&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;index.html">
+  <meta name="description" content="引言">
+<meta name="keywords" content="Pytorch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="逻辑回归 (Logistic Regression)">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;pytorch&#x2F;tutorial-logistic-regression-03.html">
 <meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="引言">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-28T13:00:00.238Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://fayhot.github.io/">
+<link rel="canonical" href="http://fayhot.github.io/pytorch/tutorial-logistic-regression-03.html">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Fayhot's Blog</title>
+  <title>逻辑回归 (Logistic Regression) | Fayhot's Blog</title>
   
 
 
@@ -205,10 +209,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/pytorch/tutorial-logistic-regression-03.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -222,8 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/pytorch/tutorial-logistic-regression-03.html" class="post-title-link" itemprop="url">逻辑回归 (Logistic Regression)</a>
+          逻辑回归 (Logistic Regression)
         </h1>
 
         <div class="post-meta">
@@ -255,6 +258,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -265,285 +275,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/pytorch/tutorial-logistic-regression-03.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><a id="more"></a>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3>
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          
+          <div class="post-tags">
+              <a href="/tags/Pytorch/" rel="tag"><i class="fa fa-tag"></i> Pytorch</a>
+          </div>
 
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/pytorch/tutorial-linear-regression.html">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/pytorch/tutorial-linear-regression.html" class="post-title-link" itemprop="url">线性回归 (Linear Regression)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-09-25 14:32:24" itemprop="dateCreated datePublished" datetime="2018-09-25T14:32:24+08:00">2018-09-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-28 20:59:27" itemprop="dateModified" datetime="2019-11-28T20:59:27+08:00">2019-11-28</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/pytorch/tutorial-linear-regression.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/pytorch/tutorial-linear-regression.html" rel="prev" title="线性回归 (Linear Regression)">
+      <i class="fa fa-chevron-left"></i> 线性回归 (Linear Regression)
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/pytorch/tutorial-basic-01.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/pytorch/tutorial-basic-01.html" class="post-title-link" itemprop="url">Pytorch基础</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-09-23 02:16:16" itemprop="dateCreated datePublished" datetime="2018-09-23T02:16:16+08:00">2018-09-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-28 19:27:57" itemprop="dateModified" datetime="2019-11-28T19:27:57+08:00">2019-11-28</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/pytorch/tutorial-basic-01.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/markdown/markdown-guide.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/markdown/markdown-guide.html" class="post-title-link" itemprop="url">markdown-guide</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-09-20 11:34:48" itemprop="dateCreated datePublished" datetime="2018-09-20T11:34:48+08:00">2018-09-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-28 19:27:57" itemprop="dateModified" datetime="2019-11-28T19:27:57+08:00">2019-11-28</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><pre><code>markdown 语法sample</code></pre><blockquote>
-<p>Heading rule by <strong>#</strong> repeats<br>alternate<br> “== 表示#<br> “–” 表示 ##</p>
-</blockquote>
-<h1 id="heading-level-1"><a href="#heading-level-1" class="headerlink" title="heading level 1"></a>heading level 1</h1><h2 id="heading-level-2"><a href="#heading-level-2" class="headerlink" title="heading level 2"></a>heading level 2</h2><h3 id="heading-level-3"><a href="#heading-level-3" class="headerlink" title="heading level 3"></a>heading level 3</h3><h4 id="heading-level4"><a href="#heading-level4" class="headerlink" title="heading level4"></a>heading level4</h4><h5 id="heading-level-5"><a href="#heading-level-5" class="headerlink" title="heading level 5"></a>heading level 5</h5><h6 id="heading-level-6"><a href="#heading-level-6" class="headerlink" title="heading level 6"></a>heading level 6</h6><p>####### headiing level 7 is out of rule</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/markdown/markdown-guide.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
   </article>
   
   
   
 
   </div>
-
-  
-
 
 
           </div>
@@ -572,6 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">2.</span> <span class="nav-text">后记</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

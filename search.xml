@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>线性回归</title>
+    <title>逻辑回归 (Logistic Regression)</title>
+    <url>/pytorch/tutorial-logistic-regression-03.html</url>
+    <content><![CDATA[<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><a id="more"></a>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3>]]></content>
+      <categories>
+        <category>深度学习</category>
+      </categories>
+      <tags>
+        <tag>Pytorch</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>线性回归 (Linear Regression)</title>
     <url>/pytorch/tutorial-linear-regression.html</url>
     <content><![CDATA[<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><a id="more"></a>
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3>]]></content>
