@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>tutorial-feedforward-neural-network</title>
+    <title>前馈神经网络(Feedforward Neural Network)</title>
     <url>/pytorch/tutorial-feedforward-neural-network.html</url>
     <content><![CDATA[<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><a id="more"></a>
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3>]]></content>
@@ -13,7 +13,7 @@
       </tags>
   </entry>
   <entry>
-    <title>tutorial-convolutional-neural-network</title>
+    <title>卷积神经网络(Convolutional Neural Network)</title>
     <url>/pytorch/tutorial-convolutional-neural-network.html</url>
     <content><![CDATA[<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><a id="more"></a>
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3>]]></content>
