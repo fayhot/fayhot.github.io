@@ -1,8 +1,10 @@
 $(function () {
+
     $("#test-editormd").removeAttr("class");
     var md=$("#mdeditor-textarea").text();
     $("#test-editormd").html("");
-    editormd("test-editormd", {
+
+    var mdeditor = editormd("editormd-client", {
         width: "100%",
         height: 740,
         path: '/editor/lib/',
@@ -20,28 +22,50 @@ $(function () {
         tex: true,                   // 开启科学公式TeX语言支持，默认关闭
         flowChart: true,             // 开启流程图支持，默认关闭
         sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
-        onload: function () {
-            this.fullscreen();
+
+       // 工具栏添加一个自定义方法
+        toolbarIcons: function() {
+            // 给工具栏full模式添加一个自定义方法
+            return editormd.toolbarModes.full.concat(["customIcon"]);
         },
-        toolbarIcons : function() {
-            // Or return editormd.toolbarModes[name]; // full, simple, mini
-            // Using "||" set icons align right.
-            var toolBarIconArray=editormd.toolbarModes["full"];
-            toolBarIconArray.push("download");
-            return toolBarIconArray;
+        // 自定义方法的图标 指定一个FontAawsome的图标类
+        toolbarIconsClass: {
+            customIcon: "fa-paste"
         },
-        toolbarIconsClass : {
-            download : "fa-download"  // 指定一个FontAawsome的图标类
+        // 没有图标可以插入内容，字符串或HTML标签
+        toolbarIconTexts: {
+            customIcon: "从草稿箱加载"
         },
-        toolbarIconTexts : {
-            download : "download"  // 如果没有图标，则可以这样直接插入内容，可以是字符串或HTML标签
+        // 图标的title
+        lang: {
+            toolbar: {
+                customIcon: "从草稿箱加载"
+            }
         },
         // 自定义工具栏按钮的事件处理
-        toolbarHandlers : {
-            download : function() {
-                this.executePlugin("downloadDialog", "download-dialog/download-dialog");
+        toolbarHandlers: {
+            customIcon: function(){
+                // 读取缓存内容
+                mdeditor.CodeAutoSaveGetCache();
             }
+        },
+        // 自定义工具栏按钮的事件处理
+        onload: function() {
+            // 引入插件 执行监听方法
+            editormd.loadPlugin("../plugins/code-auto-save/code-auto-save", function() {
+                // 初始化插件 实现监听
+                mdeditor.CodeAutoSave();
+            });
         }
-
     });
+
+    // 删除缓存
+    //mdeditor.CodeAutoSaveDelCache();
+    // 清空缓存的文档内容
+    //mdeditor.CodeAutoSaveEmptyCacheContent();
+    // 自定义设置缓存
+    //mdeditor.CodeAutoSaveSetCache('缓存内容');
+
+    window.md = mdeditor;
+
 });
