@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="L-ValueExpressions that refer to memory locations are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="左值、右值表达式(LValue-And-RValue Expression)">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;program&#x2F;lvalue-and-rvalue.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="L-ValueExpressions that refer to memory locations are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-12-07T13:28:21.492Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fayhot.github.io/program/lvalue-and-rvalue.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>左值、右值表达式(LValue-And-RValue Expression) | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/lvalue-and-rvalue.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          左值、右值表达式(LValue-And-RValue Expression)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-07 20:30:39 / Modified: 21:28:21" itemprop="dateCreated datePublished" datetime="2019-12-07T20:30:39+08:00">2019-12-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="L-Value"><a href="#L-Value" class="headerlink" title="L-Value"></a>L-Value</h3><p>Expressions that refer to <strong>memory locations</strong> are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left of the equal sign (=). L-values are often identifiers.</p>
+<p>Expressions referring to <strong>modifiable locations</strong> are called “modifiable l-values.” A modifiable l-value cannot have an array type, an incomplete type, or a type with the <strong>const</strong> attribute. For structures and unions to be modifiable l-values, they must not have any members with the const attribute. The name of the identifier denotes a storage location, while the value of the variable is the value stored at that location.</p>
+<p>An identifier is a modifiable l-value if it refers to a memory location and if its type is arithmetic, structure, union, or pointer. For example, if ptr is a pointer to a storage region, then <strong>*ptr</strong> is a modifiable l-value that designates the storage region to which ptr points.</p>
+<p>Any of the following C expressions can be l-value expressions:</p>
+<blockquote>
+<ul>
+<li>An identifier of integral, floating, pointer, structure, or union type</li>
+<li>A subscript ([ ]) expression that does not evaluate to an array</li>
+<li>A member-selection expression (-&gt; or .)</li>
+<li>A unary-indirection (*) expression that does not refer to an array</li>
+<li>An l-value expression in parentheses</li>
+<li>A const object (a nonmodifiable l-value)</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h3 id="R-Value"><a href="#R-Value" class="headerlink" title="R-Value"></a>R-Value</h3><p>The term “r-value” is sometimes used to describe the value of an expression and to distinguish it from an l-value. All l-values are r-values but not all r-values are l-values.</p>
+<h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h3><p>The terms lvalue and rvalue are not something one runs into often in C/C++ programming, but when one does, it’s usually not immediately clear what they mean. The most common place to run into these terms are in compiler error &amp; warning messages. For example, compiling the following with gcc:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    foo() = <span class="number">2</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>You get:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">test.c: In function 'main':</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">test.c:<span class="number">8</span>:<span class="number">5</span>: error: lvalue required as left operand of assignment</span></pre></td></tr></table></figure>
+
+<p>True, this code is somewhat perverse and not something you’d write, but the error message mentions lvalue, which is not a term one usually finds in C/C++ tutorials. Another example is compiling this code with g++:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>&amp; <span class="title">foo</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">2</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>Now the error is:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">testcpp.cpp: In function 'int&amp; foo()':</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">testcpp.cpp:<span class="number">5</span>:<span class="number">12</span>: error: invalid initialization of non-<span class="keyword">const</span> reference</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">of type 'int&amp;' from an rvalue of type 'int'</span></pre></td></tr></table></figure>
+
+<p>Here again, the error mentions some mysterious rvalue. So what do lvalue and rvalue mean in C and C++? This is what I intend to explore in this article.</p>
+<h4 id="A-simple-definition"><a href="#A-simple-definition" class="headerlink" title="A simple definition"></a>A simple definition</h4><p>This section presents an intentionally simplified definition of lvalues and rvalues. The rest of the article will elaborate on this definition.</p>
+<blockquote>
+<p>An lvalue (locator value) represents an object that occupies some identifiable location in memory (i.e. has an address).</p>
+</blockquote>
+<blockquote>
+<p>rvalues are defined by exclusion, by saying that every expression is either an lvalue or an rvalue. Therefore, from the above definition of lvalue, an rvalue is an expression that does not represent an object occupying some identifiable location in memory.</p>
+</blockquote>
+<h4 id="Basic-examples"><a href="#Basic-examples" class="headerlink" title="Basic examples"></a>Basic examples</h4><p>The terms as defined above may appear vague, which is why it’s important to see some simple examples right away.<br>Let’s assume we have an integer variable defined and assigned to:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> var;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">var = <span class="number">4</span>;</span></pre></td></tr></table></figure>
+
+<p>An assignment expects an lvalue as its left operand, and var is an lvalue, because it is an object with an identifiable memory location. On the other hand, the following are invalid:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span> = var;       <span class="comment">// ERROR!</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">(var + <span class="number">1</span>) = <span class="number">4</span>; <span class="comment">// ERROR!</span></span></pre></td></tr></table></figure>
+
+<p>Neither the constant 4, nor the expression var + 1 are lvalues (<strong>which makes them rvalues</strong>). They’re not lvalues because both are temporary results of expressions, which don’t have an identifiable memory location (i.e. they can just reside in some temporary register for the duration of the computation). Therefore, assigning to them makes no semantic sense - there’s nowhere to assign to.</p>
+<p>So it should now be clear what the error message in the first code snippet means. foo returns a temporary value which is an rvalue. Attempting to assign to it is an error, so when seeing foo() = 2; the compiler complains that it expected to see an lvalue on the left-hand-side of the assignment statement.</p>
+<p>Not all assignments to results of function calls are invalid, however. For example, C++ references make this possible:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> globalvar = <span class="number">20</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>&amp; <span class="title">foo</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> globalvar;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    foo() = <span class="number">10</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>Here foo returns a reference, which is an lvalue, so it can be assigned to. Actually, the ability of C++ to return lvalues from functions is important for implementing some overloaded operators. One common example is overloading the brackets operator [] in classes that implement some kind of lookup access. std::map does this:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">float</span>&gt; mymap;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">mymap[<span class="number">10</span>] = <span class="number">5.6</span>;</span></pre></td></tr></table></figure>
+
+<p>The assignment mymap[10] works because the non-const overload of std::map::operator[] returns a reference that can be assigned to.</p>
+<h4 id="Modifiable-lvalues"><a href="#Modifiable-lvalues" class="headerlink" title="Modifiable lvalues"></a>Modifiable lvalues</h4><p>Initially when lvalues were defined for C, it literally meant “values suitable for left-hand-side of assignment”. Later, however, when ISO C added the const keyword, this definition had to be refined. After all:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">10</span>; <span class="comment">// 'a' is an lvalue</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">a = <span class="number">10</span>;           <span class="comment">// but it can't be assigned!</span></span></pre></td></tr></table></figure>
+
+<p>So a further refinement had to be added. Not all lvalues can be assigned to. Those that can are called modifiable lvalues. Formally, the C99 standard defines modifiable lvalues as:</p>
+<blockquote>
+<p>[…] an lvalue that does not have array type, does not have an incomplete type, does not have a const-qualified type, and if it is a structure or union, does not have any member (including, recursively, any member or element of all contained aggregates or unions) with a const-qualified type.</p>
+</blockquote>
+<h4 id="Conversions-between-lvalues-and-rvalues"><a href="#Conversions-between-lvalues-and-rvalues" class="headerlink" title="Conversions between lvalues and rvalues"></a>Conversions between lvalues and rvalues</h4><p>Generally speaking, language constructs operating on object values require rvalues as arguments. For example, the binary addition operator ‘+’ takes two rvalues as arguments and returns an rvalue:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;     <span class="comment">// a is an lvalue</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;     <span class="comment">// b is an lvalue</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> c = a + b; <span class="comment">// + needs rvalues, so a and b are converted to rvalues</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">               <span class="comment">// and an rvalue is returned</span></span></pre></td></tr></table></figure>
+
+<p>As we’ve seen earlier, a and b are both lvalues. Therefore, in the third line, they undergo an implicit lvalue-to-rvalue conversion. All lvalues that aren’t arrays, functions or of incomplete types can be converted thus to rvalues.</p>
+<p>What about the other direction? Can rvalues be converted to lvalues? Of course not! This would violate the very nature of an lvalue according to its definition [1].</p>
+<p>This doesn’t mean that lvalues can’t be produced from rvalues by more explicit means. For example, the unary ‘*’ (dereference) operator takes an rvalue argument but produces an lvalue as a result. Consider this valid code:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> arr[] = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* p = &amp;arr[<span class="number">0</span>];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">*(p + <span class="number">1</span>) = <span class="number">10</span>;   <span class="comment">// OK: p + 1 is an rvalue, but *(p + 1) is an lvalue</span></span></pre></td></tr></table></figure>
+
+<p>Conversely, the unary address-of operator ‘&amp;’ takes an lvalue argument and produces an rvalue:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> var = <span class="number">10</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* bad_addr = &amp;(var + <span class="number">1</span>); <span class="comment">// ERROR: lvalue required as unary '&amp;' operand</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>* addr = &amp;var;           <span class="comment">// OK: var is an lvalue</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&amp;var = <span class="number">40</span>;                  <span class="comment">// ERROR: lvalue required as left operand</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">                            <span class="comment">// of assignment</span></span></pre></td></tr></table></figure>
+
+<p>The ampersand plays another role in C++ - it allows to define reference types. These are called “lvalue references”. Non-const lvalue references cannot be assigned rvalues, since that would require an invalid rvalue-to-lvalue conversion:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>&amp; sref = <span class="built_in">std</span>::<span class="built_in">string</span>();  <span class="comment">// ERROR: invalid initialization of</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">                                    <span class="comment">// non-const reference of type</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">                                    <span class="comment">// 'std::string&amp;' from an rvalue of</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">                                    <span class="comment">// type 'std::string'</span></span></pre></td></tr></table></figure>
+
+<p>Constant lvalue references can be assigned rvalues. Since they’re constant, the value can’t be modified through the reference and hence there’s no problem of modifying an rvalue. This makes possible the very common C++ idiom of accepting values by constant references into functions, which avoids unnecessary copying and construction of temporary objects.</p>
+<h4 id="CV-qualified-rvalues"><a href="#CV-qualified-rvalues" class="headerlink" title="CV-qualified rvalues"></a>CV-qualified rvalues</h4><p>If we read carefully the portion of the C++ standard discussing lvalue-to-rvalue conversions [2], we notice it says:</p>
+<blockquote>
+<p>An lvalue (3.10) of a non-function, non-array type T can be converted to an rvalue. […] If T is a non-class type, the type of the rvalue is the cv-unqualified version of T. Otherwise, the type of the rvalue is T.</p>
+</blockquote>
+<p>What is this “cv-unqualified” thing? CV-qualifier is a term used to describe const and volatile type qualifiers.<br>From section 3.9.3:</p>
+<blockquote>
+<p>Each type which is a cv-unqualified complete or incomplete object type or is void (3.9) has three corresponding cv-qualified versions of its type: a const-qualified version, a volatile-qualified version, and a const-volatile-qualified version. […] The cv-qualified or cv-unqualified versions of a type are distinct types; however, they shall have the same representation and alignment requirements (3.9)</p>
+</blockquote>
+<p>But what has this got to do with rvalues? Well, in C, rvalues never have cv-qualified types. Only lvalues do. In C++, on the other hand, class rvalues can have cv-qualified types, but built-in types (like int) can’t. Consider this example:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"A::foo() const\n"</span>; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"A::foo()\n"</span>; &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="function">A <span class="title">bar</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> A(); &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> A <span class="title">cbar</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> A(); &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    bar().foo();  <span class="comment">// calls foo</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    cbar().foo(); <span class="comment">// calls foo const</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>The second call in main actually calls the foo () const method of A, because the type returned by cbar is const A, which is distinct from A. This is exactly what’s meant by the last sentence in the quote mentioned earlier. Note also that the return value from cbar is an rvalue. So this is an example of a cv-qualified rvalue in action.</p>
+<h4 id="Rvalue-references-C-11"><a href="#Rvalue-references-C-11" class="headerlink" title="Rvalue references (C++11)"></a>Rvalue references (C++11)</h4><p>Rvalue references and the related concept of move semantics is one of the most powerful new features the C++11 standard introduces to the language. A full discussion of the feature is way beyond the scope of this humble article [3], but I still want to provide a simple example, because I think it’s a good place to demonstrate how an understanding of what lvalues and rvalues are aids our ability to reason about non-trivial language concepts.</p>
+<p>I’ve just spent a good part of this article explaining that one of the main differences between lvalues and rvalues is that lvalues can be modified, and rvalues can’t. Well, C++11 adds a crucial twist to this distinction, by allowing us to have references to rvalues and thus modify them, in some special circumstances.</p>
+<p>As an example, consider a simplistic implementation of a dynamic “integer vector”. I’m showing just the relevant methods here:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Intvec</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="class">&#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Intvec</span><span class="params">(<span class="keyword">size_t</span> num = <span class="number">0</span>)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        : m_size(num), m_data(new int[m_size])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"constructor"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    ~Intvec()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"destructor"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">if</span> (m_data) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">delete</span>[] m_data;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">            m_data = <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    Intvec(<span class="keyword">const</span> Intvec&amp; other)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">        : m_size(other.m_size), m_data(<span class="keyword">new</span> <span class="keyword">int</span>[m_size])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"copy constructor"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; m_size; ++i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">            m_data[i] = other.m_data[i];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">    Intvec&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Intvec&amp; other)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"copy assignment operator"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">        <span class="function">Intvec <span class="title">tmp</span><span class="params">(other)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">std</span>::swap(m_size, tmp.m_size);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">std</span>::swap(m_data, tmp.m_data);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">log</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* msg)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line"><span class="function">    </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"["</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; <span class="string">"] "</span> &lt;&lt; msg &lt;&lt; <span class="string">"\n"</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">size_t</span> m_size;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">int</span>* m_data;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+
+<p>So, we have the usual constructor, destructor, copy constructor and copy assignment operator [4] defined, all using a logging function to let us know when they’re actually called.</p>
+<p>Let’s run some simple code, which copies the contents of v1 into v2:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function">Intvec <span class="title">v1</span><span class="params">(<span class="number">20</span>)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Intvec v2;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"assigning lvalue...\n"</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">v2 = v1;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"ended assigning lvalue...\n"</span>;</span></pre></td></tr></table></figure>
+
+<p>What this prints is:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">assigning lvalue...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] copy assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] copy constructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] destructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">ended assigning lvalue...</span></pre></td></tr></table></figure>
+
+<p>Makes sense - this faithfully represents what’s going on inside operator=. But suppose that we want to assign some rvalue to v2:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"assigning rvalue...\n"</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">v2 = Intvec(<span class="number">33</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"ended assigning rvalue...\n"</span>;</span></pre></td></tr></table></figure>
+
+<p>Although here I just assign a freshly constructed vector, it’s just a demonstration of a more general case where some temporary rvalue is being built and then assigned to v2 (this can happen for some function returning a vector, for example). What gets printed now is this:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">assigning rvalue...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] constructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] copy assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] copy constructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] destructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] destructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">ended assigning rvalue...</span></pre></td></tr></table></figure>
+<p>Ouch, this looks like a lot of work. In particular, it has one extra pair of constructor/destructor calls to create and then destroy the temporary object. And this is a shame, because inside the copy assignment operator, another temporary copy is being created and destroyed. That’s extra work, for nothing.</p>
+<p>Well, no more. C++11 gives us rvalue references with which we can implement “move semantics”, and in particular a “move assignment operator” [5]. Let’s add another operator= to Intvec:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Intvec&amp; <span class="keyword">operator</span>=(Intvec&amp;&amp; other)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">log</span>(<span class="string">"move assignment operator"</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">std</span>::swap(m_size, other.m_size);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">std</span>::swap(m_data, other.m_data);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>The &amp;&amp; syntax is the new rvalue reference. It does exactly what it sounds it does - gives us a reference to an rvalue, which is going to be destroyed after the call. We can use this fact to just “steal” the internals of the rvalue - it won’t need them anyway! This prints:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">assigning rvalue...</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] constructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] move assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] destructor</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">ended assigning rvalue...</span></pre></td></tr></table></figure>
+
+<p>What happens here is that our new move assignment operator is invoked since an rvalue gets assigned to v2. The constructor and destructor calls are still needed for the temporary object that’s created by Intvec(33), but another temporary inside the assignment operator is no longer needed. The operator simply switches the rvalue’s internal buffer with its own, arranging it so the rvalue’s destructor will release our object’s own buffer, which is no longer used. Neat.</p>
+<p>I’ll just mention once again that this example is only the tip of the iceberg on move semantics and rvalue references. As you can probably guess, it’s a complex subject with a lot of special cases and gotchas to consider. My point here was to demonstrate a very interesting application of the difference between lvalues and rvalues in C++. The compiler obviously knows when some entity is an rvalue, and can arrange to invoke the correct constructor at compile time.</p>
+<h4 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h4><p>One can write a lot of C++ code without being concerned with the issue of rvalues vs. lvalues, dismissing them as weird compiler jargon in certain error messages. However, as this article aimed to show, getting a better grasp of this topic can aid in a deeper understanding of certain C++ code constructs, and make parts of the C++ spec and discussions between language experts more intelligible.</p>
+<p>Also, in the new C++ spec this topic becomes even more important, because C++11’s introduction of rvalue references and move semantics. To really grok this new feature of the language, a solid understanding of what rvalues and lvalues are becomes crucial.</p>
+<blockquote>
+<ol>
+<li>rvalues can be assigned to lvalues explicitly. The lack of implicit conversion means that rvalues cannot be used in places where lvalues are expected.</li>
+<li>That’s section 4.1 in the new C++11 standard draft.</li>
+<li>You can find a lot of material on this topic by simply googling “rvalue references”. Some resources I personally found useful: <a href="https://www.artima.com/cppsource/rvalue.html" target="_blank" rel="noopener">this one</a>, and <a href="https://stackoverflow.com/questions/5481539/what-does-t-double-ampersand-mean-in-c11" target="_blank" rel="noopener">this one</a>, and especially <a href="http://thbecker.net/articles/rvalue_references/section_01.html" target="_blank" rel="noopener">this one</a>.</li>
+<li>This a canonical implementation of a copy assignment operator, from the point of view of exception safety. By using the copy constructor and then the non-throwing std::swap, it makes sure that no intermediate state with uninitialized memory can arise if exceptions are thrown.</li>
+<li>So now you know why I was keeping referring to my operator= as “copy assignment operator”. In C++11, the distinction becomes important.</li>
+</ol>
+</blockquote>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><blockquote>
+<p>@Reference</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/cpp/c-language/l-value-and-r-value-expressions?view=vs-2019" target="_blank" rel="noopener">L-Value and R-Value Expressions</a></li>
+<li><a href="https://eli.thegreenplace.net/2011/12/15/understanding-lvalues-and-rvalues-in-c-and-c/" target="_blank" rel="noopener">Understanding lvalues and rvalues in C and C++</a></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C++</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/pytorch/tutorial-feedforward-neural-network.html" rel="prev" title="前馈神经网络(Feedforward Neural Network)">
+      <i class="fa fa-chevron-left"></i> 前馈神经网络(Feedforward Neural Network)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#L-Value"><span class="nav-number">1.</span> <span class="nav-text">L-Value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#R-Value"><span class="nav-number">2.</span> <span class="nav-text">R-Value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Examples"><span class="nav-number">3.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-simple-definition"><span class="nav-number">3.1.</span> <span class="nav-text">A simple definition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Basic-examples"><span class="nav-number">3.2.</span> <span class="nav-text">Basic examples</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Modifiable-lvalues"><span class="nav-number">3.3.</span> <span class="nav-text">Modifiable lvalues</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conversions-between-lvalues-and-rvalues"><span class="nav-number">3.4.</span> <span class="nav-text">Conversions between lvalues and rvalues</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CV-qualified-rvalues"><span class="nav-number">3.5.</span> <span class="nav-text">CV-qualified rvalues</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rvalue-references-C-11"><span class="nav-number">3.6.</span> <span class="nav-text">Rvalue references (C++11)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion"><span class="nav-number">3.7.</span> <span class="nav-text">Conclusion</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">4.</span> <span class="nav-text">后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
