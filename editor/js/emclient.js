@@ -1,10 +1,8 @@
 $(function () {
-
-    $("#test-editormd").removeAttr("class");
+    $("#emclient").removeAttr("class");
     var md=$("#mdeditor-textarea").text();
-    $("#test-editormd").html("");
-
-    var mdeditor = editormd("editormd-client", {
+    $("#emclient").html("");
+    var client = editormd("emclient", {
         width: "100%",
         height: 740,
         path: '/editor/lib/',
@@ -23,7 +21,7 @@ $(function () {
         flowChart: true,             // 开启流程图支持，默认关闭
         sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
 
-       // 工具栏添加一个自定义方法
+        // 工具栏添加一个自定义方法
         toolbarIcons: function() {
             // 给工具栏full模式添加一个自定义方法
             return editormd.toolbarModes.full.concat(["customIcon"]);
@@ -46,26 +44,26 @@ $(function () {
         toolbarHandlers: {
             customIcon: function(){
                 // 读取缓存内容
-                mdeditor.CodeAutoSaveGetCache();
+                client.CodeAutoSaveGetCache();
             }
         },
         // 自定义工具栏按钮的事件处理
         onload: function() {
             // 引入插件 执行监听方法
-            editormd.loadPlugin("../plugins/code-auto-save/code-auto-save", function() {
+            editormd.loadPlugin("/editor/plugins/code-auto-save/code-auto-save", function() {
                 // 初始化插件 实现监听
-                mdeditor.CodeAutoSave();
+                client.CodeAutoSave();
+                client.CodeAutoSaveGetCache();
             });
         }
     });
 
     // 删除缓存
-    //mdeditor.CodeAutoSaveDelCache();
+    // client.CodeAutoSaveDelCache();
     // 清空缓存的文档内容
-    //mdeditor.CodeAutoSaveEmptyCacheContent();
+    // client.CodeAutoSaveEmptyCacheContent();
     // 自定义设置缓存
-    //mdeditor.CodeAutoSaveSetCache('缓存内容');
-
-    window.md = mdeditor;
-
+    // client.CodeAutoSaveSetCache('缓存内容');
+    
+    window.emc = client;
 });

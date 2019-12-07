@@ -18,7 +18,7 @@
             // 定时器
             var _saveFlag = null;    
             // 自动保存间隔时间， 单位ms
-            var saveInterval = 5000;   
+            var saveInterval = 30000;   
             if(typeof(Storage)=="undefined"){
                 console.log('对不起，您的浏览器不支持 web 存储。');
                 return ;
