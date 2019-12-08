@@ -6,9 +6,9 @@ $(function () {
         width: "100%",
         height: 740,
         path: '/editor/lib/',
-        theme: "eclipse",
+        theme: "dark",
         previewTheme: "eclipse",
-        editorTheme: "eclipse",
+        editorTheme: "pastel-on-dark",
         markdown: md,
         codeFold: true,
         saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
@@ -64,6 +64,9 @@ $(function () {
     // client.CodeAutoSaveEmptyCacheContent();
     // 自定义设置缓存
     // client.CodeAutoSaveSetCache('缓存内容');
+    
+    // client.setTheme('dark');
+    // client.setEditorTheme('pastel-on-dark');
     
     window.emc = client;
 });

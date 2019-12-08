@@ -2,7 +2,7 @@ $(function () {
     $("#test-editormd").removeAttr("class");
     var md=$("#mdeditor-textarea").text();
     $("#test-editormd").html("");
-    editormd("test-editormd", {
+    var client = editormd("test-editormd", {
         width: "100%",
         height: 740,
         path: '/editor/lib/',
@@ -42,6 +42,7 @@ $(function () {
                 this.executePlugin("downloadDialog", "download-dialog/download-dialog");
             }
         }
-
     });
+
+    window.emc = client;
 });
