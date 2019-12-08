@@ -21,45 +21,60 @@
 <h3 id="R-Value"><a href="#R-Value" class="headerlink" title="R-Value"></a>R-Value</h3><p>The term “r-value” is sometimes used to describe the value of an expression and to distinguish it from an l-value. All l-values are r-values but not all r-values are l-values.</p>
 <h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h3><p>The terms lvalue and rvalue are not something one runs into often in C/C++ programming, but when one does, it’s usually not immediately clear what they mean. The most common place to run into these terms are in compiler error &amp; warning messages. For example, compiling the following with gcc:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    foo() = <span class="number">2</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        </span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <p>You get:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">test.c: In function 'main':</span></pre></td></tr><tr><td class="code"><pre><span class="line">test.c:<span class="number">8</span>:<span class="number">5</span>: error: lvalue required as left operand of assignment</span></pre></td></tr></table></figure>
+
 <p>True, this code is somewhat perverse and not something you’d write, but the error message mentions lvalue, which is not a term one usually finds in C/C++ tutorials. Another example is compiling this code with g++:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>&amp; <span class="title">foo</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">2</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <p>Now the error is:</p>
 <figure class="highlight"><table><tr><td class="code"><pre><span class="line">testcpp.cpp: In function 'int&amp; foo()':</span></pre></td></tr><tr><td class="code"><pre><span class="line">testcpp.cpp:<span class="number">5</span>:<span class="number">12</span>: error: invalid initialization of non-<span class="keyword">const</span> reference</span></pre></td></tr><tr><td class="code"><pre><span class="line">of type 'int&amp;' from an rvalue of type 'int'</span></pre></td></tr></table></figure>
+
 <p>Here again, the error mentions some mysterious rvalue. So what do lvalue and rvalue mean in C and C++? This is what I intend to explore in this article.</p>
 <h4 id="A-simple-definition"><a href="#A-simple-definition" class="headerlink" title="A simple definition"></a>A simple definition</h4><p>This section presents an intentionally simplified definition of lvalues and rvalues. The rest of the article will elaborate on this definition.</p>
 <blockquote>
 <p>An lvalue (locator value) represents an object that occupies some identifiable location in memory (i.e. has an address).</p>
+</blockquote>
+<blockquote>
 <p>rvalues are defined by exclusion, by saying that every expression is either an lvalue or an rvalue. Therefore, from the above definition of lvalue, an rvalue is an expression that does not represent an object occupying some identifiable location in memory.</p>
 </blockquote>
 <h4 id="Basic-examples"><a href="#Basic-examples" class="headerlink" title="Basic examples"></a>Basic examples</h4><p>The terms as defined above may appear vague, which is why it’s important to see some simple examples right away.<br>Let’s assume we have an integer variable defined and assigned to:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> var;</span></pre></td></tr><tr><td class="code"><pre><span class="line">var = <span class="number">4</span>;</span></pre></td></tr></table></figure>
+
 <p>An assignment expects an lvalue as its left operand, and var is an lvalue, because it is an object with an identifiable memory location. On the other hand, the following are invalid:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">4</span> = var;       <span class="comment">// ERROR!</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">(var + <span class="number">1</span>) = <span class="number">4</span>; <span class="comment">// ERROR!</span></span></pre></td></tr></table></figure>
+
 <p>Neither the constant 4, nor the expression var + 1 are lvalues (<strong>which makes them rvalues</strong>). They’re not lvalues because both are temporary results of expressions, which don’t have an identifiable memory location (i.e. they can just reside in some temporary register for the duration of the computation). Therefore, assigning to them makes no semantic sense - there’s nowhere to assign to.</p>
 <p>So it should now be clear what the error message in the first code snippet means. foo returns a temporary value which is an rvalue. Attempting to assign to it is an error, so when seeing foo() = 2; the compiler complains that it expected to see an lvalue on the left-hand-side of the assignment statement.</p>
 <p>Not all assignments to results of function calls are invalid, however. For example, C++ references make this possible:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> globalvar = <span class="number">20</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>&amp; <span class="title">foo</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> globalvar;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    foo() = <span class="number">10</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <p>Here foo returns a reference, which is an lvalue, so it can be assigned to. Actually, the ability of C++ to return lvalues from functions is important for implementing some overloaded operators. One common example is overloading the brackets operator [] in classes that implement some kind of lookup access. std::map does this:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">float</span>&gt; mymap;</span></pre></td></tr><tr><td class="code"><pre><span class="line">mymap[<span class="number">10</span>] = <span class="number">5.6</span>;</span></pre></td></tr></table></figure>
+
 <p>The assignment mymap[10] works because the non-const overload of std::map::operator[] returns a reference that can be assigned to.</p>
 <h4 id="Modifiable-lvalues"><a href="#Modifiable-lvalues" class="headerlink" title="Modifiable lvalues"></a>Modifiable lvalues</h4><p>Initially when lvalues were defined for C, it literally meant “values suitable for left-hand-side of assignment”. Later, however, when ISO C added the const keyword, this definition had to be refined. After all:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">10</span>; <span class="comment">// 'a' is an lvalue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">a = <span class="number">10</span>;           <span class="comment">// but it can't be assigned!</span></span></pre></td></tr></table></figure>
+
 <p>So a further refinement had to be added. Not all lvalues can be assigned to. Those that can are called modifiable lvalues. Formally, the C99 standard defines modifiable lvalues as:</p>
 <blockquote>
 <p>[…] an lvalue that does not have array type, does not have an incomplete type, does not have a const-qualified type, and if it is a structure or union, does not have any member (including, recursively, any member or element of all contained aggregates or unions) with a const-qualified type.</p>
 </blockquote>
 <h4 id="Conversions-between-lvalues-and-rvalues"><a href="#Conversions-between-lvalues-and-rvalues" class="headerlink" title="Conversions between lvalues and rvalues"></a>Conversions between lvalues and rvalues</h4><p>Generally speaking, language constructs operating on object values require rvalues as arguments. For example, the binary addition operator ‘+’ takes two rvalues as arguments and returns an rvalue:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;     <span class="comment">// a is an lvalue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;     <span class="comment">// b is an lvalue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> c = a + b; <span class="comment">// + needs rvalues, so a and b are converted to rvalues</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">               <span class="comment">// and an rvalue is returned</span></span></pre></td></tr></table></figure>
+
 <p>As we’ve seen earlier, a and b are both lvalues. Therefore, in the third line, they undergo an implicit lvalue-to-rvalue conversion. All lvalues that aren’t arrays, functions or of incomplete types can be converted thus to rvalues.</p>
 <p>What about the other direction? Can rvalues be converted to lvalues? Of course not! This would violate the very nature of an lvalue according to its definition [1].</p>
 <p>This doesn’t mean that lvalues can’t be produced from rvalues by more explicit means. For example, the unary ‘*’ (dereference) operator takes an rvalue argument but produces an lvalue as a result. Consider this valid code:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> arr[] = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span>* p = &amp;arr[<span class="number">0</span>];</span></pre></td></tr><tr><td class="code"><pre><span class="line">*(p + <span class="number">1</span>) = <span class="number">10</span>;   <span class="comment">// OK: p + 1 is an rvalue, but *(p + 1) is an lvalue</span></span></pre></td></tr></table></figure>
+
 <p>Conversely, the unary address-of operator ‘&amp;’ takes an lvalue argument and produces an rvalue:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> var = <span class="number">10</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span>* bad_addr = &amp;(var + <span class="number">1</span>); <span class="comment">// ERROR: lvalue required as unary '&amp;' operand</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span>* addr = &amp;var;           <span class="comment">// OK: var is an lvalue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&amp;var = <span class="number">40</span>;                  <span class="comment">// ERROR: lvalue required as left operand</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">                            <span class="comment">// of assignment</span></span></pre></td></tr></table></figure>
+
 <p>The ampersand plays another role in C++ - it allows to define reference types. These are called “lvalue references”. Non-const lvalue references cannot be assigned rvalues, since that would require an invalid rvalue-to-lvalue conversion:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>&amp; sref = <span class="built_in">std</span>::<span class="built_in">string</span>();  <span class="comment">// ERROR: invalid initialization of</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">                                    <span class="comment">// non-const reference of type</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">                                    <span class="comment">// 'std::string&amp;' from an rvalue of</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">                                    <span class="comment">// type 'std::string'</span></span></pre></td></tr></table></figure>
+
 <p>Constant lvalue references can be assigned rvalues. Since they’re constant, the value can’t be modified through the reference and hence there’s no problem of modifying an rvalue. This makes possible the very common C++ idiom of accepting values by constant references into functions, which avoids unnecessary copying and construction of temporary objects.</p>
 <h4 id="CV-qualified-rvalues"><a href="#CV-qualified-rvalues" class="headerlink" title="CV-qualified rvalues"></a>CV-qualified rvalues</h4><p>If we read carefully the portion of the C++ standard discussing lvalue-to-rvalue conversions [2], we notice it says:</p>
 <blockquote>
@@ -71,25 +86,32 @@
 </blockquote>
 <p>But what has this got to do with rvalues? Well, in C, rvalues never have cv-qualified types. Only lvalues do. In C++, on the other hand, class rvalues can have cv-qualified types, but built-in types (like int) can’t. Consider this example:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"A::foo() const\n"</span>; &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"A::foo()\n"</span>; &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function">A <span class="title">bar</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> A(); &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> A <span class="title">cbar</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> A(); &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    bar().foo();  <span class="comment">// calls foo</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    cbar().foo(); <span class="comment">// calls foo const</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <p>The second call in main actually calls the foo () const method of A, because the type returned by cbar is const A, which is distinct from A. This is exactly what’s meant by the last sentence in the quote mentioned earlier. Note also that the return value from cbar is an rvalue. So this is an example of a cv-qualified rvalue in action.</p>
 <h4 id="Rvalue-references-C-11"><a href="#Rvalue-references-C-11" class="headerlink" title="Rvalue references (C++11)"></a>Rvalue references (C++11)</h4><p>Rvalue references and the related concept of move semantics is one of the most powerful new features the C++11 standard introduces to the language. A full discussion of the feature is way beyond the scope of this humble article [3], but I still want to provide a simple example, because I think it’s a good place to demonstrate how an understanding of what lvalues and rvalues are aids our ability to reason about non-trivial language concepts.</p>
 <p>I’ve just spent a good part of this article explaining that one of the main differences between lvalues and rvalues is that lvalues can be modified, and rvalues can’t. Well, C++11 adds a crucial twist to this distinction, by allowing us to have references to rvalues and thus modify them, in some special circumstances.</p>
 <p>As an example, consider a simplistic implementation of a dynamic “integer vector”. I’m showing just the relevant methods here:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Intvec</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="class">&#123;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Intvec</span><span class="params">(<span class="keyword">size_t</span> num = <span class="number">0</span>)</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        : m_size(num), m_data(new int[m_size])</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"constructor"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">    ~Intvec()</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"destructor"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> (m_data) &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">delete</span>[] m_data;</span></pre></td></tr><tr><td class="code"><pre><span class="line">            m_data = <span class="number">0</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">    Intvec(<span class="keyword">const</span> Intvec&amp; other)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        : m_size(other.m_size), m_data(<span class="keyword">new</span> <span class="keyword">int</span>[m_size])</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"copy constructor"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; m_size; ++i)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            m_data[i] = other.m_data[i];</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">    Intvec&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Intvec&amp; other)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">log</span>(<span class="string">"copy assignment operator"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="function">Intvec <span class="title">tmp</span><span class="params">(other)</span></span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">std</span>::swap(m_size, tmp.m_size);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">std</span>::swap(m_data, tmp.m_data);</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">log</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* msg)</span></span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function">    </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"["</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; <span class="string">"] "</span> &lt;&lt; msg &lt;&lt; <span class="string">"\n"</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">size_t</span> m_size;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">int</span>* m_data;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr></table></figure>
+
 <p>So, we have the usual constructor, destructor, copy constructor and copy assignment operator [4] defined, all using a logging function to let us know when they’re actually called.</p>
 <p>Let’s run some simple code, which copies the contents of v1 into v2:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function">Intvec <span class="title">v1</span><span class="params">(<span class="number">20</span>)</span></span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">Intvec v2;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"assigning lvalue...\n"</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">v2 = v1;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"ended assigning lvalue...\n"</span>;</span></pre></td></tr></table></figure>
+
 <p>What this prints is:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">assigning lvalue...</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] copy assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] copy constructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] destructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">ended assigning lvalue...</span></pre></td></tr></table></figure>
+
 <p>Makes sense - this faithfully represents what’s going on inside operator=. But suppose that we want to assign some rvalue to v2:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"assigning rvalue...\n"</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">v2 = Intvec(<span class="number">33</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"ended assigning rvalue...\n"</span>;</span></pre></td></tr></table></figure>
+
 <p>Although here I just assign a freshly constructed vector, it’s just a demonstration of a more general case where some temporary rvalue is being built and then assigned to v2 (this can happen for some function returning a vector, for example). What gets printed now is this:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">assigning rvalue...</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] constructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] copy assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] copy constructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fec8</span>] destructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] destructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">ended assigning rvalue...</span></pre></td></tr></table></figure>
 <p>Ouch, this looks like a lot of work. In particular, it has one extra pair of constructor/destructor calls to create and then destroy the temporary object. And this is a shame, because inside the copy assignment operator, another temporary copy is being created and destroyed. That’s extra work, for nothing.</p>
 <p>Well, no more. C++11 gives us rvalue references with which we can implement “move semantics”, and in particular a “move assignment operator” [5]. Let’s add another operator= to Intvec:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Intvec&amp; <span class="keyword">operator</span>=(Intvec&amp;&amp; other)</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="built_in">log</span>(<span class="string">"move assignment operator"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="built_in">std</span>::swap(m_size, other.m_size);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="built_in">std</span>::swap(m_data, other.m_data);</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <p>The &amp;&amp; syntax is the new rvalue reference. It does exactly what it sounds it does - gives us a reference to an rvalue, which is going to be destroyed after the call. We can use this fact to just “steal” the internals of the rvalue - it won’t need them anyway! This prints:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">assigning rvalue...</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] constructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28fef8</span>] move assignment <span class="keyword">operator</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">[<span class="number">0x28ff08</span>] destructor</span></pre></td></tr><tr><td class="code"><pre><span class="line">ended assigning rvalue...</span></pre></td></tr></table></figure>
+
 <p>What happens here is that our new move assignment operator is invoked since an rvalue gets assigned to v2. The constructor and destructor calls are still needed for the temporary object that’s created by Intvec(33), but another temporary inside the assignment operator is no longer needed. The operator simply switches the rvalue’s internal buffer with its own, arranging it so the rvalue’s destructor will release our object’s own buffer, which is no longer used. Neat.</p>
 <p>I’ll just mention once again that this example is only the tip of the iceberg on move semantics and rvalue references. As you can probably guess, it’s a complex subject with a lot of special cases and gotchas to consider. My point here was to demonstrate a very interesting application of the difference between lvalues and rvalues in C++. The compiler obviously knows when some entity is an rvalue, and can arrange to invoke the correct constructor at compile time.</p>
 <h4 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h4><p>One can write a lot of C++ code without being concerned with the issue of rvalues vs. lvalues, dismissing them as weird compiler jargon in certain error messages. However, as this article aimed to show, getting a better grasp of this topic can aid in a deeper understanding of certain C++ code constructs, and make parts of the C++ spec and discussions between language experts more intelligible.</p>
@@ -181,15 +203,14 @@
   <entry>
     <title>markdown guide and mdeditor</title>
     <url>/markdown/markdown-guide-and-mdeditor.html</url>
-    <content><![CDATA[<pre><code>markdown 语法sample
-</code></pre><hr>
+    <content><![CDATA[<pre><code>markdown 语法sample</code></pre><hr>
 <blockquote>
-<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程_<strong>是这样解开的</strong>_<br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
+<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程<em><strong>是这样解开的</strong></em><br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
 </blockquote>
 <hr>
 <blockquote>
-<p>Order List Sample</p>
-<h2 id="遇见冬天的离别"><a href="#遇见冬天的离别" class="headerlink" title="遇见冬天的离别"></a>遇见冬天的离别</h2><h2 id="孙燕姿的绿光"><a href="#孙燕姿的绿光" class="headerlink" title="孙燕姿的绿光"></a>孙燕姿的绿光</h2><ol>
+<p>Order List Sample<br>遇见冬天的离别<br>–<br>孙燕姿的绿光<br>–</p>
+<ol>
 <li>窗外的麻雀，消失在电线杆上</li>
 <li>就是开不了口让她知道</li>
 <li>断了的弦，再谈一遍</li>
@@ -204,6 +225,7 @@
 </blockquote>
 <hr>
 <a id="more"></a>
+
 <blockquote>
 <p>Unorder List Sample<br>让我疯狂的可爱女人</p>
 <ul>
@@ -226,8 +248,7 @@
 <hr>
 <blockquote>
 <p>Code Sample<br> To denote a word or phrase as code, enclose it in tick marks (`).<br> Atthecommandprompt,type<code>nano</code>.</p>
-<pre><code> int a = 12 // code syntax require at lease 4 spaces on the left
-</code></pre></blockquote>
+<pre><code>int a = 12 // code syntax require at lease 4 spaces on the left</code></pre></blockquote>
 <hr>
 <h1 id="MDEditor-Online-Samples"><a href="#MDEditor-Online-Samples" class="headerlink" title="MDEditor Online Samples"></a>MDEditor <a href="/editor/sample.html">Online Samples</a></h1><p><strong>Markdown是一种轻量级的「标记语言」</strong></p>
 <p><img alt="markdown" title="markdown" data-src="https://www.mdeditor.com/images/logos/markdown.png"></p>
@@ -240,9 +261,9 @@
 <p><img alt="Pandao editor.md" title="Pandao editor.md" data-src="https://pandao.github.io/editor.md/images/logos/editormd-logo-180x180.png"></p>
 <h2 id="MdEditor的功能列表演示"><a href="#MdEditor的功能列表演示" class="headerlink" title="MdEditor的功能列表演示"></a>MdEditor的功能列表演示</h2><h1 id="标题H1"><a href="#标题H1" class="headerlink" title="标题H1"></a>标题H1</h1><h2 id="标题H2"><a href="#标题H2" class="headerlink" title="标题H2"></a>标题H2</h2><h3 id="标题H3"><a href="#标题H3" class="headerlink" title="标题H3"></a>标题H3</h3><h4 id="标题H4"><a href="#标题H4" class="headerlink" title="标题H4"></a>标题H4</h4><h5 id="标题H5"><a href="#标题H5" class="headerlink" title="标题H5"></a>标题H5</h5><h6 id="标题H5-1"><a href="#标题H5-1" class="headerlink" title="标题H5"></a>标题H5</h6><h3 id="字符效果和横线等"><a href="#字符效果和横线等" class="headerlink" title="字符效果和横线等"></a>字符效果和横线等</h3><hr>
 <p><del>删除线</del> <s>删除线（开启识别HTML标签时）</s></p>
-<p><em>斜体字</em>      _斜体字_</p>
+<p><em>斜体字</em>      <em>斜体字</em></p>
 <p><strong>粗体</strong>  <strong>粗体</strong></p>
-<p><strong><em>粗斜体</em></strong> <strong>_粗斜体_</strong></p>
+<p><strong><em>粗斜体</em></strong> <strong><em>粗斜体</em></strong></p>
 <p>上标：X<sub>2</sub>，下标：O<sup>2</sup></p>
 <p><strong>缩写(同HTML的abbr标签)</strong></p>
 <blockquote>
@@ -256,8 +277,7 @@
 <blockquote>
 <p>引用：如果想要插入空白换行<code>即&lt;br /&gt;标签</code>，在插入处先键入两个以上的空格然后回车即可，<a href="https://www.mdeditor.com/" target="_blank" rel="noopener">普通链接</a>。</p>
 </blockquote>
-<h3 id="锚点与链接-Links"><a href="#锚点与链接-Links" class="headerlink" title="锚点与链接 Links"></a>锚点与链接 Links</h3><p><a href="https://www.mdeditor.com/" target="_blank" rel="noopener">普通链接</a><br><a href="https://www.mdeditor.com/" target="_blank" rel="noopener" title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com" target="_blank" rel="noopener">https://www.mdeditor.com</a><br><a href="https://www.mdeditor.com/" target="_blank" rel="noopener">锚点链接</a></p>
-<p><a href="mailto:test.test@gmail.com" target="_blank" rel="noopener">mailto:test.test@gmail.com</a><br>GFM a-tail link @pandao<br>邮箱地址自动链接 test.test@gmail.com  www@vip.qq.com</p>
+<h3 id="锚点与链接-Links"><a href="#锚点与链接-Links" class="headerlink" title="锚点与链接 Links"></a>锚点与链接 Links</h3><p><a href="https://www.mdeditor.com/" target="_blank" rel="noopener">普通链接</a><br><a href="https://www.mdeditor.com/" target="_blank" rel="noopener" title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com" target="_blank" rel="noopener">https://www.mdeditor.com</a><br>[锚点链接][anchor-id]<br>[anchor-id]: <a href="https://www.mdeditor.com/" target="_blank" rel="noopener">https://www.mdeditor.com/</a><br><a href="mailto:test.test@gmail.com" target="_blank" rel="noopener">mailto:test.test@gmail.com</a><br>GFM a-tail link @pandao<br>邮箱地址自动链接 <a href="mailto:test.test@gmail.com" target="_blank" rel="noopener">test.test@gmail.com</a>  <a href="mailto:www@vip.qq.com" target="_blank" rel="noopener">www@vip.qq.com</a></p>
 <blockquote>
 <p>@pandao</p>
 </blockquote>
@@ -265,13 +285,12 @@
 <h4 id="缩进风格"><a href="#缩进风格" class="headerlink" title="缩进风格"></a>缩进风格</h4><p>即缩进四个空格，也做为实现类似 <code>&lt;pre&gt;</code> 预格式化文本 ( Preformatted Text ) 的功能。</p>
 <pre><code>&lt;?php
     echo &quot;Hello world!&quot;;
-?&gt;
-</code></pre><p>预格式化文本：</p>
+?&gt;</code></pre><p>预格式化文本：</p>
 <pre><code>| First Header  | Second Header |
 | ------------- | ------------- |
 | Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-</code></pre><h4 id="JS代码"><a href="#JS代码" class="headerlink" title="JS代码"></a>JS代码</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	<span class="built_in">console</span>.log(<span class="string">"Hello world!"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+| Content Cell  | Content Cell  |</code></pre><h4 id="JS代码"><a href="#JS代码" class="headerlink" title="JS代码"></a>JS代码</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	<span class="built_in">console</span>.log(<span class="string">"Hello world!"</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
 <h4 id="HTML-代码-HTML-codes"><a href="#HTML-代码-HTML-codes" class="headerlink" title="HTML 代码 HTML codes"></a>HTML 代码 HTML codes</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">mate</span> <span class="attr">charest</span>=<span class="string">"utf-8"</span> /&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"keywords"</span> <span class="attr">content</span>=<span class="string">"Editor.md, Markdown, Editor"</span> /&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="css">            <span class="selector-tag">body</span>&#123;<span class="attribute">font-size</span>:<span class="number">14px</span>;<span class="attribute">color</span>:<span class="number">#444</span>;<span class="attribute">font-family</span>: <span class="string">"Microsoft Yahei"</span>, Tahoma, <span class="string">"Hiragino Sans GB"</span>, Arial;<span class="attribute">background</span>:<span class="number">#fff</span>;&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="css">            <span class="selector-tag">ul</span>&#123;<span class="attribute">list-style</span>: none;&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="css">            <span class="selector-tag">img</span>&#123;<span class="attribute">border</span>:none;<span class="attribute">vertical-align</span>: middle;&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">h1</span> <span class="attr">class</span>=<span class="string">"text-xxl"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"text-green"</span>&gt;</span>Plain text<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></pre></td></tr></table></figure>
 <h3 id="图片-Images"><a href="#图片-Images" class="headerlink" title="图片 Images"></a>图片 Images</h3><p>图片加链接 (Image + Link)：</p>
 <p><a href="https://www.mdeditor.com/images/logos/markdown.png" target="_blank" rel="noopener" title="markdown"><img alt data-src="https://www.mdeditor.com/images/logos/markdown.png"></a></p>
@@ -310,50 +329,45 @@
 <li>第三行</li>
 </ol>
 <h4 id="GFM-task-list"><a href="#GFM-task-list" class="headerlink" title="GFM task list"></a>GFM task list</h4><ul>
-<li>[x] GFM task list 1</li>
-<li>[x] GFM task list 2</li>
-<li>[ ] GFM task list 3<ul>
-<li>[ ] GFM task list 3-1</li>
-<li>[ ] GFM task list 3-2</li>
-<li>[ ] GFM task list 3-3</li>
+<li><input checked disabled type="checkbox"> GFM task list 1</li>
+<li><input checked disabled type="checkbox"> GFM task list 2</li>
+<li><input disabled type="checkbox"> GFM task list 3<ul>
+<li><input disabled type="checkbox"> GFM task list 3-1</li>
+<li><input disabled type="checkbox"> GFM task list 3-2</li>
+<li><input disabled type="checkbox"> GFM task list 3-3</li>
 </ul>
 </li>
-<li>[ ] GFM task list 4<ul>
-<li>[ ] GFM task list 4-1</li>
-<li>[ ] GFM task list 4-2</li>
+<li><input disabled type="checkbox"> GFM task list 4<ul>
+<li><input disabled type="checkbox"> GFM task list 4-1</li>
+<li><input disabled type="checkbox"> GFM task list 4-2</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h3 id="绘制表格-Tables"><a href="#绘制表格-Tables" class="headerlink" title="绘制表格 Tables"></a>绘制表格 Tables</h3><div class="table-container">
-<table>
+<h3 id="绘制表格-Tables"><a href="#绘制表格-Tables" class="headerlink" title="绘制表格 Tables"></a>绘制表格 Tables</h3><table>
 <thead>
 <tr>
 <th>项目</th>
-<th style="text-align:right">价格</th>
-<th style="text-align:center">数量</th>
+<th align="right">价格</th>
+<th align="center">数量</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>计算机</td>
-<td style="text-align:right">$1600</td>
-<td style="text-align:center">5</td>
+<td align="right">$1600</td>
+<td align="center">5</td>
 </tr>
 <tr>
 <td>手机</td>
-<td style="text-align:right">$12</td>
-<td style="text-align:center">12</td>
+<td align="right">$12</td>
+<td align="center">12</td>
 </tr>
 <tr>
 <td>管线</td>
-<td style="text-align:right">$1</td>
-<td style="text-align:center">234</td>
+<td align="right">$1</td>
+<td align="center">234</td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-container">
+</tbody></table>
 <table>
 <thead>
 <tr>
@@ -361,8 +375,7 @@
 <th>Second Header</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Content Cell</td>
 <td>Content Cell</td>
 </tr>
@@ -370,10 +383,7 @@
 <td>Content Cell</td>
 <td>Content Cell</td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-container">
+</tbody></table>
 <table>
 <thead>
 <tr>
@@ -381,8 +391,7 @@
 <th>Second Header</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Content Cell</td>
 <td>Content Cell</td>
 </tr>
@@ -390,10 +399,7 @@
 <td>Content Cell</td>
 <td>Content Cell</td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-container">
+</tbody></table>
 <table>
 <thead>
 <tr>
@@ -401,8 +407,7 @@
 <th>Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td><code>help()</code></td>
 <td>Display the help window.</td>
 </tr>
@@ -410,61 +415,51 @@
 <td><code>destroy()</code></td>
 <td><strong>Destroy your computer!</strong></td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-container">
+</tbody></table>
 <table>
 <thead>
 <tr>
-<th style="text-align:left">Left-Aligned</th>
-<th style="text-align:center">Center Aligned</th>
-<th style="text-align:right">Right Aligned</th>
+<th align="left">Left-Aligned</th>
+<th align="center">Center Aligned</th>
+<th align="right">Right Aligned</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:left">col 3 is</td>
-<td style="text-align:center">some wordy text</td>
-<td style="text-align:right">$1600</td>
+<tbody><tr>
+<td align="left">col 3 is</td>
+<td align="center">some wordy text</td>
+<td align="right">$1600</td>
 </tr>
 <tr>
-<td style="text-align:left">col 2 is</td>
-<td style="text-align:center">centered</td>
-<td style="text-align:right">$12</td>
+<td align="left">col 2 is</td>
+<td align="center">centered</td>
+<td align="right">$12</td>
 </tr>
 <tr>
-<td style="text-align:left">zebra stripes</td>
-<td style="text-align:center">are neat</td>
-<td style="text-align:right">$1</td>
+<td align="left">zebra stripes</td>
+<td align="center">are neat</td>
+<td align="right">$1</td>
 </tr>
-</tbody>
-</table>
-</div>
-<div class="table-container">
+</tbody></table>
 <table>
 <thead>
 <tr>
 <th>Item</th>
-<th style="text-align:right">Value</th>
+<th align="right">Value</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Computer</td>
-<td style="text-align:right">$1600</td>
+<td align="right">$1600</td>
 </tr>
 <tr>
 <td>Phone</td>
-<td style="text-align:right">$12</td>
+<td align="right">$12</td>
 </tr>
 <tr>
 <td>Pipe</td>
-<td style="text-align:right">$1</td>
+<td align="right">$1</td>
 </tr>
-</tbody>
-</table>
-</div>
+</tbody></table>
 <hr>
 <h4 id="特殊符号-HTML-Entities-Codes"><a href="#特殊符号-HTML-Entities-Codes" class="headerlink" title="特殊符号 HTML Entities Codes"></a>特殊符号 HTML Entities Codes</h4><p>&copy; &amp;  &uml; &trade; &iexcl; &pound;<br>&amp; &lt; &gt; &yen; &euro; &reg; &plusmn; &para; &sect; &brvbar; &macr; &laquo; &middot;</p>
 <p>X&sup2; Y&sup3; &frac34; &frac14;  &times;  &divide;   &raquo;</p>
@@ -474,20 +469,24 @@
 <p>Blockquotes :star:</p>
 </blockquote>
 <h4 id="GFM-task-lists-amp-Emoji-amp-fontAwesome-icon-emoji-amp-editormd-logo-emoji-editormd-logo-5x"><a href="#GFM-task-lists-amp-Emoji-amp-fontAwesome-icon-emoji-amp-editormd-logo-emoji-editormd-logo-5x" class="headerlink" title="GFM task lists &amp; Emoji &amp; fontAwesome icon emoji &amp; editormd logo emoji :editormd-logo-5x:"></a>GFM task lists &amp; Emoji &amp; fontAwesome icon emoji &amp; editormd logo emoji :editormd-logo-5x:</h4><ul>
-<li>[x] :smiley: @mentions, :smiley: #refs, <a href>links</a>, <strong>formatting</strong>, and <del>tags</del> supported :editormd-logo:;</li>
-<li>[x] list syntax required (any unordered or ordered list supported) :editormd-logo-3x:;</li>
-<li>[x] [ ] :smiley: this is a complete item :smiley:;</li>
-<li>[ ] []this is an incomplete item <a href="#">test link</a> :fa-star: @pandao;</li>
-<li>[ ] [ ]this is an incomplete item :fa-star: :fa-gear:;<ul>
-<li>[ ] :smiley: this is an incomplete item <a href="#">test link</a> :fa-star: :fa-gear:;</li>
-<li>[ ] :smiley: this is  :fa-star: :fa-gear: an incomplete item <a href="#">test link</a>;</li>
+<li><input checked disabled type="checkbox"> :smiley: @mentions, :smiley: #refs, <a href>links</a>, <strong>formatting</strong>, and <del>tags</del> supported :editormd-logo:;</li>
+<li><input checked disabled type="checkbox"> list syntax required (any unordered or ordered list supported) :editormd-logo-3x:;</li>
+<li><input checked disabled type="checkbox"> [ ] :smiley: this is a complete item :smiley:;</li>
+<li><input disabled type="checkbox"> []this is an incomplete item <a href="#">test link</a> :fa-star: @pandao;</li>
+<li><input disabled type="checkbox"> [ ]this is an incomplete item :fa-star: :fa-gear:;<ul>
+<li><input disabled type="checkbox"> :smiley: this is an incomplete item <a href="#">test link</a> :fa-star: :fa-gear:;</li>
+<li><input disabled type="checkbox"> :smiley: this is  :fa-star: :fa-gear: an incomplete item <a href="#">test link</a>;</li>
 </ul>
 </li>
 </ul>
 <h4 id="反斜杠-Escape"><a href="#反斜杠-Escape" class="headerlink" title="反斜杠 Escape"></a>反斜杠 Escape</h4><p>*literal asterisks*</p>
 <p>[========]</p>
-<h3 id="科学公式-TeX-KaTeX"><a href="#科学公式-TeX-KaTeX" class="headerlink" title="科学公式 TeX(KaTeX)"></a>科学公式 TeX(KaTeX)</h3><script type="math/tex; mode=display">E=mc^2</script><p>行内的公式<script type="math/tex">E=mc^2</script>行内的公式，行内的<script type="math/tex">E=mc^2</script>公式。</p>
-<script type="math/tex; mode=display">x > y</script><script type="math/tex; mode=display">\(\sqrt{3x-1}+(1+x)^2\)</script><script type="math/tex; mode=display">\sin(\alpha)^{\theta}=\sum_{i=0}^{n}(x^i + \cos(f))</script><p>多行公式：</p>
+<h3 id="科学公式-TeX-KaTeX"><a href="#科学公式-TeX-KaTeX" class="headerlink" title="科学公式 TeX(KaTeX)"></a>科学公式 TeX(KaTeX)</h3><p>$$E=mc^2$$</p>
+<p>行内的公式$$E=mc^2$$行内的公式，行内的$$E=mc^2$$公式。</p>
+<p>$$x &gt; y$$</p>
+<p>$$(\sqrt{3x-1}+(1+x)^2)$$</p>
+<p>$$\sin(\alpha)^{\theta}=\sum_{i=0}^{n}(x^i + \cos(f))$$</p>
+<p>多行公式：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\displaystyle</span></pre></td></tr><tr><td class="code"><pre><span class="line">\left( \sum\_&#123;k&#x3D;1&#125;^n a\_k b\_k \right)^2</span></pre></td></tr><tr><td class="code"><pre><span class="line">\leq</span></pre></td></tr><tr><td class="code"><pre><span class="line">\left( \sum\_&#123;k&#x3D;1&#125;^n a\_k^2 \right)</span></pre></td></tr><tr><td class="code"><pre><span class="line">\left( \sum\_&#123;k&#x3D;1&#125;^n b\_k^2 \right)</span></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\displaystyle</span></pre></td></tr><tr><td class="code"><pre><span class="line">    \frac&#123;1&#125;&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        \Bigl(\sqrt&#123;\phi \sqrt&#123;5&#125;&#125;-\phi\Bigr) e^&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        \frac25 \pi&#125;&#125; &#x3D; 1+\frac&#123;e^&#123;-2\pi&#125;&#125; &#123;1+\frac&#123;e^&#123;-4\pi&#125;&#125; &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        1+\frac&#123;e^&#123;-6\pi&#125;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        &#123;1+\frac&#123;e^&#123;-8\pi&#125;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">         &#123;1+\cdots&#125; &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f(x) &#x3D; \int_&#123;-\infty&#125;^\infty</span></pre></td></tr><tr><td class="code"><pre><span class="line">    \hat f(\xi)\,e^&#123;2 \pi i \xi x&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    \,d\xi</span></pre></td></tr></table></figure>
@@ -498,6 +497,7 @@
 <h3 id="绘制流程图-Flowchart"><a href="#绘制流程图-Flowchart" class="headerlink" title="绘制流程图 Flowchart"></a>绘制流程图 Flowchart</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">st&#x3D;&gt;start: 用户登陆</span></pre></td></tr><tr><td class="code"><pre><span class="line">op&#x3D;&gt;operation: 登陆操作</span></pre></td></tr><tr><td class="code"><pre><span class="line">cond&#x3D;&gt;condition: 登陆成功 Yes or No?</span></pre></td></tr><tr><td class="code"><pre><span class="line">e&#x3D;&gt;end: 进入后台</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">st-&gt;op-&gt;cond</span></pre></td></tr><tr><td class="code"><pre><span class="line">cond(yes)-&gt;e</span></pre></td></tr><tr><td class="code"><pre><span class="line">cond(no)-&gt;op</span></pre></td></tr></table></figure>
 <p>[========]</p>
 <h3 id="绘制序列图-Sequence-Diagram"><a href="#绘制序列图-Sequence-Diagram" class="headerlink" title="绘制序列图 Sequence Diagram"></a>绘制序列图 Sequence Diagram</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Andrew-&gt;China: Says Hello</span></pre></td></tr><tr><td class="code"><pre><span class="line">Note right of China: China thinks\nabout it</span></pre></td></tr><tr><td class="code"><pre><span class="line">China--&gt;Andrew: How are you?</span></pre></td></tr><tr><td class="code"><pre><span class="line">Andrew-&gt;&gt;China: I am good thanks!</span></pre></td></tr></table></figure>
+
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><blockquote>
 <p>Go To <a href="/editor/">Online Editor</a><br>See more samples from the <a href="https://www.markdownguide.org/assets/book/markdown-guide.pdf" target="_blank" rel="noopener" title="Ctrl/Command to open in new tab">official manual guide</a> with pdf</p>
 </blockquote>
