@@ -4,7 +4,7 @@ $(function () {
     $("#emclient").html("");
     var client = editormd("emclient", {
         width: "100%",
-        height: 800,
+        height: $(window).height(),
         path: '/editor/lib/',
         theme: "dark",
         previewTheme: "eclipse",
