@@ -232,10 +232,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-12-08 23:32:30 / Modified: 23:34:51" itemprop="dateCreated datePublished" datetime="2019-12-08T23:32:30+08:00">2019-12-08</time>
+              <time title="Created: 2019-12-08 23:32:30" itemprop="dateCreated datePublished" datetime="2019-12-08T23:32:30+08:00">2019-12-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-09 12:26:25" itemprop="dateModified" datetime="2019-12-09T12:26:25+08:00">2019-12-09</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -259,7 +265,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="C-11-新增特性"><a href="#C-11-新增特性" class="headerlink" title="C++11 新增特性"></a>C++11 新增特性</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
+          <h2 id="C-11-Features"><a href="#C-11-Features" class="headerlink" title="C++11 Features"></a>C++11 Features</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
 <p>C++ 不允许直接将 void * 隐式转换到其他类型，但如果 NULL 被定义为 ((void*)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
 <p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：</p>
