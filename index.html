@@ -209,6 +209,92 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++-Operator-Overload.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/program/C++-Operator-Overload.html" class="post-title-link" itemprop="url">C++ Operator Overload(赋值运算符重载)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-10 17:25:14 / Modified: 19:11:29" itemprop="dateCreated datePublished" datetime="2019-12-10T17:25:14+08:00">2019-12-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="C-Operator-Overload"><a href="#C-Operator-Overload" class="headerlink" title="C++ Operator Overload"></a>C++ Operator Overload</h2><h3 id="转换函数-Opetartor"><a href="#转换函数-Opetartor" class="headerlink" title="转换函数 (Opetartor ())"></a>转换函数 (Opetartor ())</h3><h4 id="operator用于类型转换函数"><a href="#operator用于类型转换函数" class="headerlink" title="operator用于类型转换函数"></a>operator用于类型转换函数</h4><blockquote>
+<p>类型转换函数的一般形式为 :<br>operator 类型名() (const)<br>{实现转换的语句}<br>在函数名前面不能指定函数类型,函数没有参数.</p>
+</blockquote>
+<p>类型转换函数的特征</p>
+<ol>
+<li>型转换函数定义在源类中；</li>
+<li>须由 operator 修饰，函数名称是目标类型名或目标类名</li>
+<li>函数没有参数，没有返回值，但是有return 语句。<br> 在return语句中返回目标类型数据或调用目标类的构造函数。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">my_class</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="class">&#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">int</span><span class="params">()</span><span class="comment">//定义了一个将类转化为int的转换函数</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="function">    </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"convert_to_int"</span> &lt;&lt; <span class="built_in">endl</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    my_class a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">int</span> i_a = (<span class="keyword">int</span>)a;<span class="comment">//第一次显式的转换</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;<span class="comment">//第二次隐式的转换</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/program/C++-Operator-Overload.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++-Virtual.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -234,7 +320,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2019-12-10 14:25:36 / Modified: 17:18:02" itemprop="dateCreated datePublished" datetime="2019-12-10T14:25:36+08:00">2019-12-10</time>
+              <time title="Created: 2019-12-10 14:25:36 / Modified: 17:20:26" itemprop="dateCreated datePublished" datetime="2019-12-10T14:25:36+08:00">2019-12-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,7 +348,7 @@
           <h2 id="C-Virtual"><a href="#C-Virtual" class="headerlink" title="C++ Virtual"></a>C++ Virtual</h2><h3 id="Virtual-Function"><a href="#Virtual-Function" class="headerlink" title="Virtual Function"></a>Virtual Function</h3><h4 id="what’s-virtual"><a href="#what’s-virtual" class="headerlink" title="what’s virtual"></a>what’s virtual</h4><blockquote>
 <p>The virtual specifier specifies that a non-static member function is virtual and supports dynamic dispatch. It may only appear in the decl-specifier-seq of the initial declaration of a non-static member function (i.e., when it is declared in the class definition).</p>
 </blockquote>
-<h4 id="Explanation"><a href="#Explanation" class="headerlink" title="Explanation"></a>Explanation</h4><p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator ::).</p>
+<h4 id="Explanation"><a href="#Explanation" class="headerlink" title="Explanation"></a>Explanation</h4><p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator ::).<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/program/C++-Virtual.html#more" rel="contents">
@@ -416,14 +502,12 @@
       
           <h2 id="C-11-新增特性"><a href="#C-11-新增特性" class="headerlink" title="C++11 新增特性"></a>C++11 新增特性</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
-<p>C++ 不允许直接将 void * 隐式转换到其他类型，但如果 NULL 被定义为 ((void*)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
-<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure>
-<p>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
+<p>C++ 不允许直接将 void <em> 隐式转换到其他类型，但如果 NULL 被定义为 ((void</em>)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
+<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure><br>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
 <blockquote>
 <p>为了解决这个问题，C++11 引入了 <strong>nullptr</strong> 关键字，专门用来区分<strong>空指针、0</strong>。<br>nullptr 的类型为 nullptr_t，能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等运算。</p>
 </blockquote>
-<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯</p>
+<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/program/C++11-Features-Overview.html#more" rel="contents">
@@ -951,112 +1035,12 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/markdown/markdown-guide-and-mdeditor.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/markdown/markdown-guide-and-mdeditor.html" class="post-title-link" itemprop="url">markdown guide and mdeditor</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-09-20 11:34:48" itemprop="dateCreated datePublished" datetime="2018-09-20T11:34:48+08:00">2018-09-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-08 03:13:10" itemprop="dateModified" datetime="2019-12-08T03:13:10+08:00">2019-12-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <pre><code>markdown 语法sample</code></pre><hr>
-<blockquote>
-<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程<em><strong>是这样解开的</strong></em><br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
-</blockquote>
-<hr>
-<blockquote>
-<p>Order List Sample<br>遇见冬天的离别<br>–<br>孙燕姿的绿光<br>–</p>
-<ol>
-<li>窗外的麻雀，消失在电线杆上</li>
-<li>就是开不了口让她知道</li>
-<li>断了的弦，再谈一遍</li>
-<li>哪里跟那里<ol>
-<li>你的转变，想断掉的弦</li>
-<li>你的美，已经追不回，追了又追我要不会</li>
-<li>诶，小朋友在玩什么呀，</li>
-</ol>
-</li>
-<li>一波还未平息，一波早就过去</li>
-</ol>
-</blockquote>
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/markdown/markdown-guide-and-mdeditor.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -1101,7 +1085,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
