@@ -209,7 +209,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++11-Features.html">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++11-Features-Overview.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -223,7 +223,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/program/C++11-Features.html" class="post-title-link" itemprop="url">C++11 Features</a>
+            <a href="/program/C++11-Features-Overview.html" class="post-title-link" itemprop="url">C++11 Features Overview</a>
         </h1>
 
         <div class="post-meta">
@@ -240,7 +240,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-10 01:25:55" itemprop="dateModified" datetime="2019-12-10T01:25:55+08:00">2019-12-10</time>
+                <time title="Modified: 2019-12-10 13:05:02" itemprop="dateModified" datetime="2019-12-10T13:05:02+08:00">2019-12-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,15 +267,17 @@
       
           <h2 id="C-11-新增特性"><a href="#C-11-新增特性" class="headerlink" title="C++11 新增特性"></a>C++11 新增特性</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
-<p>C++ 不允许直接将 void <em> 隐式转换到其他类型，但如果 NULL 被定义为 ((void</em>)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
-<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure><br>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
+<p>C++ 不允许直接将 void * 隐式转换到其他类型，但如果 NULL 被定义为 ((void*)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
+<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure>
+<p>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
 <blockquote>
 <p>为了解决这个问题，C++11 引入了 <strong>nullptr</strong> 关键字，专门用来区分<strong>空指针、0</strong>。<br>nullptr 的类型为 nullptr_t，能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等运算。</p>
 </blockquote>
-<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯<br>
+<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/program/C++11-Features.html#more" rel="contents">
+              <a class="btn" href="/program/C++11-Features-Overview.html#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -860,15 +862,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <pre><code>markdown 语法sample
-</code></pre><hr>
+          <pre><code>markdown 语法sample</code></pre><hr>
 <blockquote>
-<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程_<strong>是这样解开的</strong>_<br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
+<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程<em><strong>是这样解开的</strong></em><br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
 </blockquote>
 <hr>
 <blockquote>
-<p>Order List Sample</p>
-<h2 id="遇见冬天的离别"><a href="#遇见冬天的离别" class="headerlink" title="遇见冬天的离别"></a>遇见冬天的离别</h2><h2 id="孙燕姿的绿光"><a href="#孙燕姿的绿光" class="headerlink" title="孙燕姿的绿光"></a>孙燕姿的绿光</h2><ol>
+<p>Order List Sample<br>遇见冬天的离别<br>–<br>孙燕姿的绿光<br>–</p>
+<ol>
 <li>窗外的麻雀，消失在电线杆上</li>
 <li>就是开不了口让她知道</li>
 <li>断了的弦，再谈一遍</li>
