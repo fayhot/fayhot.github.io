@@ -348,7 +348,7 @@
           <h2 id="C-Virtual"><a href="#C-Virtual" class="headerlink" title="C++ Virtual"></a>C++ Virtual</h2><h3 id="Virtual-Function"><a href="#Virtual-Function" class="headerlink" title="Virtual Function"></a>Virtual Function</h3><h4 id="what’s-virtual"><a href="#what’s-virtual" class="headerlink" title="what’s virtual"></a>what’s virtual</h4><blockquote>
 <p>The virtual specifier specifies that a non-static member function is virtual and supports dynamic dispatch. It may only appear in the decl-specifier-seq of the initial declaration of a non-static member function (i.e., when it is declared in the class definition).</p>
 </blockquote>
-<h4 id="Explanation"><a href="#Explanation" class="headerlink" title="Explanation"></a>Explanation</h4><p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator ::).<br>
+<h4 id="Explanation"><a href="#Explanation" class="headerlink" title="Explanation"></a>Explanation</h4><p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator ::).</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/program/C++-Virtual.html#more" rel="contents">
@@ -398,10 +398,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-12-10 13:09:42 / Modified: 13:12:02" itemprop="dateCreated datePublished" datetime="2019-12-10T13:09:42+08:00">2019-12-10</time>
+              <time title="Created: 2019-12-10 13:09:42" itemprop="dateCreated datePublished" datetime="2019-12-10T13:09:42+08:00">2019-12-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-11 01:54:33" itemprop="dateModified" datetime="2019-12-11T01:54:33+08:00">2019-12-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -425,7 +431,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h2 id="C-Template"><a href="#C-Template" class="headerlink" title="C++ Template"></a>C++ Template</h2><h3 id="模板基础"><a href="#模板基础" class="headerlink" title="模板基础"></a>模板基础</h3><h4 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h4><h5 id="定义模板"><a href="#定义模板" class="headerlink" title="定义模板"></a>定义模板</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> T <span class="keyword">const</span>&amp; <span class="title">tmax</span><span class="params">(T <span class="keyword">const</span>&amp; a, T <span class="keyword">const</span>&amp; b)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> a &lt; b ? b: a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<h5 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">32</span>, <span class="number">43</span>);</span></pre></td></tr></table></figure>
+<blockquote>
+<p>通常而言，并不是把模板编译成一个可以处理任何类型的单一实体。<br>而是对于实例化模板参数的每种类型，都从模板产生一个不同的实体。<br>这种用具体类型代替模板参数的过程叫做实例化，它产生了一个模板的实例。</p>
+</blockquote>
+<p>由此，我们可以得出一个结论：模板被编译了两次，分别发生在：</p>
+<ol>
+<li>实例化之前，先检查模板代码本身，查看语法是否正确；在这里会发现错误的语法，如遗漏分号等。</li>
+<li>在实例化期间，检查模板代码，查看是否所有的调用都有效。在这里会发现无效的调用，如该实例化类型不支持某些函数调用(该类型没有提供模板所需要使用到的操作)等。</li>
+</ol>
+<h5 id="实参的演绎（deduction）"><a href="#实参的演绎（deduction）" class="headerlink" title="实参的演绎（deduction）"></a>实参的演绎（deduction）</h5><blockquote>
+<p>模板实参不允许进行自动类型转换；每个T都必须正确地匹配。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">4</span>, <span class="number">4.3</span>); <span class="comment">// Error:第1个参数类型是int，第2个参数类型是double</span></span></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/program/C++11-Template.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -502,12 +529,14 @@
       
           <h2 id="C-11-新增特性"><a href="#C-11-新增特性" class="headerlink" title="C++11 新增特性"></a>C++11 新增特性</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
-<p>C++ 不允许直接将 void <em> 隐式转换到其他类型，但如果 NULL 被定义为 ((void</em>)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
-<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure><br>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
+<p>C++ 不允许直接将 void * 隐式转换到其他类型，但如果 NULL 被定义为 ((void*)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
+<p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure>
+<p>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
 <blockquote>
 <p>为了解决这个问题，C++11 引入了 <strong>nullptr</strong> 关键字，专门用来区分<strong>空指针、0</strong>。<br>nullptr 的类型为 nullptr_t，能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等运算。</p>
 </blockquote>
-<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯<br>
+<p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/program/C++11-Features-Overview.html#more" rel="contents">
