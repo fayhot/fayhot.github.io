@@ -49,13 +49,13 @@
   };
 </script>
 
-  <meta name="description" content="模式识别与机器学习introductionkeywords supervised learningSupervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output da">
+  <meta name="description" content="模式识别与机器学习  introduction  keywords   supervised learning Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired o">
 <meta name="keywords" content="模式识别">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pattern Recognition And Machine Learning(模式识别&amp;机器学习)">
 <meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;pattern-recognition&#x2F;pattern-recognition-and-machine-learning.html">
 <meta property="og:site_name" content="Fayhot&#39;s Blog">
-<meta property="og:description" content="模式识别与机器学习introductionkeywords supervised learningSupervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output da">
+<meta property="og:description" content="模式识别与机器学习  introduction  keywords   supervised learning Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired o">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2019-12-12T16:53:40.981Z">
 <meta name="twitter:card" content="summary">
@@ -275,41 +275,73 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="模式识别与机器学习"><a href="#模式识别与机器学习" class="headerlink" title="模式识别与机器学习"></a>模式识别与机器学习</h2><h3 id="introduction"><a href="#introduction" class="headerlink" title="introduction"></a>introduction</h3><h4 id="keywords"><a href="#keywords" class="headerlink" title="keywords"></a>keywords</h4><ul>
-<li><p>supervised learning<br>Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output data are provided. Input and output data are labelled for classification to provide a learning basis for future data processing.</p>
+        <h2 id="模式识别与机器学习"><a class="markdownIt-Anchor" href="#模式识别与机器学习"></a> 模式识别与机器学习</h2>
+<h3 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> introduction</h3>
+<h4 id="keywords"><a class="markdownIt-Anchor" href="#keywords"></a> keywords</h4>
+<ul>
+<li>
+<p>supervised learning<br>
+Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output data are provided. Input and output data are labelled for classification to provide a learning basis for future data processing.</p>
 </li>
-<li><p>unsupervised learning<br>opposite of supervised learning</p>
+<li>
+<p>unsupervised learning<br>
+opposite of supervised learning</p>
 </li>
-<li><p>classification<br>Cases such as the digit recognition example, in which the aim is to assign each input vector to one of a finite number of discrete categories</p>
+<li>
+<p>classification<br>
+Cases such as the digit recognition example, in which the aim is to assign each input vector to one of a finite number of discrete categories</p>
 </li>
-<li><p>reinforcement learning<br>Reinforcement learning is where a system, or agent, tries to maximize some measure of reward while interacting with a dynamic environment. If an action is followed by an increase in the reward, then the system increases the tendency to produce that action.</p>
+<li>
+<p>reinforcement learning<br>
+Reinforcement learning is where a system, or agent, tries to maximize some measure of reward while interacting with a dynamic environment. If an action is followed by an increase in the reward, then the system increases the tendency to produce that action.</p>
 </li>
-<li><p>regression<br>If the desired output consists of one or more continuous variables, then the task is called regression</p>
+<li>
+<p>regression<br>
+If the desired output consists of one or more continuous variables, then the task is called regression</p>
 </li>
 </ul>
 <a id="more"></a>
 <ul>
-<li><p>error function</p>
+<li>
+<p>error function</p>
 </li>
-<li><p>over-fitting</p>
+<li>
+<p>over-fitting</p>
 </li>
-<li><p>generalization</p>
+<li>
+<p>generalization</p>
 </li>
-<li><p>credit assignment</p>
+<li>
+<p>credit assignment</p>
 </li>
-<li><p>regularization</p>
+<li>
+<p>regularization</p>
 </li>
-<li><p>maximum likelihood</p>
+<li>
+<p>maximum likelihood</p>
 </li>
-<li><p>Polynomial Curve Fitting</p>
+<li>
+<p>Polynomial Curve Fitting</p>
 </li>
 </ul>
 <p>In other pattern recognition problems, the training data consists of a set of input vectors x without any corresponding target values. The goal in such <strong>unsupervised learning</strong> problems may be to discover groups of similar examples within the data, where it is called <strong>clustering</strong>, or to determine the distribution of data within the input space, known as <strong>density estimation</strong>, or to project the data from a high-dimensional space down to two or three dimensions for the purpose of <strong>visualization</strong>.</p>
-<h4 id="Polynomial-Curve-Fitting"><a href="#Polynomial-Curve-Fitting" class="headerlink" title="Polynomial Curve Fitting"></a>Polynomial Curve Fitting</h4><p>suppose that we are given a training set comprising N observations of x, written<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">x &#x3D; (x_1, ..., x_n)^T</span></pre></td></tr></table></figure><br>together with corresponding observations of the values of t ,denoted<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">t &#x3D; (t_1, ..., t_n)^T</span></pre></td></tr></table></figure><br>we shall fit the data using a polynomial function of the form<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">y(x, w) &#x3D; w_0 + w_1x + w_2x^2 + ... + w_nx^n &#x3D; \sum_&#123;j&#x3D;0&#125;^&#123;n&#125; w_jx^j  \tag&#123;1.1&#125;</span></pre></td></tr></table></figure><br>where <strong>n</strong> is the order of the polynomial, and <script type="math/tex">x^j</script> denotes x raised to the power of j.<br>The polynomial coefficients <script type="math/tex">w_0</script>, … , <script type="math/tex">w_n</script> are collectively denoted by the vector <strong>w</strong>.<br>Note that, although the polynomial function <script type="math/tex">y(x, w)</script> is a nonlinear function of x, it is a linear function of the coefficients <strong>w</strong>.</p>
-<p>The values of the coefficients will be determined by fitting the polynomial to the training data. This can be done by minimizing an <strong>error function</strong> that measures the misfit between the function <script type="math/tex">y(x, w)</script>, for any given value of <strong>w</strong>, and the training set data points.</p>
-<p>One simple choice of error function, which is widely used, is given by the sum of the squares of the errors between the predictions <script type="math/tex">y(x_n, w)</script> for each data point <script type="math/tex">x_n</script> and the corresponding target values <script type="math/tex">t_n</script>, so that we minimize<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">\displaystyle E(w) &#x3D; \frac&#123;1&#125;&#123;2&#125; \sum_&#123;n&#x3D;1&#125;^N \&#123;y(x_n, w) - t_n\&#125;^2</span></pre></td></tr></table></figure><br>where the factor of 1/2 is included for later convenience. We can solve the curve fitting problem by choosing the value of <strong>w</strong> for which <strong>E(w)</strong> is as small as possible.</p>
-<p>It is sometimes more convenient to use the root-mean-square<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">\displaystyle E_&#123;RMS&#125; &#x3D; \sqrt\frac&#123;2E(w^*)&#125;&#123;N&#125;</span></pre></td></tr></table></figure></p>
-<p>in which the division by N allows us to compare different sizes of data sets on an equal footing, and the square root ensures that <script type="math/tex">E_{RMS}</script> is measured on the same scale (and in the same units) as the target variable t.</p>
+<h4 id="polynomial-curve-fitting"><a class="markdownIt-Anchor" href="#polynomial-curve-fitting"></a> Polynomial Curve Fitting</h4>
+<p>suppose that we are given a training set comprising N observations of x, written</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">x &#x3D; (x_1, ..., x_n)^T</span></pre></td></tr></table></figure>
+<p>together with corresponding observations of the values of t ,denoted</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">t &#x3D; (t_1, ..., t_n)^T</span></pre></td></tr></table></figure>
+<p>we shall fit the data using a polynomial function of the form</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">y(x, w) &#x3D; w_0 + w_1x + w_2x^2 + ... + w_nx^n &#x3D; \sum_&#123;j&#x3D;0&#125;^&#123;n&#125; w_jx^j  \tag&#123;1.1&#125;</span></pre></td></tr></table></figure>
+<p>where <strong>n</strong> is the order of the polynomial, and $$x^j$$ denotes x raised to the power of j.<br>
+The polynomial coefficients $$w_0$$, … , $$w_n$$ are collectively denoted by the vector <strong>w</strong>.<br>
+Note that, although the polynomial function $$y(x, w)$$ is a nonlinear function of x, it is a linear function of the coefficients <strong>w</strong>.</p>
+<p>The values of the coefficients will be determined by fitting the polynomial to the training data. This can be done by minimizing an <strong>error function</strong> that measures the misfit between the function $$y(x, w)$$, for any given value of <strong>w</strong>, and the training set data points.</p>
+<p>One simple choice of error function, which is widely used, is given by the sum of the squares of the errors between the predictions $$y(x_n, w)$$ for each data point $$x_n$$ and the corresponding target values $$t_n$$, so that we minimize</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">\displaystyle E(w) &#x3D; \frac&#123;1&#125;&#123;2&#125; \sum_&#123;n&#x3D;1&#125;^N \&#123;y(x_n, w) - t_n\&#125;^2</span></pre></td></tr></table></figure>
+<p>where the factor of 1/2 is included for later convenience. We can solve the curve fitting problem by choosing the value of <strong>w</strong> for which <strong>E(w)</strong> is as small as possible.</p>
+<p>It is sometimes more convenient to use the root-mean-square</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">\displaystyle E_&#123;RMS&#125; &#x3D; \sqrt\frac&#123;2E(w^*)&#125;&#123;N&#125;</span></pre></td></tr></table></figure>
+<p>in which the division by N allows us to compare different sizes of data sets on an equal footing, and the square root ensures that $$E_{RMS}$$ is measured on the same scale (and in the same units) as the target variable t.</p>
 
     </div>
 
@@ -373,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模式识别与机器学习"><span class="nav-number">1.</span> <span class="nav-text">模式识别与机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduction"><span class="nav-number">1.1.</span> <span class="nav-text">introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keywords"><span class="nav-number">1.1.1.</span> <span class="nav-text">keywords</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Polynomial-Curve-Fitting"><span class="nav-number">1.1.2.</span> <span class="nav-text">Polynomial Curve Fitting</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#模式识别与机器学习"><span class="nav-number">1.</span> <span class="nav-text"> 模式识别与机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduction"><span class="nav-number">1.1.</span> <span class="nav-text"> introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keywords"><span class="nav-number">1.1.1.</span> <span class="nav-text"> keywords</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#polynomial-curve-fitting"><span class="nav-number">1.1.2.</span> <span class="nav-text"> Polynomial Curve Fitting</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
