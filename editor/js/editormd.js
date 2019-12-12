@@ -1500,7 +1500,7 @@
             
             this.previewContainer.find("." + editormd.classNames.tex).each(function(){
                 var tex  = $(this);
-                editormd.$katex.render(tex.text(), tex[0], displayMode: true);
+                editormd.$katex.render(tex.text(), tex[0], {displayMode: true});
                 
                 tex.find(".katex").css("font-size", "1.6em");
             });   
