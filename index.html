@@ -259,7 +259,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="深度学习框架pytorch"><a href="#深度学习框架pytorch" class="headerlink" title="深度学习框架pytorch"></a>深度学习框架pytorch</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>所有代码都在当前版本pytorch下测试通过</p>
+          <h2 id="深度学习框架pytorch"><a class="markdownIt-Anchor" href="#深度学习框架pytorch"></a> 深度学习框架pytorch</h2>
+<h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3>
+<p>所有代码都在当前版本pytorch下测试通过</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(torch.__version__)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">print(torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>))</span></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="number">1.1</span><span class="number">.0</span>.post2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">cpu</span></pre></td></tr></table></figure>
           <!--noindex-->
@@ -338,16 +340,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="模式识别与机器学习"><a href="#模式识别与机器学习" class="headerlink" title="模式识别与机器学习"></a>模式识别与机器学习</h2><h3 id="introduction"><a href="#introduction" class="headerlink" title="introduction"></a>introduction</h3><h4 id="keywords"><a href="#keywords" class="headerlink" title="keywords"></a>keywords</h4><ul>
-<li><p>supervised learning<br>Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output data are provided. Input and output data are labelled for classification to provide a learning basis for future data processing.</p>
+          <h2 id="模式识别与机器学习"><a class="markdownIt-Anchor" href="#模式识别与机器学习"></a> 模式识别与机器学习</h2>
+<h3 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> introduction</h3>
+<h4 id="keywords"><a class="markdownIt-Anchor" href="#keywords"></a> keywords</h4>
+<ul>
+<li>
+<p>supervised learning<br />
+Supervised learning, in the context of artificial intelligence (AI) and machine learning, is a type of system in which both input and desired output data are provided. Input and output data are labelled for classification to provide a learning basis for future data processing.</p>
 </li>
-<li><p>unsupervised learning<br>opposite of supervised learning</p>
+<li>
+<p>unsupervised learning<br />
+opposite of supervised learning</p>
 </li>
-<li><p>classification<br>Cases such as the digit recognition example, in which the aim is to assign each input vector to one of a finite number of discrete categories</p>
+<li>
+<p>classification<br />
+Cases such as the digit recognition example, in which the aim is to assign each input vector to one of a finite number of discrete categories</p>
 </li>
-<li><p>reinforcement learning<br>Reinforcement learning is where a system, or agent, tries to maximize some measure of reward while interacting with a dynamic environment. If an action is followed by an increase in the reward, then the system increases the tendency to produce that action.</p>
+<li>
+<p>reinforcement learning<br />
+Reinforcement learning is where a system, or agent, tries to maximize some measure of reward while interacting with a dynamic environment. If an action is followed by an increase in the reward, then the system increases the tendency to produce that action.</p>
 </li>
-<li><p>regression<br>If the desired output consists of one or more continuous variables, then the task is called regression</p>
+<li>
+<p>regression<br />
+If the desired output consists of one or more continuous variables, then the task is called regression</p>
 </li>
 </ul>
           <!--noindex-->
@@ -426,14 +441,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="C-Operator-Overload"><a href="#C-Operator-Overload" class="headerlink" title="C++ Operator Overload"></a>C++ Operator Overload</h2><h3 id="转换函数-Opetartor"><a href="#转换函数-Opetartor" class="headerlink" title="转换函数 (Opetartor ())"></a>转换函数 (Opetartor ())</h3><h4 id="operator用于类型转换函数"><a href="#operator用于类型转换函数" class="headerlink" title="operator用于类型转换函数"></a>operator用于类型转换函数</h4><blockquote>
-<p>类型转换函数的一般形式为 :<br>operator 类型名() (const)<br>{实现转换的语句}<br>在函数名前面不能指定函数类型,函数没有参数.</p>
+          <h2 id="c-operator-overload"><a class="markdownIt-Anchor" href="#c-operator-overload"></a> C++ Operator Overload</h2>
+<h3 id="转换函数-opetartor"><a class="markdownIt-Anchor" href="#转换函数-opetartor"></a> 转换函数 (Opetartor ())</h3>
+<h4 id="operator用于类型转换函数"><a class="markdownIt-Anchor" href="#operator用于类型转换函数"></a> operator用于类型转换函数</h4>
+<blockquote>
+<p>类型转换函数的一般形式为 :<br />
+operator 类型名() (const)<br />
+{实现转换的语句}<br />
+在函数名前面不能指定函数类型,函数没有参数.</p>
 </blockquote>
 <p>类型转换函数的特征</p>
 <ol>
 <li>型转换函数定义在源类中；</li>
 <li>须由 operator 修饰，函数名称是目标类型名或目标类名</li>
-<li>函数没有参数，没有返回值，但是有return 语句。<br> 在return语句中返回目标类型数据或调用目标类的构造函数。</li>
+<li>函数没有参数，没有返回值，但是有return 语句。<br />
+在return语句中返回目标类型数据或调用目标类的构造函数。</li>
 </ol>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">my_class</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="class">&#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">int</span><span class="params">()</span><span class="comment">//定义了一个将类转化为int的转换函数</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="function">    </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"convert_to_int"</span> &lt;&lt; <span class="built_in">endl</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    my_class a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">int</span> i_a = (<span class="keyword">int</span>)a;<span class="comment">//第一次显式的转换</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;<span class="comment">//第二次隐式的转换</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
           <!--noindex-->
@@ -512,10 +534,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="C-Virtual"><a href="#C-Virtual" class="headerlink" title="C++ Virtual"></a>C++ Virtual</h2><h3 id="Virtual-Function"><a href="#Virtual-Function" class="headerlink" title="Virtual Function"></a>Virtual Function</h3><h4 id="what’s-virtual"><a href="#what’s-virtual" class="headerlink" title="what’s virtual"></a>what’s virtual</h4><blockquote>
+          <h2 id="c-virtual"><a class="markdownIt-Anchor" href="#c-virtual"></a> C++ Virtual</h2>
+<h3 id="virtual-function"><a class="markdownIt-Anchor" href="#virtual-function"></a> Virtual Function</h3>
+<h4 id="whats-virtual"><a class="markdownIt-Anchor" href="#whats-virtual"></a> what’s virtual</h4>
+<blockquote>
 <p>The virtual specifier specifies that a non-static member function is virtual and supports dynamic dispatch. It may only appear in the decl-specifier-seq of the initial declaration of a non-static member function (i.e., when it is declared in the class definition).</p>
 </blockquote>
-<h4 id="Explanation"><a href="#Explanation" class="headerlink" title="Explanation"></a>Explanation</h4><p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator ::).</p>
+<h4 id="explanation"><a class="markdownIt-Anchor" href="#explanation"></a> Explanation</h4>
+<p>Virtual functions are member functions whose behavior can be overridden in derived classes. As opposed to non-virtual functions, the overridden behavior is preserved even if there is no compile-time information about the actual type of the class. If a derived class is handled using pointer or reference to the base class, a call to an overridden virtual function would invoke the behavior defined in the derived class. This behavior is suppressed if the function is selected using qualified name lookup (that is, if the function’s name appears to the right of the scope resolution operator :😃.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/program/C++-Virtual.html#more" rel="contents">
@@ -598,17 +624,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="C-Template"><a href="#C-Template" class="headerlink" title="C++ Template"></a>C++ Template</h2><h3 id="模板基础"><a href="#模板基础" class="headerlink" title="模板基础"></a>模板基础</h3><h4 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h4><h5 id="定义模板"><a href="#定义模板" class="headerlink" title="定义模板"></a>定义模板</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> T <span class="keyword">const</span>&amp; <span class="title">tmax</span><span class="params">(T <span class="keyword">const</span>&amp; a, T <span class="keyword">const</span>&amp; b)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> a &lt; b ? b: a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-<h5 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">32</span>, <span class="number">43</span>);</span></pre></td></tr></table></figure>
+          <h2 id="c-template"><a class="markdownIt-Anchor" href="#c-template"></a> C++ Template</h2>
+<h3 id="模板基础"><a class="markdownIt-Anchor" href="#模板基础"></a> 模板基础</h3>
+<h4 id="函数模板"><a class="markdownIt-Anchor" href="#函数模板"></a> 函数模板</h4>
+<h5 id="定义模板"><a class="markdownIt-Anchor" href="#定义模板"></a> 定义模板</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> T <span class="keyword">const</span>&amp; <span class="title">tmax</span><span class="params">(T <span class="keyword">const</span>&amp; a, T <span class="keyword">const</span>&amp; b)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> a &lt; b ? b: a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<h5 id="使用模板"><a class="markdownIt-Anchor" href="#使用模板"></a> 使用模板</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">32</span>, <span class="number">43</span>);</span></pre></td></tr></table></figure>
 <blockquote>
-<p>通常而言，并不是把模板编译成一个可以处理任何类型的单一实体。<br>而是对于实例化模板参数的每种类型，都从模板产生一个不同的实体。<br>这种用具体类型代替模板参数的过程叫做实例化，它产生了一个模板的实例。</p>
+<p>通常而言，并不是把模板编译成一个可以处理任何类型的单一实体。<br />
+而是对于实例化模板参数的每种类型，都从模板产生一个不同的实体。<br />
+这种用具体类型代替模板参数的过程叫做实例化，它产生了一个模板的实例。</p>
 </blockquote>
 <p>由此，我们可以得出一个结论：模板被编译了两次，分别发生在：</p>
 <ol>
 <li>实例化之前，先检查模板代码本身，查看语法是否正确；在这里会发现错误的语法，如遗漏分号等。</li>
 <li>在实例化期间，检查模板代码，查看是否所有的调用都有效。在这里会发现无效的调用，如该实例化类型不支持某些函数调用(该类型没有提供模板所需要使用到的操作)等。</li>
 </ol>
-<h5 id="实参的演绎（deduction）"><a href="#实参的演绎（deduction）" class="headerlink" title="实参的演绎（deduction）"></a>实参的演绎（deduction）</h5><blockquote>
+<h5 id="实参的演绎deduction"><a class="markdownIt-Anchor" href="#实参的演绎deduction"></a> 实参的演绎（deduction）</h5>
+<blockquote>
 <p>模板实参不允许进行自动类型转换；每个T都必须正确地匹配。</p>
 </blockquote>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">4</span>, <span class="number">4.3</span>); <span class="comment">// Error:第1个参数类型是int，第2个参数类型是double</span></span></pre></td></tr></table></figure>
@@ -694,17 +728,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<p>title: C++11 Features Overview<br>mathjax: false<br>schema: program<br>p: program/c++11-features<br>date: 2019-12-08 23:32:30<br>categories:<br>    - 编程<br>tags:<br>    - C++<br>urlname: C++11-Features-Overview</p>
-<hr>
-<h2 id="C-11-新增特性"><a href="#C-11-新增特性" class="headerlink" title="C++11 新增特性"></a>C++11 新增特性</h2><h3 id="空指针-nullptr"><a href="#空指针-nullptr" class="headerlink" title="空指针 nullptr"></a>空指针 nullptr</h3><p>nullptr 出现的目的是为了替代 NULL。</p>
+          <hr />
+<h2 id="title-c11-features-overviewmathjax-falseschema-programp-programc11-featuresdate-2019-12-08-233230categories-编程tags-curlname-c11-features-overview"><a class="markdownIt-Anchor" href="#title-c11-features-overviewmathjax-falseschema-programp-programc11-featuresdate-2019-12-08-233230categories-编程tags-curlname-c11-features-overview"></a> title: C<ins>11 Features Overview<br />
+mathjax: false<br />
+schema: program<br />
+p: program/c</ins>11-features<br />
+date: 2019-12-08 23:32:30<br />
+categories:<br />
+- 编程<br />
+tags:<br />
+- C++<br />
+urlname: C++11-Features-Overview</h2>
+<h2 id="c11-新增特性"><a class="markdownIt-Anchor" href="#c11-新增特性"></a> C++11 新增特性</h2>
+<h3 id="空指针-nullptr"><a class="markdownIt-Anchor" href="#空指针-nullptr"></a> 空指针 nullptr</h3>
+<p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
 <p>C++ 不允许直接将 void * 隐式转换到其他类型，但如果 NULL 被定义为 ((void*)0)，那么当编译char *ch = NULL;时，NULL 只好被定义为 0。</p>
 <p>这显然会产生问题，导致了 C++ 中重载特性会发生混乱，如：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">char</span> *)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span></pre></td></tr></table></figure>
 <p>如果 NULL 又被定义为了 0 那么 foo(NULL)将会去调用 foo(int)，从而导致代码违反直观。</p>
 <blockquote>
-<p>为了解决这个问题，C++11 引入了 <strong>nullptr</strong> 关键字，专门用来区分<strong>空指针、0</strong>。<br>nullptr 的类型为 nullptr_t，能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等运算。</p>
+<p>为了解决这个问题，C++11 引入了 <strong>nullptr</strong> 关键字，专门用来区分__空指针、0__。<br />
+nullptr 的类型为 nullptr_t，能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等运算。</p>
 </blockquote>
 <p>当需要使用 NULL 时候，养成直接使用 nullptr 的习惯</p>
           <!--noindex-->
@@ -783,7 +828,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="L-Value"><a href="#L-Value" class="headerlink" title="L-Value"></a>L-Value</h3><p>Expressions that refer to <strong>memory locations</strong> are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left of the equal sign (=). L-values are often identifiers.</p>
+          <h3 id="l-value"><a class="markdownIt-Anchor" href="#l-value"></a> L-Value</h3>
+<p>Expressions that refer to <strong>memory locations</strong> are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left of the equal sign (=). L-values are often identifiers.</p>
 <p>Expressions referring to <strong>modifiable locations</strong> are called “modifiable l-values.” A modifiable l-value cannot have an array type, an incomplete type, or a type with the <strong>const</strong> attribute. For structures and unions to be modifiable l-values, they must not have any members with the const attribute. The name of the identifier denotes a storage location, while the value of the variable is the value stored at that location.</p>
 <p>An identifier is a modifiable l-value if it refers to a memory location and if its type is arithmetic, structure, union, or pointer. For example, if ptr is a pointer to a storage region, then <strong>*ptr</strong> is a modifiable l-value that designates the storage region to which ptr points.</p>
 <p>Any of the following C expressions can be l-value expressions:</p>
@@ -879,27 +925,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <pre><code>markdown 语法sample</code></pre><hr>
+          <pre><code>markdown 语法sample
+</code></pre>
+<hr />
 <blockquote>
-<p>Itatic And Bold Sample<br>partial differential equasion<strong><em>偏微分方程</em></strong><br>常微分方程<em><strong>是这样解开的</strong></em><br>仰天大笑出门去，我辈岂是蓬蒿人  </p>
+<p>Itatic And Bold Sample<br />
+partial differential equasion***偏微分方程***<br />
+常微分方程_<strong>是这样解开的</strong>_<br />
+仰天大笑出门去，我辈岂是蓬蒿人</p>
 </blockquote>
-<hr>
+<hr />
 <blockquote>
-<p>Order List Sample<br>遇见冬天的离别<br>–<br>孙燕姿的绿光<br>–</p>
+<h2 id="order-list-sample遇见冬天的离别"><a class="markdownIt-Anchor" href="#order-list-sample遇见冬天的离别"></a> Order List Sample<br />
+遇见冬天的离别</h2>
+<h2 id="孙燕姿的绿光"><a class="markdownIt-Anchor" href="#孙燕姿的绿光"></a> 孙燕姿的绿光</h2>
 <ol>
 <li>窗外的麻雀，消失在电线杆上</li>
 <li>就是开不了口让她知道</li>
 <li>断了的弦，再谈一遍</li>
-<li>哪里跟那里<ol>
-<li>你的转变，想断掉的弦</li>
-<li>你的美，已经追不回，追了又追我要不会</li>
-<li>诶，小朋友在玩什么呀，</li>
-</ol>
-</li>
+<li>哪里跟那里<br />
+1. 你的转变，想断掉的弦<br />
+2. 你的美，已经追不回，追了又追我要不会<br />
+3. 诶，小朋友在玩什么呀，</li>
 <li>一波还未平息，一波早就过去</li>
 </ol>
 </blockquote>
-<hr>
+<hr />
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/markdown/markdown-guide-and-mdeditor.html#more" rel="contents">
@@ -1103,53 +1154,8 @@
 
   
       
-<script type="text/x-mathjax-config">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
 
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') {
-          next = next.nextSibling;
-        }
-        if (next && next.nodeName.toLowerCase() === 'br') {
-          next.parentNode.removeChild(next);
-        }
-      }
-    });
-  });
-
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
-      if (element.nodeName.toLowerCase() == 'li') {
-        element = element.parentNode;
-      }
-      element.classList.add('has-jax');
-    }
-  });
-</script>
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
-    MathJax.Hub.Typeset();
-  }, window.MathJax);
-</script>
-
-    
 
   
 
