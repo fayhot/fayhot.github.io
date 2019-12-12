@@ -1500,7 +1500,9 @@
             
             this.previewContainer.find("." + editormd.classNames.tex).each(function(){
                 var tex  = $(this);
-                editormd.$katex.render(tex.text(), tex[0]);
+                //hack displayMode for "tag"
+                var displayMode = /\\tag\s*\{\d+(\.\d+){0,3}\}$/.test(tex.text());
+                editormd.$katex.render(tex.text(), tex[0], {displayMode: displayMode});
                 
                 tex.find(".katex").css("font-size", "1.6em");
             });   
