@@ -2182,18 +2182,7 @@ operator 类型名() (const)<br>
   <entry>
     <title>C++11 Features Overview</title>
     <url>/program/C++11-Features-Overview.html</url>
-    <content><![CDATA[<hr>
-<h2 id="title-c11-features-overviewmathjax-falseschema-programp-programc11-featuresdate-2019-12-08-233230categories-编程tags-curlname-c11-features-overview"><a class="markdownIt-Anchor" href="#title-c11-features-overviewmathjax-falseschema-programp-programc11-featuresdate-2019-12-08-233230categories-编程tags-curlname-c11-features-overview"></a> title: C<ins>11 Features Overview<br>
-mathjax: false<br>
-schema: program<br>
-p: program/c</ins>11-features<br>
-date: 2019-12-08 23:32:30<br>
-categories:<br>
-- 编程<br>
-tags:<br>
-- C++<br>
-urlname: C++11-Features-Overview</h2>
-<h2 id="c11-新增特性"><a class="markdownIt-Anchor" href="#c11-新增特性"></a> C++11 新增特性</h2>
+    <content><![CDATA[<h2 id="c11-新增特性"><a class="markdownIt-Anchor" href="#c11-新增特性"></a> C++11 新增特性</h2>
 <h3 id="空指针-nullptr"><a class="markdownIt-Anchor" href="#空指针-nullptr"></a> 空指针 nullptr</h3>
 <p>nullptr 出现的目的是为了替代 NULL。</p>
 <p>C++11之前官方标准对NULL、0没有严格的区分，更多的是取决于不同编译器的选择，有些编译器会将 NULL 定义为 ((void*)0)，有些则会直接将其定义为 0。</p>
