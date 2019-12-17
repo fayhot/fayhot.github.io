@@ -198,8 +198,7 @@
   <entry>
     <title>Pattern Recognition And Machine Learning(模式识别&amp;机器学习)</title>
     <url>/pattern-recognition/pattern-recognition-and-machine-learning.html</url>
-    <content><![CDATA[<h1 id="pattern-recognition-and-machine-learning"><a class="markdownIt-Anchor" href="#pattern-recognition-and-machine-learning"></a> Pattern Recognition And Machine Learning</h1>
-<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> introduction</h2>
+    <content><![CDATA[<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> introduction</h2>
 <h3 id="keywords"><a class="markdownIt-Anchor" href="#keywords"></a> keywords</h3>
 <ul>
 <li>
@@ -1051,7 +1050,7 @@ It is easily seen, using the product rule, that the conditional entropy satisfie
 <h2 id="probability-distributions"><a class="markdownIt-Anchor" href="#probability-distributions"></a> Probability Distributions</h2>
 <p>We have emphasized the central role played by probability theory in the solution of pattern recognition problems. We turn now to an exploration of some particular examples of probability distributions and their properties. As well as being of great interest in their own right, these distributions can form building blocks for more complex models and will be used extensively throughout the entire. The distributions introduced in this part will also serve another important purpose, namely to provide us with the opportunity to discuss some key statistical concepts, such as Bayesian inference, in the context of simple models before we encounter them in more complex situations in later chapters.</p>
 <h3 id="binary-variables"><a class="markdownIt-Anchor" href="#binary-variables"></a> Binary Variables</h3>
-<h3 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> @Reference</h3>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> @Reference</h2>
 <ul>
 <li><a href="#">Pattern Recognition And Maching Learning by Christopher M. Bishop</a></li>
 <li><a href="https://math.stackexchange.com/questions/518281/how-to-derive-the-mean-and-variance-of-a-gaussian-random-variable" target="_blank" rel="noopener">how-to-derive-the-mean-and-variance-of-a-gaussian-random-variable</a></li>
