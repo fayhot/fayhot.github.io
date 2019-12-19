@@ -2246,6 +2246,18 @@ In order to find the maximum likelihood solution for <span class="katex"><span c
       </tags>
   </entry>
   <entry>
+    <title>Linear Algebra and Matrix Analysis(线性代数和矩阵分析)</title>
+    <url>/math/linear-algebra-and-matrix-analysis.html</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>高等数学</category>
+      </categories>
+      <tags>
+        <tag>线性代数</tag>
+        <tag>矩阵分析</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>C++11 Template (模板编程)</title>
     <url>/program/C++11-Template.html</url>
     <content><![CDATA[<h2 id="c-template"><a class="markdownIt-Anchor" href="#c-template"></a> C++ Template</h2>
