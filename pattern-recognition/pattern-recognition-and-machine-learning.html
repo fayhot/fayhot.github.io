@@ -63,7 +63,8 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;10&#x2F;neighbourhood_of_a_min_imum.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;10&#x2F;backpropagation.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;10&#x2F;jacobian_nueral.jpg">
-<meta property="og:updated_time" content="2019-12-20T14:39:46.539Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;10&#x2F;convolutional_networks.jpg">
+<meta property="og:updated_time" content="2019-12-20T14:46:09.539Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;10&#x2F;schematic_illustration_of_gaussian_conditional_distribution.jpg">
 
@@ -250,7 +251,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-20 22:39:46" itemprop="dateModified" datetime="2019-12-20T22:39:46+08:00">2019-12-20</time>
+                <time title="Modified: 2019-12-20 22:46:09" itemprop="dateModified" datetime="2019-12-20T22:46:09+08:00">2019-12-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2262,7 +2263,7 @@ Here we see the effect of choosing multiple random initializations for the weigh
 <p>Another approach to creating models that are invariant to certain transformation of the inputs is to build the invariance properties into the structure of a neural net- work. This is the basis for the convolutional neural network (Le Cun et al., 1989; LeCun et al., 1998), which has been widely applied to image data.</p>
 <p>Consider the specific task of recognizing handwritten digits. Each input image comprises a set of pixel intensity values, and the desired output is a posterior probability distribution over the ten digit classes. We know that the identity of the digit is invariant under translations and scaling as well as (small) rotations. Furthermore, the network must also exhibit invariance to more subtle transformations such as elastic deformations of the kind as follow. One simple approach would be to treat the image as the input to a fully connected network. Given a sufficiently large training set, such a network could in principle yield a good solution to this problem and would learn the appropriate invariances by example.</p>
 <p>However, this approach ignores a key property of images, which is that nearby pixels are more strongly correlated than more distant pixels. Many of the modern approaches to computer vision exploit this property by extracting local features that depend only on small subregions of the image. Information from such features can then be merged in later stages of processing in order to detect higher-order features and ultimately to yield information about the image as whole. Also, local features that are useful in one region of the image are likely to be useful in other regions of the image, for instance if the object of interest is translated.</p>
-<p><a href="/assets/2019/12/10/convolutional_networks.jpg">convolutional_networks</a></p>
+<p><img alt="convolutional_networks" data-src="/assets/2019/12/10/convolutional_networks.jpg"></p>
 <p><strong>The structure of a convolutional network</strong><br>
 These notions are incorporated into convolutional neural networks through three mechanisms:</p>
 <blockquote>
