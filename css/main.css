@@ -230,14 +230,22 @@ hr {
   margin: 40px 0;
 }
 blockquote {
-  border-left: 4px solid #ddd;
-  color: #666;
-  margin: 0;
-  padding: 0 15px;
+  padding: 10.5px 21px;
+  margin: 0 0 21px;
+  border-left: 5px solid rgba(102,128,153,0.075);
 }
-blockquote cite::before {
-  content: '-';
-  padding: 0 5px;
+blockquote {
+  border-left-width: 10px;
+  background-color: rgba(102,128,153,0.05);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 15px 20px;
+}
+p,
+pre,
+pre.prettyprint,
+blockquote {
+  margin: 0 0 10px 1em;
 }
 dt {
   font-weight: 700;
@@ -1200,7 +1208,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8f4f;
+  background: #03ffff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
