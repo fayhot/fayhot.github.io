@@ -245,7 +245,7 @@ p,
 pre,
 pre.prettyprint,
 blockquote {
-  margin: 0 0 10px 1em;
+  margin: 0 15px 10px 1em;
 }
 dt {
   font-weight: 700;
@@ -970,7 +970,7 @@ pre .javascript .function {
 }
 @media (min-width: 1600px) {
   .main-inner {
-    width: 1000px;
+    width: 1200px;
   }
 }
 .header {
@@ -988,7 +988,7 @@ pre .javascript .function {
 }
 @media (min-width: 1600px) {
   .header-inner {
-    width: 1000px;
+    width: 1200px;
   }
 }
 .headband {
@@ -1208,7 +1208,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #2fffec;
+  background: #ffa64e;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1454,7 +1454,7 @@ pre .javascript .function {
 }
 @media (min-width: 1600px) {
   .footer-inner {
-    width: 1000px;
+    width: 1200px;
   }
 }
 .with-love {
