@@ -49,13 +49,15 @@
   };
 </script>
 
-  <meta name="keywords" content="图像处理算法">
+  <meta name="description" content="Image Proccessing @(Point Operators)[pixel||color|compositing]  @(Pixel)  Two commonly used point processes are multiplication and addition with a constant, \displaystyle g(x) &#x3D; af (x) + b \tag{1.0.">
+<meta name="keywords" content="图像处理算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Computer Vision Algorithms And Applications(计算机视觉算法与应用)">
 <meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;computer-vision&#x2F;computer-vision-algorithms-and-applications.html">
 <meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="Image Proccessing @(Point Operators)[pixel||color|compositing]  @(Pixel)  Two commonly used point processes are multiplication and addition with a constant, \displaystyle g(x) &#x3D; af (x) + b \tag{1.0.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-12-19T02:54:34.908Z">
+<meta property="og:updated_time" content="2019-12-27T05:01:48.275Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://fayhot.github.io/computer-vision/computer-vision-algorithms-and-applications.html">
@@ -241,7 +243,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-19 10:54:34" itemprop="dateModified" datetime="2019-12-19T10:54:34+08:00">2019-12-19</time>
+                <time title="Modified: 2019-12-27 13:01:48" itemprop="dateModified" datetime="2019-12-27T13:01:48+08:00">2019-12-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,7 +275,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <!--## Image Formation-->
+<h2 id="image-proccessing"><a class="markdownIt-Anchor" href="#image-proccessing"></a> Image Proccessing</h2>
+<p>@(Point Operators)[pixel||color|compositing]</p>
+<blockquote>
+<p>@(Pixel)</p>
+<blockquote>
+<p>Two commonly used point processes are multiplication and addition with a constant,<br>
+<span class="katex-error" title="ParseError: KaTeX parse error: \tag works only in display equations">\displaystyle g(x) = af (x) + b \tag{1.0.1}</span><br>
+The parameters <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a &gt; 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span> are often called the gain and bias parameters; sometimes these parameters are said to control contrast and brightness.<br>
+The bias and gain parameters can also be spatially varying $g(x) = a(x)f(x) + b(x) $</p>
+<blockquote>
+<p>Multiplicative gain (both global and spatially varying) is a linear operation, since it obeys the <strong>superposition principle</strong> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><msub><mi>f</mi><mn>0</mn></msub><mo>+</mo><msub><mi>f</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>h</mi><mo stretchy="false">(</mo><msub><mi>f</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>+</mo><mi>h</mi><mo stretchy="false">(</mo><msub><mi>f</mi><mn>1</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">h(f_0 + f_1) = h(f_0) + h(f_1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></p>
+</blockquote>
+<p>Another commonly used dyadic (two-input) operator is the linear blend operator<br>
+<span class="katex-error" title="ParseError: KaTeX parse error: \tag works only in display equations">g(x) = (1-\alpha)f_0(x) + \alpha f_1(x) \tag{1.0.2}</span></p>
+</blockquote>
+<p>@(Compositing and matting)</p>
+<blockquote>
+<p>Compositing equation <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><mi>B</mi><mo>+</mo><mi>α</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">C = (1-\alpha)B + \alpha F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span>.</p>
+<blockquote>
+<p>This operator attenuates the influence of the background image B by a factor (1 − α) and then adds in the color (and opacity) values corresponding to the foreground layer F</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>@(Linear Filtering)[]</p>
+<blockquote>
+<p>The most commonly used type of neighborhood operator is a linear filter, in which an output pixel’s value is determined as a weighted sum of input pixel values<br>
+<span class="katex-error" title="ParseError: KaTeX parse error: \tag works only in display equations">\displaystyle g(i,j) = \sum_{k,l}f(i+k, j+l)h(k,l) \tag{1.0.1}</span><br>
+The entries in the weight kernel or mask h(k, l) are often called the filter coefficients. The above <strong>correlation</strong> operator can be more compactly notated as <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>g</mi><mo>=</mo><mi>f</mi><mo>⊗</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">g = f\otimes h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⊗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">h</span></span></span></span></p>
+<p>A common variant on this formula is<br>
+<span class="katex-error" title="ParseError: KaTeX parse error: \tag works only in display equations">\displaystyle g(i,j) = \sum_{k,l}f(i-k,j-l)h(k,l) = \sum_{k,l}f(k,l)h(i-k, j-l) \tag{1.0.2}</span><br>
+where the sign of the offsets in f has been reversed. This is called the <strong>convolution</strong> operator, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>g</mi><mo>=</mo><mi>f</mi><mo>∗</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">g = f*h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">h</span></span></span></span></p>
+</blockquote>
+
     </div>
 
     
@@ -336,6 +371,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#image-proccessing"><span class="nav-number">1.</span> <span class="nav-text"> Image Proccessing</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
