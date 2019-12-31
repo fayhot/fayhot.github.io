@@ -60,7 +60,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;09&#x2F;feature_detector_R_range.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;09&#x2F;LoG_of_scale_invariance.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;09&#x2F;keypoint_descriptor.jpg">
-<meta property="og:updated_time" content="2019-12-31T06:19:32.813Z">
+<meta property="og:updated_time" content="2019-12-31T06:45:41.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;assets&#x2F;2019&#x2F;12&#x2F;09&#x2F;feature_detector_R_range.png">
 
@@ -247,7 +247,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-31 14:19:32" itemprop="dateModified" datetime="2019-12-31T14:19:32+08:00">2019-12-31</time>
+                <time title="Modified: 2019-12-31 14:45:41" itemprop="dateModified" datetime="2019-12-31T14:45:41+08:00">2019-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -461,6 +461,7 @@ Efficiently searches for likely matching candidates in other images.</li>
 It‚Äôs an alternative to the third stage that only searches a small neighborhood around each detected feature and is therefore more suitable for video processing.</li>
 </ol>
 </blockquote>
+<h4 id="feature-detectors"><a class="markdownIt-Anchor" href="#feature-detectors"></a> Feature detectors</h4>
 <p>@[Feature detectors]</p>
 <blockquote>
 <p>Patches with large contrast changes (gradients) are easier to localize, although straight line segments at a single orientation suffer from the aperture problem. Patches with gradients in at least two (significantly) different orientations are the easiest to localize</p>
@@ -546,7 +547,7 @@ with <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Œ
 </ol>
 </blockquote>
 </blockquote>
-<h4 id="scale-invariance"><a class="markdownIt-Anchor" href="#scale-invariance"></a> Scale invariance</h4>
+<h5 id="scale-invariance"><a class="markdownIt-Anchor" href="#scale-invariance"></a> Scale invariance</h5>
 <blockquote>
 <p>In many situations, detecting features at the finest stable scale possible may not be appro- priate. For example, when matching images with little high frequency detail (e.g., clouds), fine-scale features may not exist.</p>
 <p>One solution to the problem is to extract features at a variety of scales, e.g., by performing the same operations at multiple resolutions in a pyramid and then matching features at the same level. This kind of approach is suitable when the images being matched do not undergo large scale changes, e.g., when matching successive aerial images taken from an airplane or stitching panoramas taken with a fixed-focal-length camera.</p>
@@ -562,7 +563,7 @@ with <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Œ
 <img alt="LoG_of_scale_invariance" data-src="/assets/2019/12/09/LoG_of_scale_invariance.jpg"></p>
 </blockquote>
 </blockquote>
-<h4 id="rotational-invariance-and-orientation-estimation"><a class="markdownIt-Anchor" href="#rotational-invariance-and-orientation-estimation"></a> Rotational invariance and orientation estimation</h4>
+<h5 id="rotational-invariance-and-orientation-estimation"><a class="markdownIt-Anchor" href="#rotational-invariance-and-orientation-estimation"></a> Rotational invariance and orientation estimation</h5>
 <blockquote>
 <p>In addition to dealing with scale changes, most image matching and object recognition algorithms need to deal with (at least) in-plane image rotation. One way to deal with this problem is to design descriptors that are rotationally invariant (Schmid and Mohr 1997), but such descriptors have poor discriminability, i.e. they map different looking patches to the same descriptor.</p>
 <blockquote>
@@ -571,7 +572,7 @@ with <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Œ
 <p>The simplest possible orientation estimate is the average gradient within a region around the keypoint. If a Gaussian weighting function is used (Brown, Szeliski, and Winder 2005), this average gradient is equivalent to a first-order steerable filter, i.e., it can be computed using an image convolution with the horizontal and vertical derivatives of Gaussian filter (Freeman and Adelson 1991). In order to make this estimate more reliable, it is usually preferable to use a larger aggregation window (Gaussian kernel size) than detection window (Brown, Szeliski, and Winder 2005).</p>
 <p>Sometimes, however, the averaged (signed) gradient in a region can be small and therefore an unreliable indicator of orientation. A more reliable technique is to look at the histogram of orientations computed around the keypoint. Lowe (2004) computes a 36-bin histogram of edge orientations weighted by both gradient magnitude and Gaussian distance to the cen- ter, finds all peaks within 80% of the global maximum, and then computes a more accurate orientation estimate using a three-bin parabolic fit</p>
 </blockquote>
-<h4 id="affine-invariance"><a class="markdownIt-Anchor" href="#affine-invariance"></a> Affine invariance</h4>
+<h5 id="affine-invariance"><a class="markdownIt-Anchor" href="#affine-invariance"></a> Affine invariance</h5>
 <blockquote>
 <p>While scale and rotation invariance are highly desirable, for many applications such as wide baseline stereo matching (Pritchett and Zisserman 1998; Schaffalitzky and Zisserman 2002) or location recognition (Chum, Philbin, Sivic et al. 2007), full affine invariance is preferred.</p>
 <blockquote>
@@ -580,7 +581,7 @@ with <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Œ
 <p>Another important affine invariant region detector is the maximally stable extremal region (MSER) detector developed by Matas, Chum, Urban et al. (2004). To detect MSERs, binary regions are computed by thresholding the image at all possible gray levels (the technique therefore only works for grayscale images). This operation can be performed efficiently by first sorting all pixels by gray value and then incrementally adding pixels to each connected component as the threshold is changed (Niste ÃÅr and Stewe ÃÅnius 2008). As the threshold is changed, the area of each component (region) is monitored; regions whose rate of change of area with respect to the threshold is minimal are defined as maximally stable. Such regions are therefore invariant to both affine geometric and photometric (linear bias-gain or smooth monotonic) transformations. If desired, an affine coordinate frame can be fit to each detected region using its moment matrix.</p>
 </blockquote>
 </blockquote>
-<h3 id="feature-descriptors"><a class="markdownIt-Anchor" href="#feature-descriptors"></a> Feature descriptors</h3>
+<h4 id="feature-descriptors"><a class="markdownIt-Anchor" href="#feature-descriptors"></a> Feature descriptors</h4>
 <blockquote>
 <p>After detecting features (keypoints), we must match them, i.e., we must determine which features come from corresponding locations in different images. In some situations, e.g., for video sequences (Shi and Tomasi 1994) or for stereo pairs that have been rectified (Zhang, Deriche, Faugeras et al. 1995; Loop and Zhang 1999; Scharstein and Szeliski 2002), the lo- cal motion around each feature point may be mostly translational. In this case, simple error metrics, such as the sum of squared differences or normalized cross-correlation, described in Section 8.1 can be used to directly compare the intensities in small patches around each feature point. Because feature points may not be exactly located, a more accurate matching score can be computed by performing incremental motion refinement as described in Section 8.1.3 but this can be time consuming and can sometimes even decrease perfor- mance (Brown, Szeliski, and Winder 2005).</p>
 <blockquote>
@@ -611,7 +612,7 @@ Another popular variant of SIFT is SURF (Bay, Tuytelaars, and Van Gool 2006), wh
 </blockquote>
 </blockquote>
 <p><img alt="keypoint descriptor" data-src="/assets/2019/12/09/keypoint_descriptor.jpg"></p>
-<h3 id="feature-matching"><a class="markdownIt-Anchor" href="#feature-matching"></a> Feature matching</h3>
+<h4 id="feature-matching"><a class="markdownIt-Anchor" href="#feature-matching"></a> Feature matching</h4>
 <blockquote>
 <p>Once we have extracted features and their descriptors from two or more images, the next step is to establish some preliminary feature matches between these images. In this section, we divide this problem into two separate components.</p>
 <ul>
@@ -619,25 +620,25 @@ Another popular variant of SIFT is SURF (Bay, Tuytelaars, and Van Gool 2006), wh
 <li>The second is to devise efficient data structures and algorithms to perform this matching as quickly as possible.</li>
 </ul>
 </blockquote>
-<h4 id="matching-strategy-and-error-rates"><a class="markdownIt-Anchor" href="#matching-strategy-and-error-rates"></a> Matching strategy and error rates</h4>
+<h5 id="matching-strategy-and-error-rates"><a class="markdownIt-Anchor" href="#matching-strategy-and-error-rates"></a> Matching strategy and error rates</h5>
 <blockquote>
 <p>we assume that the feature descriptors have been designed so that Euclidean (vector magnitude) distances in feature space can be directly used for ranking potential matches.</p>
 </blockquote>
-<h4 id="efficient-matching"><a class="markdownIt-Anchor" href="#efficient-matching"></a> Efficient matching</h4>
+<h5 id="efficient-matching"><a class="markdownIt-Anchor" href="#efficient-matching"></a> Efficient matching</h5>
 <blockquote>
 <p>Once we have decided on a matching strategy, we still need to search efficiently for poten- tial candidates. The simplest way to find all corresponding feature points is to compare all features against all other features in each pair of potentially matching images. Unfortunately, this is quadratic in the number of extracted features, which makes it impractical for most applications.</p>
 <blockquote>
 <p>A better approach is to devise an indexing structure, such as a multi-dimensional search tree or a hash table, to rapidly search for features near a given feature. Such indexing struc- tures can either be built for each image independently or globally for all the images in a given database, which can potentially be faster, since it removes the need to it- erate over each image.</p>
 </blockquote>
 </blockquote>
-<h4 id="feature-match-verification-and-densification"><a class="markdownIt-Anchor" href="#feature-match-verification-and-densification"></a> Feature match verification and densification</h4>
+<h5 id="feature-match-verification-and-densification"><a class="markdownIt-Anchor" href="#feature-match-verification-and-densification"></a> Feature match verification and densification</h5>
 <blockquote>
 <p>Once we have some hypothetical (putative) matches, we can often use geometric alignment to verify which matches are inliers and which ones are outliers.</p>
 <blockquote>
 <p>Eg. if we expect the whole image to be translated or rotated in the matching view, we can fit a global geometric transform and keep only those feature matches that are sufficiently close to this estimated transformation. The process of selecting a small set of seed matches and then verifying a larger set is often called random sampling</p>
 </blockquote>
 </blockquote>
-<h3 id="feature-tracking"><a class="markdownIt-Anchor" href="#feature-tracking"></a> Feature tracking</h3>
+<h4 id="feature-tracking"><a class="markdownIt-Anchor" href="#feature-tracking"></a> Feature tracking</h4>
 <blockquote>
 <p>An alternative to independently finding features in all candidate images and then matching them is to find a set of likely feature locations in a first image and to then search for their corresponding locations in subsequent images.</p>
 <blockquote>
@@ -646,13 +647,14 @@ Another popular variant of SIFT is SURF (Bay, Tuytelaars, and Van Gool 2006), wh
 <p>One of the newest developments in feature tracking is the use of learning algorithms to build special-purpose recognizers to rapidly search for matching features anywhere in an image</p>
 </blockquote>
 </blockquote>
-<h3 id="application-performance-driven-animation"><a class="markdownIt-Anchor" href="#application-performance-driven-animation"></a> Application: Performance-driven animation</h3>
+<h4 id="application-performance-driven-animation"><a class="markdownIt-Anchor" href="#application-performance-driven-animation"></a> Application: Performance-driven animation</h4>
 <blockquote>
 <p>One of the most compelling applications of fast feature tracking is performance-driven an- imation, i.e., the interactive deformation of a 3D graphics model based on tracking a user‚Äôs motions. See more detail <a href="https://gfx.cs.princeton.edu/pubs/Buck_2000_PHA/index.php" target="_blank" rel="noopener">Performance-driven animation</a></p>
 <blockquote>
 <p><strong>Use this technology in emoji field will be amazing</strong></p>
 </blockquote>
 </blockquote>
+<h3 id="edges"><a class="markdownIt-Anchor" href="#edges"></a> Edges</h3>
 
     </div>
 
@@ -716,7 +718,7 @@ Another popular variant of SIFT is SURF (Bay, Tuytelaars, and Van Gool 2006), wh
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#image-proccessing"><span class="nav-number">1.</span> <span class="nav-text"> Image Proccessing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-detection-and-matching"><span class="nav-number">2.</span> <span class="nav-text"> Feature detection and matching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#points-and-patches"><span class="nav-number">2.1.</span> <span class="nav-text"> Points and patches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scale-invariance"><span class="nav-number">2.1.1.</span> <span class="nav-text"> Scale invariance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rotational-invariance-and-orientation-estimation"><span class="nav-number">2.1.2.</span> <span class="nav-text"> Rotational invariance and orientation estimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#affine-invariance"><span class="nav-number">2.1.3.</span> <span class="nav-text"> Affine invariance</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#feature-descriptors"><span class="nav-number">2.2.</span> <span class="nav-text"> Feature descriptors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#feature-matching"><span class="nav-number">2.3.</span> <span class="nav-text"> Feature matching</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#matching-strategy-and-error-rates"><span class="nav-number">2.3.1.</span> <span class="nav-text"> Matching strategy and error rates</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#efficient-matching"><span class="nav-number">2.3.2.</span> <span class="nav-text"> Efficient matching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feature-match-verification-and-densification"><span class="nav-number">2.3.3.</span> <span class="nav-text"> Feature match verification and densification</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#feature-tracking"><span class="nav-number">2.4.</span> <span class="nav-text"> Feature tracking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#application-performance-driven-animation"><span class="nav-number">2.5.</span> <span class="nav-text"> Application: Performance-driven animation</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#image-proccessing"><span class="nav-number">1.</span> <span class="nav-text"> Image Proccessing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-detection-and-matching"><span class="nav-number">2.</span> <span class="nav-text"> Feature detection and matching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#points-and-patches"><span class="nav-number">2.1.</span> <span class="nav-text"> Points and patches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#feature-detectors"><span class="nav-number">2.1.1.</span> <span class="nav-text"> Feature detectors</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#scale-invariance"><span class="nav-number">2.1.1.1.</span> <span class="nav-text"> Scale invariance</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rotational-invariance-and-orientation-estimation"><span class="nav-number">2.1.1.2.</span> <span class="nav-text"> Rotational invariance and orientation estimation</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#affine-invariance"><span class="nav-number">2.1.1.3.</span> <span class="nav-text"> Affine invariance</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feature-descriptors"><span class="nav-number">2.1.2.</span> <span class="nav-text"> Feature descriptors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feature-matching"><span class="nav-number">2.1.3.</span> <span class="nav-text"> Feature matching</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#matching-strategy-and-error-rates"><span class="nav-number">2.1.3.1.</span> <span class="nav-text"> Matching strategy and error rates</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#efficient-matching"><span class="nav-number">2.1.3.2.</span> <span class="nav-text"> Efficient matching</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#feature-match-verification-and-densification"><span class="nav-number">2.1.3.3.</span> <span class="nav-text"> Feature match verification and densification</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feature-tracking"><span class="nav-number">2.1.4.</span> <span class="nav-text"> Feature tracking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#application-performance-driven-animation"><span class="nav-number">2.1.5.</span> <span class="nav-text"> Application: Performance-driven animation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#edges"><span class="nav-number">2.2.</span> <span class="nav-text"> Edges</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
