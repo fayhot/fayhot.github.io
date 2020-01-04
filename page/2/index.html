@@ -209,6 +209,110 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++11-Template.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/program/C++11-Template.html" class="post-title-link" itemprop="url">C++11 Template (模板编程)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-07-28 13:09:42" itemprop="dateCreated datePublished" datetime="2017-07-28T13:09:42+08:00">2017-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-15 10:57:46" itemprop="dateModified" datetime="2019-12-15T10:57:46+08:00">2019-12-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="c-template"><a class="markdownIt-Anchor" href="#c-template"></a> C++ Template</h2>
+<h3 id="模板基础"><a class="markdownIt-Anchor" href="#模板基础"></a> 模板基础</h3>
+<h4 id="函数模板"><a class="markdownIt-Anchor" href="#函数模板"></a> 函数模板</h4>
+<h5 id="定义模板"><a class="markdownIt-Anchor" href="#定义模板"></a> 定义模板</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> T <span class="keyword">const</span>&amp; <span class="title">tmax</span><span class="params">(T <span class="keyword">const</span>&amp; a, T <span class="keyword">const</span>&amp; b)</span></span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="function"></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">return</span> a &lt; b ? b: a;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<h5 id="使用模板"><a class="markdownIt-Anchor" href="#使用模板"></a> 使用模板</h5>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">32</span>, <span class="number">43</span>);</span></pre></td></tr></table></figure>
+<blockquote>
+<p>通常而言，并不是把模板编译成一个可以处理任何类型的单一实体。<br />
+而是对于实例化模板参数的每种类型，都从模板产生一个不同的实体。<br />
+这种用具体类型代替模板参数的过程叫做实例化，它产生了一个模板的实例。</p>
+</blockquote>
+<p>由此，我们可以得出一个结论：模板被编译了两次，分别发生在：</p>
+<ol>
+<li>实例化之前，先检查模板代码本身，查看语法是否正确；在这里会发现错误的语法，如遗漏分号等。</li>
+<li>在实例化期间，检查模板代码，查看是否所有的调用都有效。在这里会发现无效的调用，如该实例化类型不支持某些函数调用(该类型没有提供模板所需要使用到的操作)等。</li>
+</ol>
+<h5 id="实参的演绎deduction"><a class="markdownIt-Anchor" href="#实参的演绎deduction"></a> 实参的演绎（deduction）</h5>
+<blockquote>
+<p>模板实参不允许进行自动类型转换；每个T都必须正确地匹配。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">max(<span class="number">4</span>, <span class="number">4.3</span>); <span class="comment">// Error:第1个参数类型是int，第2个参数类型是double</span></span></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/program/C++11-Template.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/C++-Operator-Overload.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -827,14 +931,14 @@ partial differential equasion***偏微分方程***<br />
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
