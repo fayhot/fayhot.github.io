@@ -87,8 +87,8 @@ gui.add(boundarySettings, "Boundaries");
 
 function scene_setup(){
     scene = new THREE.Scene();
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = 480.0;
+    height = 640.0;
     camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1 );
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -150,17 +150,18 @@ var mouseDown = false;
 var timeStamp = null;
 var lastX = null;
 var lastY = null;
+
 function UpdateMousePosition(X,Y){
     var currentTime = Date.now();
     var deltaTime = currentTime - timeStamp;
 
 
-    externalVelocity.smokeSource.x = X * res.x / window.innerWidth;
-    externalVelocity.smokeSource.y = Y * res.y / window.innerHeight;
-    externalDensity.smokeSource.x = X * res.x / window.innerWidth;
-    externalDensity.smokeSource.y = Y * res.y / window.innerHeight;
-    externalTemperature.smokeSource.x = X * res.x / window.innerWidth;
-    externalTemperature.smokeSource.y = Y * res.y / window.innerHeight;
+    externalVelocity.smokeSource.x = X * res.x / width;
+    externalVelocity.smokeSource.y = Y * res.y / height;
+    externalDensity.smokeSource.x = X * res.x / width;
+    externalDensity.smokeSource.y = Y * res.y / height;
+    externalTemperature.smokeSource.x = X * res.x / width;
+    externalTemperature.smokeSource.y = Y * res.y / height;
 
     externalVelocity.sourceVelocity.x = Math.round((X-lastX) / deltaTime * 100);
     externalVelocity.sourceVelocity.y = Math.round((Y-lastY) / deltaTime * 100);
@@ -174,14 +175,14 @@ function UpdateMousePosition(X,Y){
     }
 }
 document.onmousemove = function(event){
-    UpdateMousePosition(event.clientX, window.innerHeight - event.clientY)
+    UpdateMousePosition(event.clientX, height - event.clientY)
 }
 
 document.onmousedown = function(event){
     mouseDown = true;
     timeStamp = Date.now();
     lastX = event.clientX;
-    lastY = window.innerHeight - event.clientY;
+    lastY = height - event.clientY;
     externalVelocity.smokeSource.z = 1.0;
     externalDensity.smokeSource.z = 1.0;
 
