@@ -137,7 +137,7 @@
     }
     window.onresize = resize;
 
-    var loader = new F2D.FileLoader("shaders", [
+    var loader = new F2D.FileLoader("shaders/f2d/", [
         "advect.fs",
         "basic.vs",
         "gradient.fs",

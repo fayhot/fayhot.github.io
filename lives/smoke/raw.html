@@ -1,0 +1,71 @@
+<html>
+<head>
+<style>
+body { background-color: #000; color: #888; padding: 20px; }
+canvas { -webkit-filter: blur(3px); }
+div { border: 1px solid #333; float: left;}
+#fps { clear: both; display: block; padding-top: 5px; }
+</style>
+</head>
+<body>
+	<div>
+		<canvas id="tutorial" width="500" height="500"></canvas>
+	</div>
+	<span id="fps"></span>
+	<p>
+		Based on C-code written by Jos Stam, described in the paper "Real-Time Fluid Dynamics for Games".
+	</p>	
+<script src="js/raw/solver.js"></script>
+<script>
+var canvas = document.getElementById('tutorial');
+var ctx = canvas.getContext('2d');
+
+var fluidSim = new FluidSimulation({ N: 80, visc: 0, dt: 0.1, diff: 0 }); 
+
+var startTime = new Date();
+var frame = 0;
+
+var cellSize = 500 / fluidSim.config.N;
+
+function draw() {
+	fluidSim.step();
+	
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.fillRect(cellSize,cellSize,N * cellSize, N * cellSize);
+	var px = 0;
+	var N = fluidSim.config.N;
+	for(var i=1; i <= N; i++) {		
+		var py = 0;
+		for(var j=1; j <= N; j++) {	
+			var a = Math.min(Math.floor(fluidSim.x[i][j] * 255), 255);
+			if (a > 0) {
+				ctx.fillStyle = "rgb(" + a + "," + a + "," + a + ")";				
+				ctx.fillRect (px, py, cellSize + 1, cellSize + 1);			
+			}
+			py += cellSize;
+		}
+		px += cellSize;
+	}
+	ctx.fillStyle = "rgb(255,0,0)";
+	var px = (x1-1) * cellSize;
+	var py = (y1-1) * cellSize;
+	var w = (x2-x1+1)*cellSize;
+	var h = (y2-y1+1)*cellSize;
+	ctx.fillRect(px, py, w, h);
+	
+	frame++;
+	
+	setTimeout(draw,0);
+}
+
+function showFps() {
+	var fps = Math.round(frame / (new Date() - startTime) * 10000.0) / 10.0;
+	document.getElementById('fps').innerHTML = fps;
+	console.log(fps);
+}
+setInterval(showFps, 1000);
+
+draw();
+</script>
+</body>
+</html>
