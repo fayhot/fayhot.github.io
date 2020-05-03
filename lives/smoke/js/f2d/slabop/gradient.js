@@ -28,8 +28,8 @@ var F2D = F2D === undefined ? {} : F2D;
     F2D.Gradient.prototype.constructor = F2D.Gradient;
 
     F2D.Gradient.prototype.compute = function(renderer, p, w, output) {
-        this.uniforms.p.value = p.read;
-        this.uniforms.w.value = w.read;
+        this.uniforms.p.value = p.read.texture;
+        this.uniforms.w.value = w.read.texture;
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.gridScale.value = this.grid.scale;
 

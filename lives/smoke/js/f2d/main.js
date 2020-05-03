@@ -1,4 +1,4 @@
-(function() {
+// (function() {
     "use strict";
 
     var width = 480.0;
@@ -158,5 +158,6 @@
             shaders[name.split(".")[0]] = files[name];
         }
         init(shaders);
+        window.sds = shaders;
     });
-}());
+// }());

@@ -36,8 +36,8 @@ var F2D = F2D === undefined ? {} : F2D;
     F2D.Advect.prototype.constructor = F2D.Advect;
 
     F2D.Advect.prototype.compute = function(renderer, velocity, advected, output) {
-        this.uniforms.velocity.value = velocity.read;
-        this.uniforms.advected.value = advected.read;
+        this.uniforms.velocity.value = velocity.read.texture;
+        this.uniforms.advected.value = advected.read.texture;
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.gridScale.value = this.grid.scale;
         this.uniforms.timestep.value = this.time.step;

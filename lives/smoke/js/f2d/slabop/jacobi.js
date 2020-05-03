@@ -41,8 +41,8 @@ var F2D = F2D === undefined ? {} : F2D;
     };
 
     F2D.Jacobi.prototype.step = function(renderer, x, b, output) {
-        this.uniforms.x.value = x.read;
-        this.uniforms.b.value = b.read;
+        this.uniforms.x.value = x.read.texture;
+        this.uniforms.b.value = b.read.texture;
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.alpha.value = this.alpha;
         this.uniforms.beta.value = this.beta;

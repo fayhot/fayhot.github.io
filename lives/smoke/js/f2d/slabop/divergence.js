@@ -25,7 +25,7 @@ var F2D = F2D === undefined ? {} : F2D;
     F2D.Divergence.prototype.constructor = F2D.Divergence;
 
     F2D.Divergence.prototype.compute = function(renderer, velocity, divergence) {
-        this.uniforms.velocity.value = velocity.read;
+        this.uniforms.velocity.value = velocity.read.texture;
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.gridScale.value = this.grid.scale;
 

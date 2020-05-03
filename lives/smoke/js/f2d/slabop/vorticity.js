@@ -25,7 +25,7 @@ var F2D = F2D === undefined ? {} : F2D;
     F2D.Vorticity.prototype.constructor = F2D.Vorticity;
 
     F2D.Vorticity.prototype.compute = function(renderer, velocity, output) {
-        this.uniforms.velocity.value = velocity.read;
+        this.uniforms.velocity.value = velocity.read.texture;
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.gridScale.value = this.grid.scale;
 

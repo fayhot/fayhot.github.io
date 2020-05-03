@@ -8,6 +8,8 @@ var F2D = F2D === undefined ? {} : F2D;
         this.time = time;
         this.windowSize = windowSize;
 
+        console.log(window.slabs = slabs);
+
         // slabs
         this.velocity = slabs.velocity;
         this.density = slabs.density;

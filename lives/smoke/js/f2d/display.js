@@ -44,7 +44,7 @@ var F2D = F2D === undefined ? {} : F2D;
         },
 
         render: function(renderer, read) {
-            this.uniforms.read.value = read;
+            this.uniforms.read.value = read.texture;
             this.uniforms.bias.value = this.bias;
             this.uniforms.scale.value = this.scale;
             renderer.render(this.scene, this.camera);
