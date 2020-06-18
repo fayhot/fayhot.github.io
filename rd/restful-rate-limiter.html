@@ -49,15 +49,15 @@
   };
 </script>
 
-  <meta name="description" content="限流技术(time limiting)被用作控制服务请求的速率，监控Restful Api的运行状态。 可以用来优化性能，减少延迟和提高带宽等。最常用的两种限流的算法如下  Leacy Bucket 漏桶算法 Token Bucket 令牌桶算法   Leacy Bucket 漏桶算法 顾名思义，就像是一定容量的漏桶通过出水口和入水口来限制数据的传速率。 它的主要目的是控制数据注入到网络的速率，平">
+  <meta name="description" content="限流技术(time limiting)被用作控制服务请求的速率，监控Restful Api的运行状态。 可以用来优化性能，减少延迟和提高带宽等。最常用的两种限流的算法如下  Leacy Bucket 漏桶算法 Token Bucket 令牌桶算法">
 <meta name="keywords" content="Rate Limit">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Restful Rate Limiter(接口频率限制)">
 <meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;rd&#x2F;restful-rate-limiter.html">
 <meta property="og:site_name" content="Fayhot&#39;s Blog">
-<meta property="og:description" content="限流技术(time limiting)被用作控制服务请求的速率，监控Restful Api的运行状态。 可以用来优化性能，减少延迟和提高带宽等。最常用的两种限流的算法如下  Leacy Bucket 漏桶算法 Token Bucket 令牌桶算法   Leacy Bucket 漏桶算法 顾名思义，就像是一定容量的漏桶通过出水口和入水口来限制数据的传速率。 它的主要目的是控制数据注入到网络的速率，平">
+<meta property="og:description" content="限流技术(time limiting)被用作控制服务请求的速率，监控Restful Api的运行状态。 可以用来优化性能，减少延迟和提高带宽等。最常用的两种限流的算法如下  Leacy Bucket 漏桶算法 Token Bucket 令牌桶算法">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-06-18T10:20:37.997Z">
+<meta property="og:updated_time" content="2020-06-18T10:24:45.748Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://fayhot.github.io/rd/restful-rate-limiter.html">
@@ -237,7 +237,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-06-18 16:51:31 / Modified: 18:20:37" itemprop="dateCreated datePublished" datetime="2020-06-18T16:51:31+08:00">2020-06-18</time>
+              <time title="Created: 2020-06-18 16:51:31 / Modified: 18:24:45" itemprop="dateCreated datePublished" datetime="2020-06-18T16:51:31+08:00">2020-06-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,6 +274,7 @@
 <li>Leacy Bucket 漏桶算法</li>
 <li>Token Bucket 令牌桶算法</li>
 </ul>
+<a id="more"></a>
 <h3 id="leacy-bucket-漏桶算法"><a class="markdownIt-Anchor" href="#leacy-bucket-漏桶算法"></a> Leacy Bucket 漏桶算法</h3>
 <p>顾名思义，就像是一定容量的漏桶通过出水口和入水口来限制数据的传速率。</p>
 <p>它的主要目的是控制数据注入到网络的速率，平滑网络上的突发流量。漏桶算法提供了一种机制，通过它，突发流量可以被整形以便为网络提供一个稳定的流量。</p>

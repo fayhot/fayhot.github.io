@@ -234,7 +234,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-06-18 16:51:31 / Modified: 18:20:37" itemprop="dateCreated datePublished" datetime="2020-06-18T16:51:31+08:00">2020-06-18</time>
+              <time title="Created: 2020-06-18 16:51:31 / Modified: 18:24:45" itemprop="dateCreated datePublished" datetime="2020-06-18T16:51:31+08:00">2020-06-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -264,116 +264,14 @@
 <li>Leacy Bucket 漏桶算法</li>
 <li>Token Bucket 令牌桶算法</li>
 </ul>
-<h3 id="leacy-bucket-漏桶算法"><a class="markdownIt-Anchor" href="#leacy-bucket-漏桶算法"></a> Leacy Bucket 漏桶算法</h3>
-<p>顾名思义，就像是一定容量的漏桶通过出水口和入水口来限制数据的传速率。</p>
-<p>它的主要目的是控制数据注入到网络的速率，平滑网络上的突发流量。漏桶算法提供了一种机制，通过它，突发流量可以被整形以便为网络提供一个稳定的流量。</p>
-<p>漏桶可以看作是一个带有常量服务时间的单服务器队列，如果漏桶（包缓存）溢出，那么数据包会被丢弃。</p>
-<p>简单来说：</p>
-<blockquote>
-<p>漏桶算法思路很简单，水（数据或者请求）先进入到漏桶里，漏桶以一定的速度出水，当水流入速度过大会直接溢出，可以看出漏桶算法能强行限制数据的传输速率。</p>
-<blockquote>
-<p>可以通过定时器以一定的频率清空漏桶容量，来达到基于时间频率的漏桶算法。</p>
-</blockquote>
-</blockquote>
-<p>在某些情况下，漏桶算法不能够有效地使用网络资源。因为漏桶的漏出速率是固定的参数，所以，即使网络中不存在资源冲突（没有发生拥塞），漏桶算法也不能使某一个单独的流突发到端口速率。因此，漏桶算法对于存在突发特性的流量来说缺乏效率。而令牌桶算法则能够满足这些具有突发特性的流量。通常，漏桶算法与令牌桶算法可以结合起来为网络流量提供更大的控制。</p>
-<h4 id="小结"><a class="markdownIt-Anchor" href="#小结"></a> 小结</h4>
-<ul>
-<li>漏桶算法强制常量的输出速率而不管输入数据流的突发性</li>
-</ul>
-<blockquote>
-<p>当输入空闲时，该算法不执行任何动作</p>
-</blockquote>
-<p><strong>实现原理</strong>：</p>
-<ol>
-<li>队列接收到准备转发的数据包</li>
-<li>队列被调度，得到转发机会，由于队列配置了流量整形，其中的数据包先进入漏桶</li>
-<li>根据数据包到达漏桶的速率与漏桶的输出速率关系，确定数据包是否被转发：
-<ol>
-<li>如果到达速率 ≤ 输出速率，则漏桶不起作用</li>
-<li>如果到达速率 &gt; 输出速率，则考虑漏桶是否能承担瞬间流量
-<ol>
-<li>数据包到达的速率 - 漏桶流出的速率 ≤ 配置的漏桶突发速率，则数据包可被不延时的送出</li>
-<li>若数据包到达的速率 - 漏桶流出的速率 &gt; 配置的漏桶突发速率，则多余的数据包被存储到漏桶中</li>
-</ol>
-<blockquote>
-<p>暂存在漏桶中的数据包在不超过漏桶容量的情况下延时发出</p>
-</blockquote>
-<ol start="3">
-<li>若数据包到达的速率 - 漏桶流出的速率 &gt; 配置的漏桶突发速率，且数据包的数量已经超过漏桶的容量，则这些数据包将被丢弃</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<p>简单实现：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeakyBucket</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> final <span class="keyword">long</span> capacity;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> final <span class="keyword">long</span> leaksIntervalInMillis;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> used;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> lastLeakTimestamp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeakyBucket</span><span class="params">(<span class="keyword">long</span> capacity, <span class="keyword">long</span> leaksIntervalInMillis)</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">this</span>.capacity = capacity;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">this</span>.leaksIntervalInMillis = leaksIntervalInMillis;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">this</span>.used = <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">this</span>.lastLeakTimestamp = System.currentTimeMillis();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    <span class="function">synchronized <span class="keyword">public</span> boolean <span class="title">tryConsume</span><span class="params">(<span class="keyword">int</span> drop)</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">        leak();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">if</span> (used + drop &gt; capacity) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">           <span class="keyword">return</span> <span class="literal">false</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">        used = used + drop;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">leak</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">long</span> currentTimeMillis = System.currentTimeMillis();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">if</span> (currentTimeMillis &gt; lastLeakTimestamp) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">long</span> millisSinceLastLeak = currentTimeMillis - lastLeakTimestamp;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">long</span> leaks = millisSinceLastLeak / leaksIntervalInMillis;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">if</span>(leaks &gt; <span class="number">0</span>)&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">                <span class="keyword">if</span>(used &lt;= leaks)&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">                    used = <span class="number">0</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">                &#125;<span class="keyword">else</span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">                    used -= (<span class="keyword">int</span>)leaks;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">                &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">                <span class="keyword">this</span>.lastLeakTimestamp = currentTimeMillis;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">            &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-<ul>
-<li>这个实现设计了lastLeakTimestamp字段，用于计算时间差，以及在这个时间段内需要漏水的数量</li>
-<li>每次tryConsume的时候，方法内部首先调用leak，根据设定的速度以及时间差计算这个时间段需要漏水的数量，更新桶的当前使用量以及lastLeakTimestamp</li>
-<li>之后限流判断，就是判断used与请求的drop是否会超过桶容量，超出则限流，否则放入桶中，更新桶容量</li>
-</ul>
-<h3 id="token-bucket-令牌桶算法"><a class="markdownIt-Anchor" href="#token-bucket-令牌桶算法"></a> Token Bucket 令牌桶算法</h3>
-<p>令牌桶算法的原理是系统会以一个恒定的速度往桶里放入令牌，而如果请求需要被处理，则需要先从桶里获取一个令牌，当桶里没有令牌可取时，则拒绝服务。</p>
-<p>令牌桶的另外一个好处是可以方便的改变速度。 一旦需要提高速率，则按需提高放入桶中的令牌的速率。</p>
-<p>一般会定时(比如100毫秒)往桶中增加一定数量的令牌， 有些变种算法则实时的计算应该增加的令牌的数量。</p>
-<blockquote>
-<p>比如华为的专利&quot;采用令牌漏桶进行报文限流的方法&quot;(CN 1536815 A),提供了一种动态计算可用令牌数的方法， 相比其它定时增加令牌的方法， 它只在收到一个报文后，计算该报文与前一报文到来的时间间隔内向令牌漏桶内注入的令牌数， 并计算判断桶内的令牌数是否满足传送该报文的要求。</p>
-</blockquote>
-<h4 id="小结-2"><a class="markdownIt-Anchor" href="#小结-2"></a> 小结</h4>
-<ul>
-<li>令牌桶算法可控制发送到网络上数据的数目，并允许突发数据的发送</li>
-</ul>
-<blockquote>
-<p>是网络流量整形和速率限制中最常使用的一种算法</p>
-</blockquote>
-<ul>
-<li>大小固定的令牌桶可自行以恒定的速率源源不断地产生令牌</li>
-</ul>
-<blockquote>
-<p>令牌桶中的每一个令牌都代表一个字节：</p>
-<ul>
-<li>如果令牌桶中存在令牌，则允许发送流量</li>
-<li>如果令牌桶中不存在令牌，则不允许发送流量</li>
-<li>若令牌不被消耗，或被消耗速度小于产生速度，令牌就会不断地增多，直到把桶填满</li>
-</ul>
-</blockquote>
-<ul>
-<li>传送到令牌桶的数据包需要消耗令牌，不同大小的数据包，消耗的令牌数量不同</li>
-</ul>
-<p>令牌桶算法的<strong>基本过程</strong>：</p>
-<ol>
-<li>假如用户配置的平均发送速率为 r，则每隔 1/r 秒一个令牌被加入到桶中</li>
-<li>假设桶最多可以存放 b 个令牌，若令牌桶已满，则后续到达的令牌会被丢弃</li>
-<li>当一个 n 字节的数据包到达时，从令牌桶删除 n 个令牌，并且数据包被发送到网络</li>
-<li>若令牌桶中少于 n 个令牌，则不会删除令牌，并且认为这个数据包在流量限制之外</li>
-</ol>
-<blockquote>
-<p>在流量限制外的数据包的处理方式：</p>
-<ul>
-<li>被丢弃</li>
-<li>可以排放在队列中，以便当令牌桶中累积了足够多的令牌时再传输</li>
-<li>可以继续发送，但需要做特殊标记，网络过载时将特殊标记的包丢弃</li>
-</ul>
-</blockquote>
-<ol start="5">
-<li>算法允许最长 b 个字节的突发，但从长期结果看，数据包的速率被限制成常量 r</li>
-</ol>
-<p><strong>实现原理</strong>：</p>
-<ul>
-<li>方式一： 开启一个定时任务，由定时任务持续生成令牌</li>
-</ul>
-<blockquote>
-<p>问题： 会极大的消耗系统资源<br>
-如某接口需要分别对每个用户做访问频率限制，假设存在 6W 用户，则至多需要开启 6W 个定时任务来维持每个桶中的令牌数，开销巨大</p>
-</blockquote>
-<ul>
-<li>方式二： 延迟计算</li>
-</ul>
-<blockquote>
-<p>resync 函数会在每次获取令牌前调用<br>
-实现思路： 若当前时间晚于 nextFreeTicketMicros，则计算该段时间内可以生成多少令牌，将生成的令牌加入令牌桶中并更新数据。这样一来，只需要在获取令牌时计算一次</p>
-</blockquote>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/rd/restful-rate-limiter.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
