@@ -209,6 +209,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/log-structured-merge-trees-apply.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/rd/log-structured-merge-trees-apply.html" class="post-title-link" itemprop="url">Log Structured Merge Trees Apply</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-18 23:59:49" itemprop="dateCreated datePublished" datetime="2020-06-18T23:59:49+08:00">2020-06-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-19 07:59:31" itemprop="dateModified" datetime="2020-06-19T07:59:31+08:00">2020-06-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Research And Develop</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="log-structured-merge-trees"><a class="markdownIt-Anchor" href="#log-structured-merge-trees"></a> Log Structured Merge Trees</h3>
+<p>LSM被设计来提供比传统的B+树或者ISAM更好的写操作吞吐量，通过消去随机的本地更新操作来达到这个目标。</p>
+<blockquote>
+<p>磁盘随机操作慢，顺序读写快的老问题。这二种操作存在巨大的差距，无论是磁盘还是SSD</p>
+</blockquote>
+<p>LSM 保持了日志文件写性能，以及微小的读操作性能损失。本质上就是让所有的操作<strong>顺序化</strong>，而不是像散弹枪一样随机读写。</p>
+<p>很多树结构可以不用 update-in-place，最流行就是 <a href="http://www.bzero.se/ldapd/btree.html" target="_blank" rel="noopener">append-only Btree</a>，也称为 Copy-On-Write Tree。</p>
+<blockquote>
+<p>通过顺序的在文件末尾重复写对结构来实现写操作，之前的树结构的相关部分，包括最顶层结点都会变成孤结点。尽管通过这种方法避免了本地更新，但是因为每个写操作都要重写树结构，放大了写操作，降低了写性能。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/rd/log-structured-merge-trees-apply.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/restful-rate-limiter.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -977,100 +1069,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/history/it-big-shot-set.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/history/it-big-shot-set.html" class="post-title-link" itemprop="url">互联网江湖风云录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-25 21:45:06" itemprop="dateCreated datePublished" datetime="2020-01-25T21:45:06+08:00">2020-01-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-29 10:36:34" itemprop="dateModified" datetime="2020-01-29T10:36:34+08:00">2020-01-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%BA%E7%89%A9%E4%BC%A0%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">人物传记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>以史为镜，可知兴替；以人为镜，可知得失。<br />
-主要是关注相关人士的第一个成功项目发展历程以及主角当时的年龄。</p>
-<blockquote>
-<p>制定标准的人未必能从标准中得利，但是将标准商业化扩展其使用场景和人群的人，才会是最后的最大赢家。</p>
-</blockquote>
-<h2 id="周鸿祎"><a class="markdownIt-Anchor" href="#周鸿祎"></a> 周鸿祎</h2>
-<p>1970年10月4日生于湖北省黄冈市蕲春县。1992年(22岁)本科毕业于西安交通大学电信学院计算机系，被保送西安交通大学读管理学院系统工程系研究生，并于1995年(25岁)究生毕业，获硕士学位。</p>
-<p>1998年10月(28岁)周鸿祎创建北京三七二一科技有限公司，并在同年推出了3721“网络实名”的前身——中文网址，开创中文上网服务之先河，并于1999年正式提供网络实名中文上网服务，  “中文关键词搜索”技术所带来的网站实名服务覆盖了当时90%以上的中国互联网用户，每天使用量超过约8000万人次，并拥有超过60万的企业客户，占据中国付费搜索市场40%的市场份额，居于绝对领先地位。2001年(31岁)，3721公司在中国互联网企业中率先宣布盈利。 2004年1月(34岁)，雅虎出资1.2亿美金购买了香港3721公司。</p>
-<p>2006年8月(36岁)，周鸿祎投资奇虎360科技有限公司，出任奇虎360董事长，此后通过免费的商业模式，产品与技术的创新，颠覆了传统互联网安全概念，改变了市场格局，迅速成长为中国最大的互联网安全服务提供商。奇虎公司旗下最主要产品之一就是360安全卫士。</p>
-<blockquote>
-<p>我没有用过3721，我初中接触电脑的时候hao123、4399这类网址导航已经开始流行。通过查找一些资料，基本确认3721可以理解为浏览器插件+常驻后台守护程序的套装服务。我没有太多接触过360，但是应该是和智明星通当初的海外买量的手法是类似的。智明星通是通过购买海外木马或者其他安装程序来篡改用户的首页，伪装成新的搜索网页，劫持用户的搜索行为，并转发给google，从而赚取adwords的广告分成。 3721应该是通过中关村或者各种其他应用渠道安装到用户的电脑，并监控和劫持用户IE浏览器的输入栏。这里不讨论周鸿祎的人品，不过仅仅是把这么一个小case做出一个大的商机，28岁的周鸿祎还是很厉害的。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/history/it-big-shot-set.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1121,7 +1119,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1134,7 +1132,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
