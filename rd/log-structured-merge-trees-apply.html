@@ -60,7 +60,8 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619072042.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619072725.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619073210.png">
-<meta property="og:updated_time" content="2020-06-19T03:03:49.230Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619111615.png">
+<meta property="og:updated_time" content="2020-06-19T03:18:05.682Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619072042.png">
 
@@ -247,7 +248,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-19 11:03:49" itemprop="dateModified" datetime="2020-06-19T11:03:49+08:00">2020-06-19</time>
+                <time title="Modified: 2020-06-19 11:18:05" itemprop="dateModified" datetime="2020-06-19T11:18:05+08:00">2020-06-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -333,6 +334,25 @@
 <p>这当然是一个选择，数据库利用大量的配置，越来越多的数据库为不同的工作场景提供插件式引擎。 Parquet 是一个流行的HDFS的替代，在很多相对的文面做的好很（通过一个列格式提高性能）。MySQL有一个存储抽象，支持大量的存储引擎的插件，例如 Toku (使用 fractal tree based index)。</p>
 <p>Mongo3.0 则包含了支持B+和LSM的 Wired Tiger引擎。许多关系数据库可以配置索引结构，使用不同的文件格式。</p>
 <p>考虑被使用的硬件，昂贵的SSD，像FusionIO有更好的随机写性能，这适合本地更新的策略方法。更便宜的SSD和机械盘则更适合LSM。</p>
+<h5 id="b树的copy-on-write设计"><a class="markdownIt-Anchor" href="#b树的copy-on-write设计"></a> B+树的Copy-on-Write设计</h5>
+<p>在介绍CoW（Copy-on-Write）之前，首先思考这样一个问题：</p>
+<blockquote>
+<p>使用B+树的数据库在提供读、写服务时，如果叶子节点发生了节点分裂，而此时又有读行为，怎么保证读写的线程安全？譬如：准备读取叶子节点leaf时，leaf分裂为leaf和leaf-new两个block，这时候还是读取leaf节点，不就可能导致数据丢失了吗，怎么解决的？</p>
+</blockquote>
+<p><strong>其中的一种解决方法便是CoW B+树</strong>, （其它解决方法还有：B-link树、加锁后原地更新数据等等）,这种方法有一个抽象层次更高的名字，叫做：shadowing。</p>
+<blockquote>
+<p>实现思路：<br>
+在对数据进行操作（增、删、改）之前，先把所有可能操作到的层级（所有祖先节点）数据块都拷贝一份出来，后面的修改就在这份拷贝后的数据块上做修改，修改完之后再把这些数据块写入到磁盘文件新的位置上，这时候磁盘中就有两份数据，一份是修改之前的，一份是修改之后的，从修改之前的根节点开始遍历，可以读到所有修改之前的旧版数据，从修改之后的新根节点开始遍历，可以读到所有修改之后的新版数据。 <strong>从不同的根节点进去可以读取到不同版本的数据，这个CoW既保证了读写安全，也带有很优雅的数据备份功能（数据快照）。</strong></p>
+</blockquote>
+<p>举个实际的例子：</p>
+<blockquote>
+<p>在一个有7个节点（block）的B+树中，根节点为A，其叶子节点C有修改操作。把C以及它的祖先节点都拷贝一份：C’、B’、A’，然后再在这些新拷贝的节点上修改数据，最后将修改后的数据写入到磁盘文件新的位置上。在这个过程中，如果有业务在读取这颗B+树，仍然可以读取到C、B、A的完整旧数据。等到C’、B’、A’节点的数据刷写到磁盘完毕，再修改这颗B+树的根节点为A’，这时业务就能读取到这颗B+树的新数据，此时旧数据A、B、C也仍然存在，可以选择保留作为备份，也可以选择回收磁盘空间。</p>
+</blockquote>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/2020/04/20200619111615.png"></p>
+<p><strong>添加几个字节的数据，采用CoW设计，需要拷贝多个数据块，是否太浪费了？</strong></p>
+<blockquote>
+<p>确实浪费，所以采用CoW的系统一般都会攒一堆数据之后，再写入到B+树索引中，在尽量保证时效性前提下减少拷贝新数据块、减少写磁盘；另外，对读多写少的业务场景来说，写入时的性能浪费几乎可以忽略，而带来的收益却是读取的高并发，是非常值得的trade-off。</p>
+</blockquote>
 <h3 id="leveldb"><a class="markdownIt-Anchor" href="#leveldb"></a> LevelDB</h3>
 <p><strong>引用</strong></p>
 <ol>
@@ -363,7 +383,10 @@
     <a href="/rd/restful-rate-limiter.html" rel="prev" title="Restful Rate Limiter(接口频率限制)">
       <i class="fa fa-chevron-left"></i> Restful Rate Limiter(接口频率限制)
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/rd/recommend-system-practise.html" rel="next" title="推荐系统实践">
+      推荐系统实践 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -401,7 +424,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-structured-merge-trees"><span class="nav-number">1.</span> <span class="nav-text"> Log Structured Merge Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#the-base-lsm-algorithm"><span class="nav-number">1.1.</span> <span class="nav-text"> The Base LSM Algorithm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#basic-compaction"><span class="nav-number">1.2.</span> <span class="nav-text"> Basic Compaction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#levelled-compaction"><span class="nav-number">1.3.</span> <span class="nav-text"> Levelled Compaction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text"> 总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于-lsm-的一些思考"><span class="nav-number">1.5.</span> <span class="nav-text"> 关于 LSM 的一些思考</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#beyond-levelled-lsm"><span class="nav-number">1.5.1.</span> <span class="nav-text"> Beyond Levelled LSM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leveldb"><span class="nav-number">2.</span> <span class="nav-text"> LevelDB</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#log-structured-merge-trees"><span class="nav-number">1.</span> <span class="nav-text"> Log Structured Merge Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#the-base-lsm-algorithm"><span class="nav-number">1.1.</span> <span class="nav-text"> The Base LSM Algorithm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#basic-compaction"><span class="nav-number">1.2.</span> <span class="nav-text"> Basic Compaction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#levelled-compaction"><span class="nav-number">1.3.</span> <span class="nav-text"> Levelled Compaction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text"> 总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于-lsm-的一些思考"><span class="nav-number">1.5.</span> <span class="nav-text"> 关于 LSM 的一些思考</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#beyond-levelled-lsm"><span class="nav-number">1.5.1.</span> <span class="nav-text"> Beyond Levelled LSM</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b树的copy-on-write设计"><span class="nav-number">1.5.2.</span> <span class="nav-text"> B+树的Copy-on-Write设计</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leveldb"><span class="nav-number">2.</span> <span class="nav-text"> LevelDB</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -417,20 +440,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
