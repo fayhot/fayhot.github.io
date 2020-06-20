@@ -61,7 +61,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619183945.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200620172911.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200621011821.png">
-<meta property="og:updated_time" content="2020-06-20T17:30:26.548Z">
+<meta property="og:updated_time" content="2020-06-20T17:34:13.094Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;2020&#x2F;04&#x2F;20200619182641.png">
 
@@ -248,7 +248,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-21 01:30:26" itemprop="dateModified" datetime="2020-06-21T01:30:26+08:00">2020-06-21</time>
+                <time title="Modified: 2020-06-21 01:34:13" itemprop="dateModified" datetime="2020-06-21T01:34:13+08:00">2020-06-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -478,7 +478,7 @@ s76,-59,76,-59s76,-60,76,-60z M1001 80H40000v40H1012z"/></svg></span></span></sp
     2. 根据物品的相似度和用户的历史行为给用户生成推荐列表。
     
     物品的相似度公式：$\displaystyle w_{ij} = \frac{|N(i)\cap N(j)|}{|N(i)}$。 
-    $N(i)$是喜欢物品i的用户数，分子是同事喜欢物品i和物品j的用户数。
+    其中$N(i)$是喜欢物品i的用户数，分子是同事喜欢物品i和物品j的用户数。
     &gt;该公式可以理解为喜欢物品$i$的用户中有多少比列的用户也喜欢物品$j$。
     &gt;该公式存在一个问题，如果物品$j$很热门，那么$W_{ij}$就会很大，接近1.即任何物品都会和热门的物品有很大的相似度，不利于长尾信息的挖掘。为了避免推荐热门物品，可以使用修正公式$\displaystyle w_{ij} = \frac{|N(i)\cap N(j)|}{\sqrt{|N(i)||N(j)|}}$       
     &gt;这个公式惩罚了物品$j$的权重，因此减轻了热门物品会和很多物品相似的可能性。
