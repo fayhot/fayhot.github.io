@@ -209,6 +209,103 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/program/lvalue-and-rvalue.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/program/lvalue-and-rvalue.html" class="post-title-link" itemprop="url">LValue-And-RValue Expression(左值、右值表达式)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-07-07 20:30:39" itemprop="dateCreated datePublished" datetime="2017-07-07T20:30:39+08:00">2017-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-19 10:53:06" itemprop="dateModified" datetime="2019-12-19T10:53:06+08:00">2019-12-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="l-value"><a class="markdownIt-Anchor" href="#l-value"></a> L-Value</h3>
+<p>Expressions that refer to <strong>memory locations</strong> are called “l-value” expressions. An l-value represents a storage region’s “locator” value, or a “left” value, implying that it can appear on the left of the equal sign (=). L-values are often identifiers.</p>
+<p>Expressions referring to <strong>modifiable locations</strong> are called “modifiable l-values.” A modifiable l-value cannot have an array type, an incomplete type, or a type with the <strong>const</strong> attribute. For structures and unions to be modifiable l-values, they must not have any members with the const attribute. The name of the identifier denotes a storage location, while the value of the variable is the value stored at that location.</p>
+<p>An identifier is a modifiable l-value if it refers to a memory location and if its type is arithmetic, structure, union, or pointer. For example, if ptr is a pointer to a storage region, then <strong>*ptr</strong> is a modifiable l-value that designates the storage region to which ptr points.</p>
+<p>Any of the following C expressions can be l-value expressions:</p>
+<blockquote>
+<ul>
+<li>An identifier of integral, floating, pointer, structure, or union type</li>
+<li>A subscript ([ ]) expression that does not evaluate to an array</li>
+<li>A member-selection expression (-&gt; or .)</li>
+<li>A unary-indirection (*) expression that does not refer to an array</li>
+<li>An l-value expression in parentheses</li>
+<li>A const object (a nonmodifiable l-value)</li>
+</ul>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/program/lvalue-and-rvalue.html#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/culture/%E4%B8%AD%E5%9B%BD%E5%8F%A4%E4%BB%A3%E9%81%93%E5%AE%B6%E6%96%87%E5%8C%96%E7%AE%80%E7%A0%94.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -446,20 +543,20 @@ partial differential equasion***偏微分方程***<br />
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
