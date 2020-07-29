@@ -378,6 +378,196 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/recommend-system-qa.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/rd/recommend-system-qa.html" class="post-title-link" itemprop="url">推荐系统的疑惑小结</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-25 23:59:49" itemprop="dateCreated datePublished" datetime="2020-06-25T23:59:49+08:00">2020-06-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-29 22:40:05" itemprop="dateModified" datetime="2020-07-29T22:40:05+08:00">2020-07-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Research And Develop</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>推荐系统是一个技术驱动但是远不能满足产品需求的方案。是有极大的改良空间的。这种改良未必来自于技术本身，可以来自产品，规则等多个非技术相关的维度。</p>
+<h3 id="推荐系统的一些坑"><a class="markdownIt-Anchor" href="#推荐系统的一些坑"></a> 推荐系统的一些坑</h3>
+<ol>
+<li>
+<p>评价指标——推荐本身的误差与妥协<br>
+评价指标难以评选和量化。推荐本身并不是一个充分定义和约束的过程，ta更像是宏观调控。进而在实践和落实到指标设计时，会有严重的妥协和设计误差。</p>
+<ol>
+<li>高CTR——擦边球、软色情、标题党、封面党 的问题就会快速浮现出来。</li>
+<li>高Staytime——视频+文章Feed流会在自然选择中成为视频feed流 + 超长文章Feed流。</li>
+<li>高read/U——短文章就会有分发优势。</li>
+</ol>
+<p>这些指标相互依赖，此消彼长，目前主流是沿用计算广告的老路，按照CTR作为最广泛使用的评价指标来优化，这个指标的劣根性是显而易见的，然而至今并没有很好地指标来指导系统。<br>
+今日头条的做法是，优化CTR同时关注其他指标的变动；也有的从CTR开始，优化到瓶颈后进行Staytime的优化等等…<br>
+Medium的做法是，优化一个F(CTR, staytime,…)的多指标加权的综合指标，但这个加权的系数，还是一个magic number，是人拍脑门定的。<br>
+Pornhub的做法是，优化一个-staytime的指标，用户停留时长越短，则越好，其基本假设就是“撸完嫌人丑”。很多人对这个指标拍案叫绝，但是其实这给公司的商业化部门带来很大压力，因为如果用户停留时间短，则流量变现会变得很困难。大家都在探索， 也并没有一个定论，究竟推荐系统该优化一些什么。</p>
+<blockquote>
+<p>相信很多人刚入行的时候对单纯优化CTR都是有疑惑的，日子久了，也就都麻木了。</p>
+</blockquote>
+</li>
+<li>
+<p>推荐本身的矛盾性——好的算法与不那么好的效果<br>
+有的算法确实很好，好到推荐的每个我都想点，但是算法越精准，在用户体验上未必是越好的。<br>
+举个例子，我喜欢汽车，电竞和科技。好的推荐算法真的就推荐汽车电竞和科技，都是根据我的历史记录推荐的我确实喜欢的。但也就只有汽车电竞和科技而已。</p>
+</li>
+</ol>
+<blockquote>
+<p>换句话说，好的推荐算法毫无疑问地会局限你的视野。那他还是好的推荐算法么？——<strong>推荐需要随机性</strong></p>
+</blockquote>
+<p>推荐本身是很矛盾的，因为用户没有明确说明自己要看什么，也没有明确表示自己不愿意看什么。一个稍微差一点的推荐算法，是不是反而长期看是体验更好的？因为它不仅照顾了用户的核心兴趣，也稍稍辐射了一些边缘领域，在感兴趣和不感兴趣的边缘试探着。就像下面这个高斯分布的图，绿色的“高瘦子”毫无疑问要优于红色的“矮胖子”，因为它像一把尖刀，更精准地直插兴趣点，但是究竟“精准的高瘦子”是不是真的好呢？<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/2020/04/20200729173135.png"></p>
+<ol start="3">
+<li>
+<p>E&amp;E<br>
+E&amp;E, exploration &amp; exploitation，这个真的是天问。<br>
+<strong>E&amp;E，简单说，就是保证精准推荐的同时，进行兴趣探索。</strong></p>
+<blockquote>
+<p>所有推荐系统做的最差的地方——我看了一个东西，就使劲出一个东西，App明明很多东西，我却越用越窄。</p>
+</blockquote>
+<p>EE要不要做？肯定要做，你不能让用户只能看到一类Feed，这样久了他的feed 流只会越来越小，自己也觉得没劲，所以一定要做兴趣探索。但是做，就势必牺牲指标，探索的过程是艰难的，大部分时间用户体验上也是负向的。<br>
+那么问题来了。<br>
+那么，</p>
+<ol>
+<li>牺牲多少CTR来保EE才算是合适的？</li>
+<li>EE的ROI什么时候算是&gt;1的？</li>
+<li>怎么样确定EE的效果？</li>
+<li>EE要E到什么程度？</li>
+</ol>
+</li>
+<li>
+<p>线下auc涨，线上ctr/cpm跌</p>
+<ol>
+<li>特征/数据出现穿越。<br>
+一般就是使用了和label强相关的特征导致的数据泄漏。这种问题一般相对好查，很多时候在离线阶段就能发现。明显的表现就是训练集和测试集差异比较大。</li>
+<li>线上线下特征不一致<br>
+这种情况是导致离线涨在线跌或者没效果的最常见情况。<br>
+首先是代码不一致，例如，离线对用户特征的加工处理采用scala/python处理，抽取用户最近的50个行为，在线特征抽取用c++实现只用了30个。只要离线和在线用不同的代码抽取就很容易存在这种代码带来的不一致。<br>
+另外一种线上线下不一致，是由于数据的不一致导致。这在离线拼接样本和特征的pipeline中比较常见。一般离线特征都是按照天处理的，考虑各种数据pipeline的流程，处理时间一般都会有延迟，离线特征处理完之后导到线上供线上模型预估时请求使用。</li>
+</ol>
+<blockquote>
+<p>要严格保证线上线下的特征一致性，最根本的方法就是同一套代码和数据源抽取特征，业内目前通用的方法就是，在线实时请求打分的时候落地实时特征，训练的时候就没有特征拼接的流程，只需要关联label，生成正负样本即可</p>
+</blockquote>
+<ol start="3">
+<li>数据分布的不一致<br>
+如果仔细排查，既不存在数据泄漏，也没有出现不一致的问题，离线auc明明就是涨了很多，线上就是下降，而且是离线涨的越多，线上下降越多，还有一种可能就是数据的不一致，也就是数据的“冰山效应”----离线训练用的是有偏的冰山上的数据，而在线上预估的时候，需要预测的是整个冰山的数据，包括大量冰面以下的数据！</li>
+</ol>
+</li>
+<li>
+<p>工程相关的问题</p>
+<ol>
+<li>
+<p>数据工程<br>
+日志去重问题，日志中正例丢失分析和处理的问题，作弊流量清洗的问题，样本迁移学习的问题等等。</p>
+</li>
+<li>
+<p>特征工程<br>
+用户行为特征如何结构化。session内用户行为特征如何设计。<br>
+长尾item CTR预估偏高，如何设计特征进行打压的问题。<br>
+高阶特征如何自动挖掘的问题</p>
+</li>
+<li>
+<p>模型工程</p>
+<ol>
+<li>如何优化计算框架和算法，支持千亿特征规模的问题</li>
+<li>如何优化召回算法和排序算法不一致性带来的信息损失</li>
+<li>如何把多样性控制、打散、疲劳控制等机制策略融入到模型训练中去的问题</li>
+<li>如何优化FTRL来更好地刻画最新样本的问题</li>
+<li>还有很多，像CF怎么优化的问题。</li>
+</ol>
+</li>
+<li>
+<p>系统工程<br>
+没有强大的工程系统支持的算法都是实验室的玩具。</p>
+<ol>
+<li>实时样本流中日志如何对齐的问题</li>
+<li>如何保证样本流稳定性和拼接正确性</li>
+<li>调研样本如何获取动态特征的问题：服务端落快照和离线挖出实时特征</li>
+<li>基于fealib保证线上线下特征抽取的一致性问题</li>
+<li>在线预估服务怎么优化特征抽取的性能。如何支持超大规模模型的分布式存储，主流的模型通常在100G以上规模了</li>
+<li>内容系统进行如何实时内容理解，如何实时构建索引，以及高维索引等相关问题</li>
+</ol>
+<p>多样性怎么保证，E&amp;E怎么去做，内容质量怎么评级，低俗内容如何打压。如何做全场景化的推荐引擎使得各页面各栏位能更好地配合推荐。</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="youtube推荐系统"><a class="markdownIt-Anchor" href="#youtube推荐系统"></a> Youtube推荐系统</h3>
+<blockquote>
+<p>其实我一直觉得YouTube的推荐有点弱智。。。</p>
+</blockquote>
+<p>Deep Neural Networks for YouTube Recommendations (2016)</p>
+<h3 id="引用"><a class="markdownIt-Anchor" href="#引用"></a> 引用</h3>
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/52169807" target="_blank" rel="noopener">重读Youtube深度学习推荐系统论文，字字珠玑，惊为神文</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/86630768" target="_blank" rel="noopener">YouTube视频推荐系统为什么那么强？看了这篇文章你就知道了</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/restful-rate-limiter.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -954,98 +1144,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/computer-vision/computer-vision-datasets-and-networks.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Fayhot">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fayhot's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/computer-vision/computer-vision-datasets-and-networks.html" class="post-title-link" itemprop="url">Computer Vision Datasets And Networks(计算机视觉数据集与网络)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-05-21 15:15:56" itemprop="dateCreated datePublished" datetime="2019-05-21T15:15:56+08:00">2019-05-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-07 23:08:19" itemprop="dateModified" datetime="2020-07-07T23:08:19+08:00">2020-07-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机图形学</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="数据集"><a class="markdownIt-Anchor" href="#数据集"></a> 数据集</h2>
-<h3 id="pascal-voc"><a class="markdownIt-Anchor" href="#pascal-voc"></a> PASCAL VOC</h3>
-<p>PASCAL VOC是一个图像集，由Mark Everingham (University ofLeeds)、Luc van Gool (ETHZ, Zurich)等人创立，有1.7W+张图片，分为20类。PASCALVOC竞赛也是计算机视觉竞赛的鼻祖，从2005年到2012年一共举办了8届，包含了物体分类（Classification）、目标检测（Detection）、图像分割（Segmentation）、Person Layout等任务，后来逐渐被ILSVRC竞赛替代。</p>
-<p>下载地址：<a href="http://host.robots.ox.ac.uk/pascal/VOC/" target="_blank" rel="noopener">http://host.robots.ox.ac.uk/pascal/VOC/</a></p>
-<h3 id="imagenet数据集"><a class="markdownIt-Anchor" href="#imagenet数据集"></a> ImageNet数据集</h3>
-<p>ImageNet是一个图像集，由斯坦福大学李飞飞创立，有1400W+张样例图片，分为27大类和2W+小类，只能用于非商业研究和教学使用。与ImageNet图像集相应的是著名的ILSVRC竞赛，各种新机器学习算法脱颖而出（AlexNet、ZFNet、VGGNet、GoogleNet、ResNet、Faster-RCNN…），图像识别率得以显著提高，在ILSVRC竞赛上一举成名是近几年来计算机视觉从业者的梦想。</p>
-<p>下载地址：<a href="http://www.image-net.org/download-imageurls" target="_blank" rel="noopener">http://www.image-net.org/download-imageurls</a></p>
-<h3 id="coco数据集"><a class="markdownIt-Anchor" href="#coco数据集"></a> COCO数据集</h3>
-<p>MS COCO的全称是Microsoft Common Objects in Context，起源于微软于2014年出资标注的Microsoft COCO数据集，与ImageNet竞赛一样，被视为是计算机视觉领域最受关注和最权威的比赛之一。</p>
-<p>COCO数据集是一个大型的、丰富的物体检测，分割和字幕数据集。这个数据集以scene understanding为目标，主要从复杂的日常场景中截取，图像中的目标通过精确的segmentation进行位置的标定。图像包括91类目标，328,000影像和2,500,000个label。目前为止有语义分割的最大数据集，提供的类别有80 类，有超过33 万张图片，其中20 万张有标注，整个数据集中个体的数目超过150 万个。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/computer-vision/computer-vision-datasets-and-networks.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1096,7 +1194,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1109,7 +1207,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
