@@ -49,13 +49,23 @@
   };
 </script>
 
-  <meta name="description" content="色彩空间基础  三原色 大部分人类的视网膜上有三种感知颜色的感光细胞，叫做视锥细胞，分别对不同波长的光线敏感，称为 L&#x2F;M&#x2F;S 型细胞。三种视锥细胞最敏感的波长分别是橙红色（长波，Long），绿色（中波，Medium），蓝色（短波，Short）。这三种视锥细胞的归一化感光曲线如下图所示。   可以看到 L 型视锥细胞与 M 型视锥细胞的感光曲线差别很小，实际上这两种视锥细胞起源于一次基因变异，在">
+  <meta name="description" content="概述 颜色的本质是光，光的本质是能量与电磁波。  光的本质是电磁波，并且仅仅是电磁波长长的波谱中的一小段。 在波长380nm到780nm的范围里的电磁波，能量可以被人眼接收。因此在这个意义上讨论时，往往把光称为“可见光”。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="色彩调配">
 <meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;color&#x2F;color-correction.html">
 <meta property="og:site_name" content="Fayhot&#39;s Blog">
-<meta property="og:description" content="色彩空间基础  三原色 大部分人类的视网膜上有三种感知颜色的感光细胞，叫做视锥细胞，分别对不同波长的光线敏感，称为 L&#x2F;M&#x2F;S 型细胞。三种视锥细胞最敏感的波长分别是橙红色（长波，Long），绿色（中波，Medium），蓝色（短波，Short）。这三种视锥细胞的归一化感光曲线如下图所示。   可以看到 L 型视锥细胞与 M 型视锥细胞的感光曲线差别很小，实际上这两种视锥细胞起源于一次基因变异，在">
+<meta property="og:description" content="概述 颜色的本质是光，光的本质是能量与电磁波。  光的本质是电磁波，并且仅仅是电磁波长长的波谱中的一小段。 在波长380nm到780nm的范围里的电磁波，能量可以被人眼接收。因此在这个意义上讨论时，往往把光称为“可见光”。">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407143224.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407145628.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407150855.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407151020.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407151708.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407151841.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407154234.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407154815.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407154916.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407155132.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406175133.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406183319.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406183843.png">
@@ -67,9 +77,9 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406151322.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406151401.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406151934.png">
-<meta property="og:updated_time" content="2021-04-06T10:59:34.464Z">
+<meta property="og:updated_time" content="2021-04-07T07:54:29.353Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210406175133.png">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210420210407143224.png">
 
 <link rel="canonical" href="http://fayhot.github.io/color/color-correction.html">
 
@@ -246,10 +256,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-04-06 09:44:45 / Modified: 18:59:34" itemprop="dateCreated datePublished" datetime="2021-04-06T09:44:45+08:00">2021-04-06</time>
+              <time title="Created: 2021-04-06 09:44:45" itemprop="dateCreated datePublished" datetime="2021-04-06T09:44:45+08:00">2021-04-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-04-07 15:54:29" itemprop="dateModified" datetime="2021-04-07T15:54:29+08:00">2021-04-07</time>
+              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -269,14 +285,117 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="色彩空间基础"><a class="markdownIt-Anchor" href="#色彩空间基础"></a> 色彩空间基础</h3>
+        <h3 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h3>
+<p>颜色的本质是光，光的本质是能量与电磁波。</p>
+<blockquote>
+<p>光的本质是电磁波，并且仅仅是电磁波长长的波谱中的一小段。<br>
+在波长380nm到780nm的范围里的电磁波，能量可以被人眼接收。因此在这个意义上讨论时，往往把光称为“可见光”。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="孟塞尔颜色系统"><a class="markdownIt-Anchor" href="#孟塞尔颜色系统"></a> 孟塞尔颜色系统</h3>
+<p>孟塞尔颜色系统（Munsell Color System）是色度学透过明度（value）、色相｜色调（hue）及色度｜饱和度（chroma）三个维度来描述颜色的方法。</p>
+<h4 id="色调-hue"><a class="markdownIt-Anchor" href="#色调-hue"></a> 色调 Hue</h4>
+<p>色调就是颜色的“特点”。不管是茜红、胭脂红、珊瑚红、粉红、暗红、棕红、朱砂红，总之，它们都是红的；什么柠檬黄、落日黄、印度黄，反正都是“黄”。</p>
+<blockquote>
+<p>表现在光谱上，可以简单的理解为光谱的“主峰”的位置。</p>
+</blockquote>
+<h5 id="什么叫补色"><a class="markdownIt-Anchor" href="#什么叫补色"></a> 什么叫补色？</h5>
+<p>我们先假设出有一种光源，所有光谱色的能量都一样多，见下图。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407143224.png"><br>
+由于它拥有最均衡的能量分布，因此它的颜色是最理想的白色。<br>
+也可以说它是没有色调的，因为它没有主波长，完全没有“特点”嘛。</p>
+<blockquote>
+<p>这样的光源被称为等能白光，也叫“CIE标准照明体E”，CIE Illuminant E。它是被CIE定义出来作为理论研究用的，实际生活中这样的光源并不存在。</p>
+</blockquote>
+<p>从E光源的特点来看，标准白是一种最均衡的状态，没有主波长。<br>
+一旦有了主波长，就打破了这样的平衡状态，表现出某种可以描述的“特点”(色调)，假设它为A。而能够把这种非平衡的状态恢复为平衡状态的光谱，就是A的补色。</p>
+<p>换句话说，等能白光的光谱减去光谱A，得到的光谱就是A的补色的光谱。光谱A和A的补色相加，又会回到平衡状态，成为没有“特点”的白光。<br>
+如果设平衡状态的等能白光是0，那么A的补色就可以表示为(-A)。A + (-A)=0</p>
+<p><strong>注意这里说的是光谱，不是颜料。颜料的补色一加上就变黑色了。光谱叠加是加法色，颜料叠加是减法色。</strong></p>
+<h5 id="色相环"><a class="markdownIt-Anchor" href="#色相环"></a> 色相环</h5>
+<p>孟赛尔把色相大致分为两类。</p>
+<ol>
+<li>典型色：红（R）、黄 （Y）、绿 （G）、 蓝（B）、 紫 （P），一共五种。</li>
+<li>中间色：黄红 （YR）、黄绿 （GY）、蓝绿 （BG）、蓝紫 （PB）、红紫 （RP），也是五种。</li>
+</ol>
+<p>这十种颜色构成了基本色相。在基本色相中，又把每一种进一步分解成10种，标上号，从1标到10。比如，红色R被划分为1R、2R、3R……9R、10R。接下来是黄红色，划分为1YR、2YR……一直到10YR。其他颜色以此类推。。。</p>
+<blockquote>
+<p>其中最“正”的颜色，用“5”来标记。比如大红色就是“5R”。</p>
+</blockquote>
+<p>下图是孟赛尔色相环的一个示意图，图中画出了所有标号为“5”和“10”的色相。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407145628.png"></p>
+<blockquote>
+<p>色相环最大的作用，并不是把颜色一一罗列出来。而是它直观的把邻近色和互补色有机结合到了一起。<br>
+<strong>邻近色</strong>是长得像的颜色是挨到一起。<br>
+<strong>互补色</strong>是色相环上正对着的颜色。<br>
+即穿过色相环的中心点随便画一条线，这条线划到的两个颜色，就是互补色。</p>
+</blockquote>
+<h4 id="明度-value"><a class="markdownIt-Anchor" href="#明度-value"></a> 明度 Value</h4>
+<p>顾名思义，明度就是“明亮的程度”。英文按照不同的表色系统，会采用不同的单词，孟赛尔系统叫做Value，LUV体系用Luminance， 一般的可以用Brightness。</p>
+<blockquote>
+<p>明度从黑白灰开始阐述最为清楚。我们可以简单理解其为“明亮的程度”。也就是说，光的能量值的绝对大小。</p>
+</blockquote>
+<p>看图说话最容易理解：<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407150855.png"></p>
+<p>这是一个灰阶图（其实是测试摄像头动态范围的测试卡，ISO-14524）。<br>
+简单的说就是从白到黑的12个色块，放在标准灰的背景上，围成一个圈。</p>
+<p>进一步，来看看12个色块的反射谱<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407151020.png"></p>
+<p>最上面的反射率最高的线，毫无疑问就是白色色块了。从蓝色光（～400nm）到红色光（～680nm）的反射率都在80%上下。对应的，最下面的就是黑色色块。灰色的，就介于白色和黑色之间。<strong>颜色越深明度越低</strong>。</p>
+<p>以绿色为例<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407151708.png"></p>
+<p>从①到⑤，按照通俗的说法，就是颜色依次变“深”了。<br>
+但是要表述得严谨，应该描述为：色调/色饱和度保持不变，明度降低。<br>
+因为光谱特征完全没变，仅仅是光的能量值依次减小，使得明度依次降低。</p>
+<p>那么为什么不能简单的说颜色变“深”了呢？请看下图：<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407151841.png"></p>
+<p>④和⑥都比①的颜色“深”吧？但是这两个颜色深得不一样，一个仅仅是明度下降，一个明度和色饱和度都下降了。所以光说“深”是不严谨的。另外，在明度特别特别低的时候，人眼对色相的辨别能力会下降，极端情况下就直接变黑色了。</p>
+<h4 id="饱和度-chroma"><a class="markdownIt-Anchor" href="#饱和度-chroma"></a> 饱和度 Chroma</h4>
+<p><strong>颜色越纯，饱和度越高</strong></p>
+<blockquote>
+<p>这里纯，不是指颜色明亮或者鲜艳，而是颜色的<strong>色相可识别性高</strong>。——这也是为什么孟赛尔系统把饱和度定义为彩度（Chroma，C）的原因</p>
+</blockquote>
+<p>从最本质的光谱上看，能得到更深入、更直观的理解。<br>
+下图的谱线，A和B完全一样，只是B比A能量高。因此B比A明度高，并且，由于A和B的含灰量不同，A的饱和度比B要高。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407154234.png"></p>
+<h5 id="含灰量"><a class="markdownIt-Anchor" href="#含灰量"></a> 含灰量</h5>
+<p>我们已经知道，黑白灰，谱线分布是是一条平直的线。因为他们没有特征波长，所以在现代色彩学里，<strong>黑白灰，不！是！彩！色！</strong></p>
+<p><strong>颜色，是彩色和消色的总称</strong>。只有能叫出红橙黄绿青蓝紫的颜色，才叫彩色（chromatic color）。也只有彩色才有色相、明度和饱和度三种属性。</p>
+<blockquote>
+<p>黑白灰被定义为消色（即非彩色，achromatic color），没有色相属性（或者说色相可以定义为任意一个），饱和度为0，只有明度属性才对它有意义。</p>
+</blockquote>
+<p>怎么理解？</p>
+<blockquote>
+<p>我们来考虑一种极端情况，如果往正常红色颜料里不断添加灰色颜料，直到灰色占了绝大部分，原来的红色就变得越来越难以识别，直到颜料完全变成灰色。<br>
+这个过程中，灰色的不断增加，对识别原本颜色的干扰就不断增强，颜色的纯度就越低，饱和度也就下降了。</p>
+</blockquote>
+<p>再举个非极端的例子，如下图的A和B，他们的光谱分布里既有彩色的能量成分，也有消色的能量成分。B的消色成分更多，因此B的彩色部分能量占的比例更小，相应的就更难识别其颜色特征（色相），因此B的饱和度比A的要低。</p>
+<blockquote>
+<p>简言之，颜色的含灰量（含消色的量）越大，饱和度越小。</p>
+</blockquote>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407154815.png"></p>
+<p>如果把A的消色成分完全去掉，就变成C的样子，这样饱和度又进一步增加了。<br>
+这就是为什么采用铜版纸的杂志，颜色比普通纸张更鲜艳的原因。</p>
+<p>因为物体光滑的表面可以减少表面的漫反射，从而使得颜色的消色成分减少，所以光滑的物体和粗糙表面的物体相比，颜色更鲜艳。印刷品采用光滑的铜版纸、进行上光/覆膜处理，都是为了增加纸张表面的光滑度，从而提高颜色饱和度。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407154916.png"></p>
+<p>那么饱和度还可以再提高吗？可以滴！C的谱线变窄，变成D的样子，使得特征波长更加显著，颜色更加“纯粹”，从而饱和度更高。</p>
+<p>目前谱线最窄的光是激光，谱线宽度达到nm量级轻轻松松。所以市面上有用激光做光源的投影电视，号称颜色鲜艳啊色域无人比肩啊，这个的确是没说假话<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210407155132.png"></p>
+<blockquote>
+<p>最后总结一下，<strong>饱和度高=颜色纯=颜色的色相可识别性高</strong>。</p>
+</blockquote>
+<p>从光谱上来说，饱和度的概念，是描述光谱分布的相对特征的概念，需要看两点：</p>
+<ol>
+<li>特征波长自身的单色性强不强（光谱选择性）</li>
+<li>消色的干扰性强不强（含灰量）</li>
+</ol>
+<h3 id="色彩空间基础"><a class="markdownIt-Anchor" href="#色彩空间基础"></a> 色彩空间基础</h3>
 <h4 id="三原色"><a class="markdownIt-Anchor" href="#三原色"></a> 三原色</h4>
 <p>大部分人类的视网膜上有三种感知颜色的感光细胞，叫做视锥细胞，分别对不同波长的光线敏感，称为 L/M/S 型细胞。三种视锥细胞最敏感的波长分别是橙红色（长波，Long），绿色（中波，Medium），蓝色（短波，Short）。这三种视锥细胞的归一化感光曲线如下图所示。<br>
 <img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210420210406175133.png"></p>
 <blockquote>
 <p>可以看到 L 型视锥细胞与 M 型视锥细胞的感光曲线差别很小，实际上这两种视锥细胞起源于一次基因变异，在这之前人类可都是红绿色盲呢，多亏这个基因变异，让人类可以看到更加多彩的世界。</p>
 </blockquote>
-<a id="more"></a>
 <p>人类眼睛对不同颜色光线混合的反应还是 线性 的。根据 格拉斯曼定律（Grassmann’s Law），两束不同颜色的光 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>C</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">C_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>C</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">C_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，假设某个视锥细胞对他们的反应分别是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">r_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">r_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，现在将他们按照一个比例混合，得到第三种颜色 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>C</mi><mn>3</mn></msub><mo>=</mo><mi>α</mi><msub><mi>C</mi><mn>1</mn></msub><mo>+</mo><mi>β</mi><msub><mi>C</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">C_3 = \alpha C_1 + \beta C_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05278em;">β</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，那么视锥细胞对这个混合颜色的反应也将是前两个反应的线性叠加 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mn>3</mn></msub><mo>=</mo><mi>α</mi><msub><mi>r</mi><mn>1</mn></msub><mo>+</mo><mi>β</mi><msub><mi>r</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">r_3 = \alpha r_1 + \beta r_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05278em;">β</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。</p>
 <blockquote>
 <p>格拉斯曼定律是一个实验规律，并没有物理或者生物学上的依据。然而这个规律大大简化了我们对人类彩色视觉系统的建模，并且给我们使用线性代数理论分析人类彩色视觉系统提供了一个前提和基础。</p>
@@ -321,7 +440,7 @@
 <p>很多数码相机都可以设置色彩空间，常见的有 sRGB 和 Adobe RGB，从上面的图中我们可以看到， Adobe RGB 所能表达的色彩比 sRGB 要丰富很多。然而常见的网络环境下图片的色彩空间是 sRGB，有很多浏览器不能正确地解析图片自带的色彩空间说明，默认按照 sRGB 来进行解析。如果使用相机直出的 JPG 文件直接上传，或者说在后期处理过程中没有进行色彩空间转换，保留了相机设置的 Adobe RGB 空间，那么在浏览器中看到的图片很可能与 Photoshop 中看到的不一样。浏览器很可能会将一张 Adobe RGB 空间中的图片解释为 sRGB 空间下的图片，引起颜色偏差。</p>
 </blockquote>
 <h3 id="色温"><a class="markdownIt-Anchor" href="#色温"></a> 色温</h3>
-<p>色温是由英国物理学家开尔文所提出来，并以K作为此物理常量的单位，用于定义光源颜色的基础物理量。</p>
+<p>色温是由英国物理学家开尔文所提出来，并以K作为此物理常量的单位，用于定义光源颜色的基础物理量</p>
 <p>他加热一块碳（物理黑体），在低温的时候碳呈红（黄）色，随着温度的升高碳有红变白再变成浅蓝色</p>
 <blockquote>
 <p>就色彩而言，蓝色一直被认为是“冷色”，红色是“暖色”；<br>
@@ -379,6 +498,7 @@
 <li><a href="https://zhuanlan.zhihu.com/p/120054579" target="_blank" rel="noopener">我们说的 HDR 也许不是一个东西</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/59450298" target="_blank" rel="noopener">Photoshop 中的色彩平衡调整图层的原理分析</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/24214731" target="_blank" rel="noopener">色彩空间基础</a></li>
+<li><a href="https://www.zcool.com.cn/u/682060/timeLine" target="_blank" rel="noopener">颜色的前世今生</a></li>
 </ol>
 
     </div>
@@ -436,7 +556,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#色彩空间基础"><span class="nav-number">1.</span> <span class="nav-text"> 色彩空间基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三原色"><span class="nav-number">1.1.</span> <span class="nav-text"> 三原色</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#色匹配函数"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 色匹配函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设备相关的-rgb-色彩空间"><span class="nav-number">1.2.</span> <span class="nav-text"> 设备相关的 RGB 色彩空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#色温"><span class="nav-number">2.</span> <span class="nav-text"> 色温</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#与色调工具结合使用"><span class="nav-number">2.1.</span> <span class="nav-text"> 与色调工具结合使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#白平衡"><span class="nav-number">3.</span> <span class="nav-text"> 白平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直方图"><span class="nav-number">4.</span> <span class="nav-text"> 直方图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hsl"><span class="nav-number">5.</span> <span class="nav-text"> HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hsb"><span class="nav-number">6.</span> <span class="nav-text"> HSB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">7.</span> <span class="nav-text"> 引用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text"> 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#孟塞尔颜色系统"><span class="nav-number">2.</span> <span class="nav-text"> 孟塞尔颜色系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#色调-hue"><span class="nav-number">2.1.</span> <span class="nav-text"> 色调 Hue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么叫补色"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 什么叫补色？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#色相环"><span class="nav-number">2.1.2.</span> <span class="nav-text"> 色相环</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#明度-value"><span class="nav-number">2.2.</span> <span class="nav-text"> 明度 Value</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#饱和度-chroma"><span class="nav-number">2.3.</span> <span class="nav-text"> 饱和度 Chroma</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#含灰量"><span class="nav-number">2.3.1.</span> <span class="nav-text"> 含灰量</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#色彩空间基础"><span class="nav-number">3.</span> <span class="nav-text"> 色彩空间基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三原色"><span class="nav-number">3.1.</span> <span class="nav-text"> 三原色</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#色匹配函数"><span class="nav-number">3.1.1.</span> <span class="nav-text"> 色匹配函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设备相关的-rgb-色彩空间"><span class="nav-number">3.2.</span> <span class="nav-text"> 设备相关的 RGB 色彩空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#色温"><span class="nav-number">4.</span> <span class="nav-text"> 色温</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#与色调工具结合使用"><span class="nav-number">4.1.</span> <span class="nav-text"> 与色调工具结合使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#白平衡"><span class="nav-number">5.</span> <span class="nav-text"> 白平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直方图"><span class="nav-number">6.</span> <span class="nav-text"> 直方图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hsl"><span class="nav-number">7.</span> <span class="nav-text"> HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hsb"><span class="nav-number">8.</span> <span class="nav-text"> HSB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">9.</span> <span class="nav-text"> 引用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
