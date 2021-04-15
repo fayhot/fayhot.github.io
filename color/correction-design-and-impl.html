@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="调色架构设计 doka is a powerful JavaScript Image Editor that integrates with every stack">
+<meta name="keywords" content="色度学,调色">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Correction Design And Impl (调色架构设计)">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;color&#x2F;correction-design-and-impl.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="调色架构设计 doka is a powerful JavaScript Image Editor that integrates with every stack">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-04-15T02:57:54.691Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fayhot.github.io/color/correction-design-and-impl.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Correction Design And Impl (调色架构设计) | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/color/correction-design-and-impl.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Correction Design And Impl (调色架构设计)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-14 10:57:23" itemprop="dateCreated datePublished" datetime="2021-04-14T10:57:23+08:00">2021-04-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-04-15 10:57:54" itemprop="dateModified" datetime="2021-04-15T10:57:54+08:00">2021-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机图形学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="调色架构设计"><a class="markdownIt-Anchor" href="#调色架构设计"></a> 调色架构设计</h3>
+<p><a href="https://pqina.nl/doka/" target="_blank" rel="noopener">doka</a> is a powerful JavaScript Image Editor that integrates with every stack</p>
+<a id="more"></a>
+<p>####Brightness<br>
+Each channel is a floating point number with a range of 0 to 1, where 0 is unlit and 1 is fully lit. So, vec3(0, 0, 0) represents black, vec3(1, 0, 0) is red, vec3(0, 0, 1) makes blue, and vec3(1, 1, 1) is white. To increase or decrease brightness, we can add or subtract a floating point number. To change brightness, we must add or subtract an equal amount of red, green, and blue. Consider following example:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>) + <span class="number">0.5</span> <span class="comment">// yields vec3(0.5, 0.5, 0.5), so we went from black to gray</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>) + <span class="number">0.5</span> <span class="comment">// yields vec3(1.5, 0.5, 0.5), which is clamped to vec3(1, 0.5, 0.5), which makes a light shade of red</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>) - <span class="number">0.5</span> <span class="comment">// yields vec3(-0.5, -0.5, 0.5), which is clamped to vec3(0, 0, 0.5), giving us a dark shade of blue</span></span></pre></td></tr></table></figure>
+<p>Let’s do this using the color variable in a function we’ll call adjustBrightness:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustBrightness(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> color + value;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">color = adjustBrightness(color, <span class="number">0.5</span>); <span class="comment">// yields a lighter colour</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">color = adjustBrightness(color, <span class="number">-0.5</span>); <span class="comment">// yields a darker colour</span></span></pre></td></tr></table></figure>
+<h4 id="contrast"><a class="markdownIt-Anchor" href="#contrast"></a> Contrast</h4>
+<p>When we increase contrast, we want values less than 0.5 to decrease and values greater than 0.5 to increase. We can do this in two ways: write if-statements that handle values less than 0.5 differently than values greater than 0.5. Alternatively, we can do this with linear algebra. In shaders, we usually prefer a mathematical approach over a logical one.</p>
+<p>We can leverage the peculiarity of negative numbers. If we multiply both positive and negative numbers by two, they move in different directions. 2 * -0.5 yields -1, and 2 * 0.5 yields 1. We can do this by shifting the 0-1 range of colours to -0.5 to 0.5 (color - 0.5), multiply the colour with our contrast value, and shift it back to the original range (color + 0.5). Maybe this makes more sense in code:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustContrast(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> <span class="number">0.5</span> + value * (color - <span class="number">0.5</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>Because we multiply the colour with the contrast value, we can’t use 0 as a base contrast value. Any colour multiplied with 0 becomes black. Instead, our base value must be 1, because 1 * n = n. A value of &lt;1 reduces contrast and a value of &gt;1 increases contrast. We can either choose to take this into account when we pass values to the shader, or in the shader itself. I’ll choose to account for it in the shader, so we can pass a -1 to 1 value.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustContrast(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> <span class="number">0.5</span> + (<span class="number">1.0</span> + value) * (color - <span class="number">0.5</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">color = adjustContrast(color, <span class="number">0.5</span>); <span class="comment">// yields a higher contrast</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">color = adjustContrast(color, <span class="number">-0.5</span>); <span class="comment">// yields a lower contrast</span></span></pre></td></tr></table></figure>
+<h4 id="exposure"><a class="markdownIt-Anchor" href="#exposure"></a> Exposure</h4>
+<p>We have arrived at the last effect: exposure. This is similar to brightness, but the change of brightness is proportional to the luminosity of the colours. In other words, we have to multiply instead of add. We have to use 1 as the base value for the exact same reason we had to for contrast.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustExposure(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> (<span class="number">1.0</span> + value) * color;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">color = adjustExposure(color, <span class="number">0.5</span>); <span class="comment">// yields a higher exposure</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">color = adjustExposure(color, <span class="number">-0.5</span>); <span class="comment">// yields a lower exposure</span></span></pre></td></tr></table></figure>
+<h4 id="saturation"><a class="markdownIt-Anchor" href="#saturation"></a> Saturation</h4>
+<p>When we adjust saturation, we adjust the contrast between channels. A desaturated image is grayscale, so each channel has equal value (r == g == b). When we increase saturation, the contrast becomes greater. This means a colour (e.g. vec3(0.75, 0.2, 0.1)) that is fully saturated yields a colour with one channel fully lit (vec3(1, 0, 0)).</p>
+<p>When we desaturate, we’re essentially moving between a grayscale variant and the original image. We can use the same math to extrapolate the colours, increasing the saturation. WebGL gives us the mix(x, y, t) function, which performs linear interpolation, which we can use for both. If t is less than 1, we’re desaturating. If it’s greater, we’re saturating.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustSaturation(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> <span class="built_in">mix</span>(grayscale, color, <span class="number">1.0</span> + value);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>You may have noticed that grayscale isn’t defined yet. We have yet to calculate the colour if a pixel is fully desaturated. The naive way is to take the average of the channels or pick the brightness of a single channel. As human beings, we don’t perceive every red, green, and blue as equally luminous. We have to take that into account. The Web Content Accessibility Guidelines (WCAG) takes that into account and conveniently documented how we can calculate the brightness from an RGB colour in the section <a href="https://www.w3.org/TR/WCAG21/#dfn-relative-luminance" target="_blank" rel="noopener">relative luminance</a>.</p>
+<p>You know what else is convenient? Multiplying each channel with a number and taking the sum is the same as a dot product between two vectors! And GLSL has a built-in function for that! Let’s add the grayscale variable to our adjustSaturation routine:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> adjustSaturation(<span class="type">vec3</span> color, <span class="type">float</span> value) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  <span class="comment">// https://www.w3.org/TR/WCAG21/#dfn-relative-luminance</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">const</span> <span class="type">vec3</span> luminosityFactor = <span class="type">vec3</span>(<span class="number">0.2126</span>, <span class="number">0.7152</span>, <span class="number">0.0722</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  <span class="type">vec3</span> grayscale = <span class="type">vec3</span>(<span class="built_in">dot</span>(color, luminosityFactor));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  <span class="keyword">return</span> <span class="built_in">mix</span>(grayscale, color, <span class="number">1.0</span> + value);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">color = adjustSaturation(color, <span class="number">0.5</span>); <span class="comment">// yields a higher saturationP</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">color = adjustSaturation(color, <span class="number">-0.5</span>); <span class="comment">// yields a lower saturation</span></span></pre></td></tr></table></figure>
+<h4 id="colour-matrices"><a class="markdownIt-Anchor" href="#colour-matrices"></a> Colour Matrices</h4>
+<p>2ewwWe can consider a 4-component vector a 1 by 4 matrix. You may also have noticed that our functions for each effect used multiplication and addition to calculate the new colours. Instead of having a formula for each effect, we can combine them into a single colour matrix.</p>
+<p>Each row of a colour matrix is the output value of each channel and each column is the input value of each channel. Consider this colour matrix:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">r <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">b <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>If you pay attention, you probably noticed the extra column, marked w for white. We’ll discuss that later. What you’re seeing here is a colour matrix that keeps all original colours. The diagonal line of 1s tells us this is an identity matrix. If we read the row for red, we’ll see all values are nil except for the column red. This means that the output will have the same amount of red as the original–it’s unchanged. Same goes for green, blue, and alpha. Let’s consider another colour matrix:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">r <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">b <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>Pay close attention to where the 1s are. The amount of red in the output will be the same as the amount of blue of the input. The opposite is true for row blue. If we have a picture of a person wearing a red shirt and blue jeans, these colours are swapped. A red apple would become blue. Note that this matrix will affect other colours that contain red or blue. Yellow (red + green) becomes cyan (blue + green), for example. Let’s now have a look at that white column.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">r <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">b <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>The last column allows us to shift the brightness for that channel. In this case, we’ve set the offset for red to 1. This means that pixels that are black in the original would become red in the output. For more reading on colour matrices, check out SVG’s feColorMatrx. Now you know what a colour matrix is, let’s replace the calculations in our shader with a colour matrix!</p>
+<p>First, we need to pass the matrices to the shaders. Unfortunately, WebGL shaders only support matrices up to 4x4. We can cut off the white column and send it to the shader separately as a vector. Because this column offsets the brightness of each colour, I decided to name the uniform u_offset instead of u_white.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> u_matrix; <span class="comment">// the RGBA matrix</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">vec4</span> u_offset; <span class="comment">// the white column</span></span></pre></td></tr></table></figure>
+<p>Calculating the new colour is a matter of matrix multiplication, which you can do with the multiply arithmetic operator (*):</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="type">vec4</span> texel = <span class="built_in">texture2D</span>(u_map, v_uv);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">gl_FragColor</span> = u_matrix * texel + u_offset;</span></pre></td></tr></table></figure>
+<p>At this point, we have two options. We can either multiply all colour matrices in JavaScript and pass a single matrix (and vector) to our shader program, or multiply them in the shader. I’ll pass all matrices to the shader separately so we get the complete picture in a single code sample.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> u_brightnessMatrix;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">vec4</span> u_brightnessOffset;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> u_contrastMatrix;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">vec4</span> u_contrastOffset;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> u_exposureMatrix;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">vec4</span> u_exposureOffset;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">mat4</span> u_saturationMatrix;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">uniform</span> <span class="type">vec4</span> u_saturationOffset;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> main() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">  <span class="type">vec4</span> texel = <span class="built_in">texture2D</span>(u_map, v_uv);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">  <span class="type">mat4</span> matrix = u_brightnessMatrix * u_contrastMatrix * u_exposureMatrix * u_saturationMatrix;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">  <span class="type">vec4</span> <span class="keyword">offset</span> = u_brightnessOffset + u_contrastOffset + u_exposureOffset + u_saturationOffset;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">  <span class="built_in">gl_FragColor</span> = matrix * texel + <span class="keyword">offset</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>Lastly, we need to define brightness, contrast, exposure, and saturation as matrices. For brightness, we use an identity matrix and set the white column to adjust the brightness. Note that brightness does not adjust the alpha channel.</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">x = brightness (<span class="number">0</span><span class="number">-2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">r <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> x</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span> x</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">b <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span> x</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>Remember the formula for contrast? We performed multiplication and shifted the range. We can do that with a matrix too:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">x = contrast (<span class="number">0</span><span class="number">-2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">y = (<span class="number">1</span> - x) / <span class="number">2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">r x <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> y</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> x <span class="number">0</span> <span class="number">0</span> y</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">b <span class="number">0</span> <span class="number">0</span> x <span class="number">0</span> y</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>Exposure is similar to contrast, but without the brightness shift:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">x = exposure (<span class="number">0</span><span class="number">-2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  r g b a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">r x <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">g <span class="number">0</span> x <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">b <span class="number">0</span> <span class="number">0</span> x <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>We’re almost there! Let’s finish up with saturation:</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// https://www.w3.org/TR/WCAG20/#relativeluminancedef</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">lr = <span class="number">0.2126</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">lg = <span class="number">0.7152</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">lb = <span class="number">0.0722</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">s = saturation (<span class="number">0</span><span class="number">-2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">sr = (<span class="number">1</span> - s) * lr</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">sg = (<span class="number">1</span> - s) * lg</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">sb = (<span class="number">1</span> - s) * lb</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">  r    g    b    a w</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">r sr+s sg   sb   <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">g sr   sg+s sb   <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">b sr   sg   sb+s <span class="number">0</span> <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">a <span class="number">0</span>    <span class="number">0</span>    <span class="number">0</span>    <span class="number">1</span> <span class="number">0</span></span></pre></td></tr></table></figure>
+<p>Check out <a href="https://codepen.io/timseverien/pen/MWKyZWN" target="_blank" rel="noopener">the demo</a>.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E8%89%B2%E5%BA%A6%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 色度学</a>
+              <a href="/tags/%E8%B0%83%E8%89%B2/" rel="tag"><i class="fa fa-tag"></i> 调色</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/color/color-correction.html" rel="prev" title="Color Correction (调色)">
+      <i class="fa fa-chevron-left"></i> Color Correction (调色)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#调色架构设计"><span class="nav-number">1.</span> <span class="nav-text"> 调色架构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#contrast"><span class="nav-number">1.1.</span> <span class="nav-text"> Contrast</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exposure"><span class="nav-number">1.2.</span> <span class="nav-text"> Exposure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#saturation"><span class="nav-number">1.3.</span> <span class="nav-text"> Saturation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#colour-matrices"><span class="nav-number">1.4.</span> <span class="nav-text"> Colour Matrices</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+
+
+  
+
+</body>
+</html>
