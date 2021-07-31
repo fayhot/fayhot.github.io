@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="MySQL网络协议 MySQL目前有五种连接方式，分别是TCP&#x2F;IP，TLS&#x2F;SSL，Unix Sockets，Shared Memory，Named pipes.    方式 默认开启 支持系统 只支持本机 如何开启 参数配置     TCP&#x2F;IP 是 所有系统 否 –skip-networking&#x3D;yes&#x2F;no. –port –bind-address   TLS&#x2F;SSL 是 所有系统（基于">
+<meta name="keywords" content="Mysql Protocol">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql浅尝辄止">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;rd&#x2F;mysql-protocol.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="MySQL网络协议 MySQL目前有五种连接方式，分别是TCP&#x2F;IP，TLS&#x2F;SSL，Unix Sockets，Shared Memory，Named pipes.    方式 默认开启 支持系统 只支持本机 如何开启 参数配置     TCP&#x2F;IP 是 所有系统 否 –skip-networking&#x3D;yes&#x2F;no. –port –bind-address   TLS&#x2F;SSL 是 所有系统（基于">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731110149.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731111838.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731113405.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731113720.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731114831.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120452.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120604.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120653.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120911.png">
+<meta property="og:updated_time" content="2021-07-31T04:13:34.390Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731110149.png">
+
+<link rel="canonical" href="http://fayhot.github.io/rd/mysql-protocol.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Mysql浅尝辄止 | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/mysql-protocol.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql浅尝辄止
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-07-31 10:47:03 / Modified: 12:13:34" itemprop="dateCreated datePublished" datetime="2021-07-31T10:47:03+08:00">2021-07-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Research And Develop</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="mysql网络协议"><a class="markdownIt-Anchor" href="#mysql网络协议"></a> MySQL网络协议</h3>
+<p>MySQL目前有五种连接方式，分别是TCP/IP，TLS/SSL，Unix Sockets，Shared Memory，Named pipes.</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>默认开启</th>
+<th>支持系统</th>
+<th>只支持本机</th>
+<th>如何开启</th>
+<th>参数配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP/IP</td>
+<td>是</td>
+<td>所有系统</td>
+<td>否</td>
+<td>–skip-networking=yes/no.</td>
+<td>–port –bind-address</td>
+</tr>
+<tr>
+<td>TLS/SSL</td>
+<td>是</td>
+<td>所有系统（基于TCP/IP)之上</td>
+<td>否</td>
+<td>–ssl=yes/no.</td>
+<td>–ssl-* options</td>
+</tr>
+<tr>
+<td>Unix Sockets</td>
+<td>是</td>
+<td>类Unix系统</td>
+<td>是</td>
+<td>设置–socket= 来关闭.</td>
+<td>–socket=socket path</td>
+</tr>
+<tr>
+<td>Shared Memory</td>
+<td>否</td>
+<td>Windows系统</td>
+<td>是</td>
+<td>–shared-memory=on/off.</td>
+<td>–shared-memory-base-name=</td>
+</tr>
+<tr>
+<td>Named pipes</td>
+<td>否</td>
+<td>Windows系统</td>
+<td>否</td>
+<td>–enable-named-pipe=on/off.</td>
+<td>–socket=</td>
+</tr>
+</tbody>
+</table>
+<p>Unix Sockets和Shared Memory都是只支持本机的，所以如果你的程序和数据库是在一台机子的，就可以考虑这两种协议。</p>
+<a id="more"></a>
+<h4 id="mysql-handshake-packet"><a class="markdownIt-Anchor" href="#mysql-handshake-packet"></a> MySQL Handshake Packet</h4>
+<p>MySQL通信过程中数据包。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731110149.png"><br>
+用户发送CRUD操作给数据库的数据包过程：</p>
+<blockquote>
+<p>1.首先Client先与Server通过TCP三次握手建立连接<br>
+2.建立连接之后，Server发送Handshake数据包给Client，Handshake含有数据库的版本、协议版本、用于后期加密的Salt等。<br>
+3.Client接收到Server的Handshake包之后，解析其中数据，最主要是获得Salt，然后把用户名、密码（利用salt+sha1进行加密）、schema（要操作的数据库名）等信息打包成一个AuthPacket，用来认证请求。<br>
+4.Server接受到AuthPacket之后，对其的身份进行验证，验证成功发送一个OK Packet。否则发送Error Packet。<br>
+5.Client接受到OK Packet之后就发送Query Packet给Server。<br>
+6.Server返回结果查询的，将Result Packet返回给Client。<br>
+7.Client解析Result Packet完毕，发送Request Quit。<br>
+8.四次握手断开连接。</p>
+</blockquote>
+<p>客户端发送Query请求，可以看到WireShark捕获的包。<br>
+请求SQL： <code>select name form paper</code><br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731111838.png"></p>
+<blockquote>
+<p>1.首先看第一框中的三次握手，服务端与客户端先是建立连接。<br>
+2.服务端发送 Server Greeting proto=10 version=8.0.12 这个包就是HandShake。<br>
+3.Login Requset user=root db=data是客户端发送的Auth Packet。<br>
+4.服务端认证客户端的Auth Packet之后，返回一个OK Packet<br>
+5.可以看到我们只发送了一次请求:<code>select name form paper</code>，但是客户端居然有三次Request Query，实际上第一次的Query是客户端发送<code>set names uft-8</code> 的请求到服务端，指定了客户端和服务器之间传递字符的编码规则为UTF8。<br>
+第二次的Request Query是<code>set autocommit=0</code>，表示取消自动提交事务。每个SQL语句所在的事务都需要显示的“commit”才能提交事务。如果你想明确地执行事务，需要禁用自动提交模式并告诉MySQL你想让它在何时提交或回滚有关的修改。<br>
+第三次的Request Query才是我们的SQL请求。<br>
+6.服务端接受并解析了我们的请求，把结果放在Response Packet传回来。</p>
+</blockquote>
+<p>功能界面中我们还可以看到物理层、数据链路层、网络层、传输层，每一层都套自己对应协议的数据头。这块不是我们要研究的重点，重点是应用层上的数据。因为图中我选择的是一个TCP包，所以没能看到应用层。</p>
+<p>当客户端发送SQL请求到Server端时，产生了一系列Packet。第一个Packet就是下面要介绍的HandShake。</p>
+<p><strong>Handshake Packet格式</strong><br>
+Handshake packet是由Server向Client发送的初始化包，因为所有从Server向Client端发送的包都是一样的格式，前面的四个字节是包头，其中前三位代表Handshake packet数据长度，第四位是包序列号。下面是Handshake packet具体内容的格式：</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>协议版本</td>
+<td>协议版本的版本号，通常为10（0x0A）</td>
+</tr>
+<tr>
+<td>1</td>
+<td>len = strlen (server_version) + 1</td>
+<td>数据库版本</td>
+<td>长度为数据库版本字符串的长度+上标示结束的的一个字节</td>
+</tr>
+<tr>
+<td>len + 1</td>
+<td>4</td>
+<td>线程ID</td>
+<td>此次连接MySQL Server启动的线程ID</td>
+</tr>
+<tr>
+<td>len + 5</td>
+<td>8 + 1（0x00表示结束)</td>
+<td>挑战随机数（第一部分）</td>
+<td>用于后续账户密码验证</td>
+</tr>
+<tr>
+<td>len + 14</td>
+<td>2</td>
+<td>数据库提供的功能</td>
+<td>用于与客户端协商通讯方式</td>
+</tr>
+<tr>
+<td>len + 16</td>
+<td>1</td>
+<td>编码格式</td>
+<td>标识数据库目前的编码方式</td>
+</tr>
+<tr>
+<td>len + 17</td>
+<td>2</td>
+<td>服务器状态</td>
+<td>用于表示服务器状态，比如是否是事务模式或者自动提交模式</td>
+</tr>
+<tr>
+<td>len + 19</td>
+<td>2</td>
+<td>扩展的协议，数据库提供的功能</td>
+<td>用于与客户端协商通讯方式</td>
+</tr>
+<tr>
+<td>len + 21</td>
+<td>1</td>
+<td>Authentication Plugin length</td>
+<td>身份验证插件长度</td>
+</tr>
+<tr>
+<td>len + 22</td>
+<td>10</td>
+<td>保留字节</td>
+<td>未来可能会用到，预留字节</td>
+</tr>
+<tr>
+<td>len + 32</td>
+<td>12 + 1（0x00表示结束)</td>
+<td>挑战随机数（第二部分）</td>
+<td>用于后续账户密码验证</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Mysql 5.x保留字节是13位。MySQL是8.x的，包做了点修改，即len+19和len+21位的使用保留字节，所以现在只剩下10个预留字节了。</p>
+</blockquote>
+<p><strong>WireShark分析HandShake Packet</strong><br>
+上面的数据格式的描述可能不够具体，所以这里用WireShark来捕获Handshake看看数据是否真如上面所描述的。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731113405.png"><br>
+点击<code>Server Greeting proto=10 version=8.0.12</code> 可以看到从Frame物理层到<code>MySQL Protocol</code>应用层各层的具体内容。点击<code>MySQL Protocol</code>可以看到具体的十六进制的内容，以及它的ASCII码。<br>
+其中<code>Packet Length</code>和<code>Packet Number</code>就是包的数据头，从上面我们知道，<code>Packet Length</code>是占三个字节的。那么就是说0x00004a表示的就是数据长度，转为十进制发现就是74。</p>
+<blockquote>
+<p>这里有人可能会有疑惑，为什么不是0x4a0000?这是因为MySQL采用的是小端存储形式。因为小端存储方式，计算机计算会更加方便。大端存储在判定正负更方便，符号位固定为第一个字节。</p>
+<p>这里再解释一下Version这个字段，根据上面的描述，我们知道它的长度为数据库版本字符串的长度+上标示结束的一个字节。就是说实际上存储的时候还有一个0x00的字节跟着version字段表示结束符。你会发现有好多这种字段跟上结束符的数据，所以在填充数据的时候，需要把0x00也一起填上。</p>
+</blockquote>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731113720.png"></p>
+<h4 id="auth-packet-客户端认证包"><a class="markdownIt-Anchor" href="#auth-packet-客户端认证包"></a> Auth Packet 客户端认证包</h4>
+<p>Auth Packet主要是发送用户的信息、密码、Schema等，其中密码需要HandShake中Salt。所以在发送Auth Packet，需要先解析出Salt，然后对密码进行加密，之后再一起打包发送。</p>
+<p><strong>Auth Packet数据格式</strong><br>
+与HandShake相同，前面的四个字节是包头，其中前三位代表Handshake packet数据长度，第四位是包序列号。</p>
+<p>以下是Auth四字节后的内容。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度</th>
+<th>（字节）</th>
+<th>名称	描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>2</td>
+<td>协议协商</td>
+<td>用于与服务端协商通讯方式</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>扩展的协议</td>
+<td>用于与服务端协商通讯方式</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>消息最长长度</td>
+<td>客户端可以发送或接收的最长长度，0表示不做任何限制</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>字符编码</td>
+<td>客服端字符编码方式</td>
+</tr>
+<tr>
+<td>9</td>
+<td>23</td>
+<td>保留字节</td>
+<td>未来可能会用到，预留字节，用0代替</td>
+</tr>
+<tr>
+<td>32</td>
+<td>不定长</td>
+<td>认证字符串</td>
+<td>用户名：NullTerminatedString格式编码</td>
+</tr>
+<tr>
+<td>不定</td>
+<td>不定长</td>
+<td>认证密码</td>
+<td>加密后的密码：LengthEncodedString格式编码</td>
+</tr>
+<tr>
+<td>不定</td>
+<td>不定长</td>
+<td>数据库名称</td>
+<td>NullTerminatedString格式编码</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>NullTerminatedString（Null结尾方式）: 字符串以遇到Null作为结束标志，相应的字节为0x00<br>
+LengthEncodedString（指定字符串长度方式）</p>
+</blockquote>
+<p><strong>Mysql 5.x协议协商是4个字节的，MySQL8.x的协议协商被拆成了两部分。用两个字节表示多出来了扩展的协议。</strong></p>
+<p><strong>Wireshark分析Auth Packet</strong></p>
+<p>用WireShark来分析一下Auth Packet的数据格式。点击<code>Login Request user=root db=data</code>可以看到Auth包的具体内容。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731114831.png"><br>
+这里着重解释一下Password，首先这个数据长度是指定的，即图中显示为20个字节。而这个加密的密码是根据HandShake中的两个Salt来的，HandShake中第一个Salt是8位的，第二个Salt是12位的。根据两个Salt最后得到加密后的密码。</p>
+<blockquote>
+<p>这部分内容是由客户端自己生成，所以说如果我们如果要写一个程序连接数据库，那么这个包就得按照这个格式，不然服务端将会无法识别。</p>
+</blockquote>
+<p><strong>加密方式</strong></p>
+<p>生成Auth Packet的过程中，需要将密码加密再发送。MySQL4.1x之前的版本采用的是323加密方式，4.1.x之后采用了411的加密方式。这块加密还不够熟悉，所以后面需要补一下。不过在网上可以找到对应的代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mysql</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	<span class="string">"crypto/sha1"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	<span class="string">"math"</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> SCRAMBLE_LENGTH_323 = <span class="number">8</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Random struct, see libmysql/password.c</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> randStruct <span class="keyword">struct</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">	maxValue    <span class="keyword">uint32</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">	maxValueDbl <span class="keyword">float64</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">	seed1       <span class="keyword">uint32</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">	seed2       <span class="keyword">uint32</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initialise rand struct, see libmysql/password.c</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">randominit</span><span class="params">(seed1, seed2 <span class="keyword">uint32</span>)</span> *<span class="title">randStruct</span></span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span> &amp;randStruct&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">		maxValue:    <span class="number">0x3FFFFFFF</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">		maxValueDbl: <span class="number">0x3FFFFFFF</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">		seed1:       seed1 % <span class="number">0x3FFFFFFF</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">		seed2:       seed2 % <span class="number">0x3FFFFFFF</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Generate a random number, see libmysql/password.c</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *randStruct)</span> <span class="title">myRnd</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">	r.seed1 = (r.seed1*<span class="number">3</span> + r.seed2) % r.maxValue</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">	r.seed2 = (r.seed1 + r.seed2 + <span class="number">33</span>) % r.maxValue</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span> <span class="keyword">float64</span>(r.seed1) / r.maxValueDbl</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Password hash used in pre-4.1, see libmysql/password.c</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hashPassword</span><span class="params">(password []<span class="keyword">byte</span>)</span> []<span class="title">uint32</span></span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line">	nr := <span class="keyword">uint32</span>(<span class="number">1345345333</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">	add := <span class="keyword">uint32</span>(<span class="number">7</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">	nr2 := <span class="keyword">uint32</span>(<span class="number">0x12345671</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(password); i++ &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">if</span> password[i] == <span class="string">' '</span> || password[i] == <span class="string">'\t'</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line">			<span class="keyword">continue</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">		tmp := <span class="keyword">uint32</span>(password[i])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line">		nr ^= (((nr &amp; <span class="number">63</span>) + add) * tmp) + (nr &lt;&lt; <span class="number">8</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">46</span></pre></td><td class="code"><pre><span class="line">		nr2 += (nr2 &lt;&lt; <span class="number">8</span>) ^ nr</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">47</span></pre></td><td class="code"><pre><span class="line">		add += tmp</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">48</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">49</span></pre></td><td class="code"><pre><span class="line">	result := <span class="built_in">make</span>([]<span class="keyword">uint32</span>, <span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">50</span></pre></td><td class="code"><pre><span class="line">	result[<span class="number">0</span>] = nr &amp; ((<span class="number">1</span> &lt;&lt; <span class="number">31</span>) - <span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">51</span></pre></td><td class="code"><pre><span class="line">	result[<span class="number">1</span>] = nr2 &amp; ((<span class="number">1</span> &lt;&lt; <span class="number">31</span>) - <span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">52</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span> result</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">53</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">54</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">55</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Encrypt password the pre-4.1 way, see libmysql/password.c</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">56</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scramble323</span><span class="params">(message, password []<span class="keyword">byte</span>)</span> <span class="params">(result []<span class="keyword">byte</span>)</span></span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">57</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(password) == <span class="number">0</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">58</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">return</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">59</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">60</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Check message is no longer than max length</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">61</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(message) &gt; SCRAMBLE_LENGTH_323 &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">62</span></pre></td><td class="code"><pre><span class="line">		message = message[:SCRAMBLE_LENGTH_323]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">63</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">64</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Generate hashes</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">65</span></pre></td><td class="code"><pre><span class="line">	hashPass := hashPassword(password)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">66</span></pre></td><td class="code"><pre><span class="line">	hashMessage := hashPassword(message)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">67</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Initialise random struct</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">68</span></pre></td><td class="code"><pre><span class="line">	rand := randominit(hashPass[<span class="number">0</span>]^hashMessage[<span class="number">0</span>], hashPass[<span class="number">1</span>]^hashMessage[<span class="number">1</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">69</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Generate result</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">70</span></pre></td><td class="code"><pre><span class="line">	result = <span class="built_in">make</span>([]<span class="keyword">byte</span>, SCRAMBLE_LENGTH_323)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">71</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; SCRAMBLE_LENGTH_323; i++ &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">72</span></pre></td><td class="code"><pre><span class="line">		result[i] = <span class="keyword">byte</span>(math.Floor(rand.myRnd()*<span class="number">31</span>) + <span class="number">64</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">73</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">74</span></pre></td><td class="code"><pre><span class="line">	extra := <span class="keyword">byte</span>(math.Floor(rand.myRnd() * <span class="number">31</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">75</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; SCRAMBLE_LENGTH_323; i++ &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">76</span></pre></td><td class="code"><pre><span class="line">		result[i] ^= extra</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">77</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">78</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">79</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">80</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">81</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Encrypt password using 4.1+ method</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">82</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scramble41</span><span class="params">(message, password []<span class="keyword">byte</span>)</span> <span class="params">(result []<span class="keyword">byte</span>)</span></span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">83</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(password) == <span class="number">0</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">84</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">return</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">85</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">86</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// stage1_hash = SHA1(password)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">87</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// SHA1 encode</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">88</span></pre></td><td class="code"><pre><span class="line">	crypt := sha1.New()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">89</span></pre></td><td class="code"><pre><span class="line">	crypt.Write(password)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">90</span></pre></td><td class="code"><pre><span class="line">	stg1Hash := crypt.Sum(<span class="literal">nil</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">91</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// token = SHA1(SHA1(stage1_hash), scramble) XOR stage1_hash</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">92</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// SHA1 encode again</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">93</span></pre></td><td class="code"><pre><span class="line">	crypt.Reset()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">94</span></pre></td><td class="code"><pre><span class="line">	crypt.Write(stg1Hash)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">95</span></pre></td><td class="code"><pre><span class="line">	stg2Hash := crypt.Sum(<span class="literal">nil</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">96</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// SHA1 2nd hash and scramble</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">97</span></pre></td><td class="code"><pre><span class="line">	crypt.Reset()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">98</span></pre></td><td class="code"><pre><span class="line">	crypt.Write(message)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">99</span></pre></td><td class="code"><pre><span class="line">	crypt.Write(stg2Hash)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">100</span></pre></td><td class="code"><pre><span class="line">	stg3Hash := crypt.Sum(<span class="literal">nil</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">101</span></pre></td><td class="code"><pre><span class="line">	<span class="comment">// XOR with first hash</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">102</span></pre></td><td class="code"><pre><span class="line">	result = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">20</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">103</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> result &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">104</span></pre></td><td class="code"><pre><span class="line">		result[i] = stg3Hash[i] ^ stg1Hash[i]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">105</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">106</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">return</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">107</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<h5 id="mysql协议okerror包解析"><a class="markdownIt-Anchor" href="#mysql协议okerror包解析"></a> MySQL协议OK/Error包解析</h5>
+<p>OK/Error Packet是由Server端向Client发送的请求回应。下面主要来解析一下这两个Packet，以及解释一下为什么Wireshark抓到的包与网上的格式有所差别。</p>
+<p><strong>OK Packet 数据格式</strong></p>
+<p>普通的OK包会在以下几种情况下产生，由Server发送给相应的接收方：</p>
+<ul>
+<li>COM_PING: 连接或者测试数据库</li>
+<li>COM_QUERY： 不需要查询结果集的操作，比如INSERT, UPDATE, or ALTER TABLE</li>
+<li>COM_REFRESH： 数据刷新</li>
+<li>COM_REGISTER_SLAVE： 注册从服务器</li>
+</ul>
+<p>首先前面的四个字节是包头，其中前三位代表packet数据长度，第四位是包序列号。以下是OK Packet的四字节后的内容。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>包头标识</td>
+<td>0x00 代表这是一个OK 包</td>
+</tr>
+<tr>
+<td>1</td>
+<td>rows_len</td>
+<td>影响行数</td>
+<td>相应操作影响的行数，比如一个Update操作的记录是5条，那么这个值就为5</td>
+</tr>
+<tr>
+<td>1 + rows_len</td>
+<td>id_len</td>
+<td>自增id</td>
+<td>插入一条记录时，如果是自增id的话，返回的id值</td>
+</tr>
+<tr>
+<td>1 + rows_len + id_len</td>
+<td>2</td>
+<td>服务器状态</td>
+<td>用于表示服务器状态，比如是否是事务模式或者自动提交模式</td>
+</tr>
+<tr>
+<td>3 + rows_len + id_len</td>
+<td>2</td>
+<td>警告数</td>
+<td>上次命令引起的警告数</td>
+</tr>
+<tr>
+<td>5 + rows_len + id_len</td>
+<td>msg_len</td>
+<td>额外信息</td>
+<td>此次操作的一些额外信息</td>
+</tr>
+</tbody>
+</table>
+<p>初看这个格式，你们会发现你们的OK包和上面的数据格式是对不上的。用WireShark来解析一下。</p>
+<p><strong>第一个点就是包头标志</strong>。<br>
+用Wireshark分析的时候，可以看到<code>MySQL Protocol</code>中没有包头标志这个数据的。但是实际上你看具体的16进制数据会发现，<code>Packet Number</code>和 <code>Affected Rows</code>之间还有<code>0x00</code>就是我框出来的<code>00</code>。所以数据还是有的，只是<code>MySQL Protocol</code>没有显示而已。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731120452.png"><br>
+<strong>第二个点是是自增id</strong>。<br>
+在上面的包中也没有显示，但是在下面具体数据中可以看到Affected Rows和Server status还有一个0x00来存放自增长ID。当我们执行插入语句时就会发现这个字段就可以看到了。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731120604.png"><br>
+<strong>第三个点是额外信息</strong>。<br>
+在执行更新操作时，就可以看到额外信息了。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731120653.png"><br>
+宗上面的分析，<code>OK Packet</code>的格式是能对应上的，只是根据不同SQL请求，字段的数据才会显示出来。</p>
+<p><strong>Error Packet数据格式</strong><br>
+同样下面是第四字节后具体内容。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>包头标识</td>
+<td>0xFF 代表这是一个Error 包</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>错误代码</td>
+<td>该错误的相应错误代码</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>标识位</td>
+<td>SQL执行状态标识位，用’#’进行标识</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>执行状态</td>
+<td>SQL的具体执行状态</td>
+</tr>
+<tr>
+<td>9</td>
+<td>msg_len</td>
+<td>错误信息</td>
+<td>具体的错误信息</td>
+</tr>
+</tbody>
+</table>
+<p>Wireshark分析的界面如下，最重要的信息是错误msg。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731120911.png"></p>
+<h4 id="mysql协议result-set包解析"><a class="markdownIt-Anchor" href="#mysql协议result-set包解析"></a> MySQL协议Result Set包解析</h4>
+<p>当执行了<code>INSERT、UPDATE、ALTER TABLE</code>操作时，会生成对应的<code>OK/Error</code>包。接下来要说明的是<code>SELECT</code>结果<code>Result Set</code>的解析。<code>Result Set</code>会涉及到了多个不同结构的包，有<code>Column_Count、Column_Def、EOF、Row</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Mysql-Protocol/" rel="tag"><i class="fa fa-tag"></i> Mysql Protocol</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/color/correction-design-and-impl.html" rel="prev" title="Correction Design And Impl (调色架构设计)">
+      <i class="fa fa-chevron-left"></i> Correction Design And Impl (调色架构设计)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql网络协议"><span class="nav-number">1.</span> <span class="nav-text"> MySQL网络协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql-handshake-packet"><span class="nav-number">1.1.</span> <span class="nav-text"> MySQL Handshake Packet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#auth-packet-客户端认证包"><span class="nav-number">1.2.</span> <span class="nav-text"> Auth Packet 客户端认证包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mysql协议okerror包解析"><span class="nav-number">1.2.1.</span> <span class="nav-text"> MySQL协议OK/Error包解析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql协议result-set包解析"><span class="nav-number">1.3.</span> <span class="nav-text"> MySQL协议Result Set包解析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
