@@ -66,7 +66,15 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120604.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120653.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731120911.png">
-<meta property="og:updated_time" content="2021-07-31T04:13:34.390Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731122252.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731122804.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731123120.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731123241.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731123357.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731123528.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731125716.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731130530.png">
+<meta property="og:updated_time" content="2021-07-31T05:09:37.481Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210731110149.png">
 
@@ -247,7 +255,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-07-31 10:47:03 / Modified: 12:13:34" itemprop="dateCreated datePublished" datetime="2021-07-31T10:47:03+08:00">2021-07-31</time>
+              <time title="Created: 2021-07-31 10:47:03 / Modified: 13:09:37" itemprop="dateCreated datePublished" datetime="2021-07-31T10:47:03+08:00">2021-07-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -657,6 +665,319 @@ LengthEncodedString（指定字符串长度方式）</p>
 <img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731120911.png"></p>
 <h4 id="mysql协议result-set包解析"><a class="markdownIt-Anchor" href="#mysql协议result-set包解析"></a> MySQL协议Result Set包解析</h4>
 <p>当执行了<code>INSERT、UPDATE、ALTER TABLE</code>操作时，会生成对应的<code>OK/Error</code>包。接下来要说明的是<code>SELECT</code>结果<code>Result Set</code>的解析。<code>Result Set</code>会涉及到了多个不同结构的包，有<code>Column_Count、Column_Def、EOF、Row</code>。</p>
+<p>Result Set包简析<br>
+用一张图片来简单解析一下每个包的具体作用。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731122252.png"><br>
+从上图来看，客户端发送一个select的com_query包之后，DB会按照下列步骤返回：</p>
+<blockquote>
+<p>1.返回一个<code>Protocol::LengthEncodedInteger</code> ，其中数据为<code>column_count</code>.（该表的显示返回中字段的个数）<br>
+2.接下来会跟<code>column_count</code>个<code>Protocol::ColumnDefinition</code> 包(对每一个字段的说明).<br>
+3.再读取一个<code>eof</code>包表示<code>ColumnDefinition</code>包流结束.<br>
+4.读取n个Row包，Row含有请求的数据值。<br>
+5.如果读到任何一个error包之后，从此读取结束，抛出错误.<br>
+6.或者你读取到了第二个eof包，按照正常顺序这里就会结束了.</p>
+<blockquote>
+<p>但是如果<code>eof</code>包中的<code>status &amp; SERVER_MORE_RESULT_EXISTS</code>不为0，表明还有<code>ResultSet</code>,则返回到步骤1，开始读取下一个<code>ResultSet</code>.</p>
+</blockquote>
+</blockquote>
+<p><strong>Column_count Packet</strong><br>
+该包前四个字节表示的包的字节长度以及包的序列号。后面存放的是一个类型为<code>LengthEncodeInteger</code>表示结果中含有几个列。Number of fields显示该返回字段有2列。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731122804.png"></p>
+<p><strong>Column_def Packet</strong><br>
+该包前四个字节表示的包的字节长度以及包的序列号。后四字节为以下内容。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度</th>
+<th>（字节）	名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>不定长</td>
+<td>catalog</td>
+<td>目录，通常为def</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>不定长</td>
+<td>schema</td>
+<td>操作的数据库</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>不定长</td>
+<td>table</td>
+<td>操作的虚拟表名</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>不定长</td>
+<td>org_table</td>
+<td>操作的物理表名</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>不定长</td>
+<td>name</td>
+<td>虚拟列字段名</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>不定长</td>
+<td>org_name</td>
+<td>物理列字段名</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>0x0c</td>
+<td>length of fixed-length fields</td>
+<td>以下字段长度</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>2</td>
+<td>character</td>
+<td>列字符集</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>4</td>
+<td>length</td>
+<td>字段最大长度</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>1</td>
+<td>type</td>
+<td>字段类型</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>2</td>
+<td>flags</td>
+<td>标志</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>1</td>
+<td>decimals</td>
+<td>??</td>
+</tr>
+<tr>
+<td>不定长</td>
+<td>2</td>
+<td>预留字节数</td>
+<td>预留字节数</td>
+</tr>
+</tbody>
+</table>
+<p>以下是Wireshark对column_def的解析截图。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731123120.png"></p>
+<p><strong>EOF Packet</strong></p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>包头标识	0xFE</td>
+<td>代表这是一个EOF 包</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>警告数</td>
+<td>上次命令引起的警告数</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td>服务器状态</td>
+<td>服务器状态</td>
+</tr>
+</tbody>
+</table>
+<p>以下是Wireshark的数据截图。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731123241.png"></p>
+<p><strong>Row Packet</strong><br>
+Row Data含着的是我们需要获取的数据，一个<code>Result Set</code>包里面包含着多个<code>Row Data</code>结构。每一个值前面有长度字节值，可以帮助我们区分开不同的列。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>不定</td>
+<td>length</td>
+<td>这个字段的数据长度</td>
+</tr>
+<tr>
+<td>不定</td>
+<td>不定</td>
+<td>value</td>
+<td>这个字段的值</td>
+</tr>
+</tbody>
+</table>
+<p>Wireshark显示Row的数据，虽然只显示了text，但是点击十六进制的数据，还是能看到length的数据。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731123357.png"></p>
+<h4 id="mysql协议quit包"><a class="markdownIt-Anchor" href="#mysql协议quit包"></a> MySQL协议Quit包</h4>
+<p>用户端想要断开连接时，需要往服务端发送一个Quit Packet。这个包比较简单，下面直接看其数据结构。</p>
+<p><strong>Quit Packet</strong><br>
+首先前面的四个字节是包头，其中前三位代表packet数据长度，第四位是包序列号。以下是Quit Packet的四字节后的内容。只有一个标志位数据。</p>
+<table>
+<thead>
+<tr>
+<th>相对包内容的位置</th>
+<th>长度（字节）</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>包头标识	0x01</td>
+<td>代表这是一个Quit 包</td>
+</tr>
+</tbody>
+</table>
+<p>下面是WireShark捕获的Quit Packet。可以看到其标识位的数据<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731123528.png"></p>
+<h4 id="字节位运算细节"><a class="markdownIt-Anchor" href="#字节位运算细节"></a> 字节位运算细节</h4>
+<p>前面主要是讲解各个MySQL协议通信过程中涉及到的Packet。下面主要是讲解如何根据Packet的结构，将需要的字节按照一定的顺序写入Packet中。</p>
+<p><strong>低字节转高字节存在的问题</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">byte</span> x = -<span class="number">126</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    System.out.println(Integer.toBinaryString(x &amp; <span class="number">0xff</span>));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    System.out.println(Integer.toBinaryString(x));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>既然byte是八位的二进制，那和<code>0xff</code>做<code>&amp;</code>运算的意义是什么呢？<code>x&amp;0xff</code>难道不还是<code>x</code>吗！</p>
+<p>的确是的，但是在做<code>&amp;</code>运算的时候<code>0xff</code>表示的是一个<code>int</code>类型，而<code>x</code>在与<code>int</code>做运算的时候，就需要做<code>byte</code>到<code>int</code>的一个转化。转化的过程为：</p>
+<ul>
+<li>当byte为一个负值，会将8位的byte填充至32位，用1来填充。也就是说<code>byte x = -126</code> 原本是<code>1000 0010</code>，变成<code>1111 1111 .... 1000 0010</code>。</li>
+<li>当byte为一个正值，用0来填充，这时候是没有影响的。原本是<code>1000 0010</code> 变成<code>0000 0000... 1000 0010</code></li>
+</ul>
+<p><code>x = -126</code>.考虑第一种情况，<code>x</code>填充成<code>1111 1111.... 1000 0010</code>再与<code>0xff</code>做<code>&amp;</code>运算，最后变成了<code>1000 0010</code>。</p>
+<p><strong><code>i &amp; 0xff</code>的意义</strong><br>
+上面的输出虽然得到了解释，但是对<code>i &amp; 0xff</code>的意义还未认识到位。首先<code>byte x =-126</code>,在填充成int类型后变成了<code>1111 1111 .... 1000 0010</code>，虽然二进制表示的十进制还是<code>-126</code>的，但是<code>x</code>在内存中存储的进制已经发生了变化。<strong>我希望就算它是被int类型填充，它的二进制还是保持为原来的。即使它的十进制不一样</strong>。</p>
+<blockquote>
+<p>很多时候，我们要求的就是二进制唯一性。举个列子，从服务端发送的来了一个Handshake，第四位表示的一个包的序列号，用一个字节来表示。假设服务端的<code>packed number</code>为-5，我们解析这个包的同时，也需要用一个字节来保存，如果这个时候我不用字节来存，而是用一个int来存，是不是就存在上面低字节转高字节的问题。<br>
+会导致原本是-5的byte二进制<code>1111 1011</code>，变成了<code>1111 1111.... 1111 1011</code>。所以为了解决二进制不唯一的问题就要利用<code>&amp; 0xff</code> 来避免。</p>
+</blockquote>
+<p><strong>所以当我们在做低位向高位转化，并且涉及到的是进制上的运算，就需要用到&amp;0xff</strong>。</p>
+<h4 id="packet-read-write"><a class="markdownIt-Anchor" href="#packet-read-write"></a> Packet Read &amp; Write</h4>
+<p>主要用代码去实现，如何将Server端反馈回来的包，进行解析。如下图，完成三次握手之后，服务端发送了一个handshake packet。我们要做的是定义好handshake的类，以及实现将字节到类的转化。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731125716.png"></p>
+<p><strong>Handshake类的实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HandshakePacket</span> <span class="keyword">extends</span> <span class="title">MysqlPacket</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">byte</span> protocolVersion;<span class="comment">//版本协议</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">byte</span>[] serverVersion;<span class="comment">//版本号</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">long</span> threadId;<span class="comment">//执行的线程号</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">byte</span>[] seed;<span class="comment">//用于后期加密的salt1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> serverCapabilities;<span class="comment">//通信的协议</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">byte</span> serverCharsetIndex;<span class="comment">//编码格式</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> serverStatus;<span class="comment">//服务端的状态</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">byte</span>[] restOfScrambleBuff;<span class="comment">//这个其实就是seed2</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>MysqlPacket是所有包的基础类，含有包的长度以及包的序列号。read和write是其两个抽象方法。这里主要是讲解Packet如何根据数据类型来实现read。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MysqlPacket</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> packetLength;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">public</span> <span class="keyword">byte</span> packetId;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span>[] data)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(ByteBuffer buffer)</span></span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>Packet Read实现的思路<br>
+首先来看packetLength是如何获取的。该数据是占用三个字节的。所以有下面的方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment">* 使用0xff，当低位的数据byte向高位的数据进行转化的时候要考虑到二进制的唯一性。</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">**/</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">readUB3</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">final</span> <span class="keyword">byte</span>[] b = <span class="keyword">this</span>.data;<span class="comment">//data是服务端发送给我们的handshark字节数组</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">int</span> i = b[position++] &amp; <span class="number">0xff</span>;<span class="comment">//position表示当前字节的读取位置，初始值位0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">   i |= (b[position++] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">8</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">   i |= (b[position++] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">16</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">return</span> i;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>同理像packetId、protocolVersion只用一个字节就可以存放的，就可以用下面的方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">byte</span> <span class="title">read</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">return</span> data[position++] ;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>有一个要注意的是如果某个字段占用较大的字节数，如threadID该字段需要占用了四个字节。如果用int来存储就会有问题。因为已经表明了该字段需要四个字节，虽然int是四个字节，但是其最高位是表示符号的。所以int来放最多只能表示3个字节+7位。</p>
+<p>所以为了溢出需要用long来存储。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">readUB4</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">final</span> <span class="keyword">byte</span>[] b = <span class="keyword">this</span>.data;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">long</span> l = (<span class="keyword">long</span>) (b[position++] &amp; <span class="number">0xff</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">   l |= (<span class="keyword">long</span>) (b[position++] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">8</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   l |= (<span class="keyword">long</span>) (b[position++] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">16</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   l |= (<span class="keyword">long</span>) (b[position++] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">24</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">return</span> l;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>特殊的字段还有salt，根据它存储格式描述来看，它是以null为结尾的数据，所以实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] readBytesWithNull() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">final</span> <span class="keyword">byte</span>[] b = <span class="keyword">this</span>.data;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">int</span> offset = -<span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = position; i &lt; length; i++) &#123;<span class="comment">//用来存放找到的第一个null位置</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">if</span> (b[i] == <span class="number">0</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">            offset = i;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">break</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">switch</span> (offset) &#123;<span class="comment">//根据null的位置进行操作</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> -<span class="number">1</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">byte</span>[] ab1 = <span class="keyword">new</span> <span class="keyword">byte</span>[length - position];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">            System.arraycopy(b, position, ab1, <span class="number">0</span>, ab1.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">            position = length;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">return</span> ab1;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">            position++;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">return</span> EMPTY_BYTES;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">default</span>:<span class="comment">//通常是进入到这个方法体中</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">byte</span>[] ab2 = <span class="keyword">new</span> <span class="keyword">byte</span>[offset - position];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">            System.arraycopy(b, position, ab2, <span class="number">0</span>, ab2.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">            position = offset + <span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">return</span> ab2;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>特殊的字段还有Auth Packet中的password，其数据格式为LengthEncodedString，即在password之前有一个表示该字段的长度。</p>
+<p>使用LengthEncodedInteger编码的整数可能会使用1, 3, 4, 或者9 个字节，具体使用字节取决于数值的大小，下表是不同的数据长度的整数所使用的字节数：</p>
+<table>
+<thead>
+<tr>
+<th>最小值（包含）</th>
+<th>最大值（不包含）</th>
+<th>存储方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>251</td>
+<td>1个字节</td>
+</tr>
+<tr>
+<td>251</td>
+<td>2^16</td>
+<td>3个字节(0xFC + 2个字节具体数据)</td>
+</tr>
+<tr>
+<td>2^16</td>
+<td>2^24</td>
+<td>4个字节(0xFD + 3个字节具体数据)</td>
+</tr>
+<tr>
+<td>2^24</td>
+<td>2^64</td>
+<td>9个字节(0xFE + 8个字节具体数据)</td>
+</tr>
+</tbody>
+</table>
+<p>其read方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] readBytesWithLength() &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">int</span> length = (<span class="keyword">int</span>) readLength();<span class="comment">//获取长度的方法</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (length == NULL_LENGTH) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (length &lt;= <span class="number">0</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> EMPTY_BYTES;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">byte</span>[] ab = <span class="keyword">new</span> <span class="keyword">byte</span>[length];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">   System.arraycopy(data, position, ab, <span class="number">0</span>, ab.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">   position += length;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">return</span> ab;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">readLength</span><span class="params">()</span> </span>&#123;<span class="comment">//根据读到的一个字节值，来判断实际的长度，</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">int</span> length = data[position++] &amp; <span class="number">0xff</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">switch</span> (length) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">case</span> <span class="number">251</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> NULL_LENGTH;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">case</span> <span class="number">252</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> readUB2();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">case</span> <span class="number">253</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> readUB3();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">case</span> <span class="number">254</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> readLong();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">default</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> length;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>还有如Auth packet中的Username是一个NullTerminatedString格式的数据，其read方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">readStringWithNull</span><span class="params">()</span> </span>&#123;<span class="comment">//实现和readBytesWithNUll其实是类似的</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">final</span> <span class="keyword">byte</span>[] b = <span class="keyword">this</span>.data;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (position &gt;= length) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">int</span> offset = -<span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = position; i &lt; length; i++) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">if</span> (b[i] == <span class="number">0</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">         offset = i;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">         <span class="keyword">break</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">      &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (offset == -<span class="number">1</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">      String s = <span class="keyword">new</span> String(b, position, length - position);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">      position = length;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> s;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (offset &gt; position) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">      String s = <span class="keyword">new</span> String(b, position, offset - position);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">      position = offset + <span class="number">1</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> s;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">   &#125; <span class="keyword">else</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">      position++;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>上面讲解如何将服务端中代码解析到具体的类中，接下来主要来讲解如何将一个包的数据，按照协议的要求发出。</p>
+<p>如服务端需要接受Client的一个Auth，格式要求如下：<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210731130530.png"></p>
+<p><strong>Produce Auth Packet</strong><br>
+具体步骤是先生成<code>AuthPacket</code>，然后将对应的数据附上。然后调用<code>auth.write(buffer)</code>，将数据写入到<code>buffer</code>中。</p>
+<p>再调用<code>buffer.get(bytes, 0, bytes.length)</code>把<code>buffer</code>转为二进制数据返回bytes，然后利用socket编程将bytes传给Server端。这里主要针对<code>auth.write(buffer)</code>进行说明。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * 根据handshake包中的salt1和salt2生成加密的密码，将用户名、密码、数据库名一起打包成authPacket发送给服务端</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@param</span> rand1 salt1长度为8</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@param</span> rand2 salt2长度为12</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@param</span> user 用户名</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@param</span> password 未加密的密码</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@param</span> database 要操作的数据库名</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    * <span class="doctag">@return</span> 返回auth packet的二进制</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="comment">    */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] produceAuthPacket(<span class="keyword">byte</span>[] rand1,<span class="keyword">byte</span>[] rand2, String user , String password,String database) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">byte</span>[] seed = <span class="keyword">new</span> <span class="keyword">byte</span>[rand1.length + rand2.length];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">       System.arraycopy(rand1, <span class="number">0</span>, seed, <span class="number">0</span>, rand1.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">       System.arraycopy(rand2, <span class="number">0</span>, seed, rand1.length, rand2.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">       AuthPacket auth = <span class="keyword">new</span> AuthPacket();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">       auth.packetId = <span class="number">1</span>;<span class="comment">//包的序列号</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">       auth.clientFlags = getClientCapabilities();<span class="comment">//客户端协议</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">       auth.maxPacketSize = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>;<span class="comment">//包的最大值</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">       auth.user = user;<span class="comment">//用户名</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">try</span> &#123;<span class="comment">//利用salt1,salt2对password进行加密</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">           auth.password = SecurityUtil</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">                   .scramble411(password.getBytes(), seed);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">       &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">           e.printStackTrace();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">       &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">       auth.database = database;<span class="comment">//操作的数据库名</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">       ByteBuffer buffer = ByteBuffer.allocate(<span class="number">256</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">       auth.write(buffer);<span class="comment">//将数据的二进制写入buffer中</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">       buffer.flip();</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[buffer.remaining()];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">       buffer.get(bytes, <span class="number">0</span>, bytes.length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">       <span class="keyword">return</span> bytes;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr></table></figure>
+<p>这里讲一些特殊字段的write，如长度为4字节的clientFlags。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果是存入四个字节，其实是不能使用int的，因为24-32位是有符号位的，所以这里需要使用Long，这样可以保证前32表示的都是值</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeUB4</span><span class="params">(ByteBuffer buffer, <span class="keyword">long</span> l)</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   buffer.put((<span class="keyword">byte</span>) (l &amp; <span class="number">0xff</span>));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">   buffer.put((<span class="keyword">byte</span>) (l &gt;&gt;&gt; <span class="number">8</span>));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   buffer.put((<span class="keyword">byte</span>) (l &gt;&gt;&gt; <span class="number">16</span>));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">   buffer.put((<span class="keyword">byte</span>) (l &gt;&gt;&gt; <span class="number">24</span>));</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>还有数据后跟着null的字段，如username。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeWithNull</span><span class="params">(ByteBuffer buffer, <span class="keyword">byte</span>[] src)</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   buffer.put(src);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   buffer.put((<span class="keyword">byte</span>) <span class="number">0</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>还有在插入数据前，写入长度的数据，如password。因为表示长度的数据是一个LengthEncodedInteger，所以根据长度的大小，先要插入一个标志符，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>最小值（包含）</th>
+<th>最大值（不包含）</th>
+<th>存储方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>251</td>
+<td>1个字节</td>
+</tr>
+<tr>
+<td>251</td>
+<td>2^16</td>
+<td>3个字节(0xFC + 2个字节具体数据)</td>
+</tr>
+<tr>
+<td>2^16</td>
+<td>2^24</td>
+<td>4个字节(0xFD + 3个字节具体数据)</td>
+</tr>
+<tr>
+<td>2^24</td>
+<td>2^64</td>
+<td>9个字节(0xFE + 8个字节具体数据)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeWithLength</span><span class="params">(ByteBuffer buffer, <span class="keyword">byte</span>[] src)</span> </span>&#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">int</span> length = src.length;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">   <span class="keyword">if</span> (length &lt; <span class="number">251</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      buffer.put((<span class="keyword">byte</span>) length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">   &#125; <span class="keyword">else</span> <span class="keyword">if</span> (length &lt; <span class="number">0x10000L</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">      buffer.put((<span class="keyword">byte</span>) <span class="number">252</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">      writeUB2(buffer, length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">   &#125; <span class="keyword">else</span> <span class="keyword">if</span> (length &lt; <span class="number">0x1000000L</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">      buffer.put((<span class="keyword">byte</span>) <span class="number">253</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">      writeUB3(buffer, length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">   &#125; <span class="keyword">else</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">      buffer.put((<span class="keyword">byte</span>) <span class="number">254</span>);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">      writeLong(buffer, length);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">   &#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">   buffer.put(src);</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
 
     </div>
 
@@ -717,7 +1038,7 @@ LengthEncodedString（指定字符串长度方式）</p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql网络协议"><span class="nav-number">1.</span> <span class="nav-text"> MySQL网络协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql-handshake-packet"><span class="nav-number">1.1.</span> <span class="nav-text"> MySQL Handshake Packet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#auth-packet-客户端认证包"><span class="nav-number">1.2.</span> <span class="nav-text"> Auth Packet 客户端认证包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mysql协议okerror包解析"><span class="nav-number">1.2.1.</span> <span class="nav-text"> MySQL协议OK/Error包解析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql协议result-set包解析"><span class="nav-number">1.3.</span> <span class="nav-text"> MySQL协议Result Set包解析</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql网络协议"><span class="nav-number">1.</span> <span class="nav-text"> MySQL网络协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql-handshake-packet"><span class="nav-number">1.1.</span> <span class="nav-text"> MySQL Handshake Packet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#auth-packet-客户端认证包"><span class="nav-number">1.2.</span> <span class="nav-text"> Auth Packet 客户端认证包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mysql协议okerror包解析"><span class="nav-number">1.2.1.</span> <span class="nav-text"> MySQL协议OK/Error包解析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql协议result-set包解析"><span class="nav-number">1.3.</span> <span class="nav-text"> MySQL协议Result Set包解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql协议quit包"><span class="nav-number">1.4.</span> <span class="nav-text"> MySQL协议Quit包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字节位运算细节"><span class="nav-number">1.5.</span> <span class="nav-text"> 字节位运算细节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#packet-read-write"><span class="nav-number">1.6.</span> <span class="nav-text"> Packet Read &amp; Write</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
