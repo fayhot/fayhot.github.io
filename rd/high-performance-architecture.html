@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="基础篇  高并发系统：它的通用设计方法是什么 高并发代表着大流量，高并发系统设计的魅力就在于我们能够凭借自己的聪明才智设计巧妙的方案，从而抵抗巨大流量的冲击，带给用户更好的使用体验。这些方案好似能操纵流量，让流量更加平稳得被系统中的服务和组件处理。 我们在应对高并发大流量时也会采用类似 抵御洪水 的方案，归纳起来共有三种方法：   Scale-out（横向扩展） 分而治之是一种常见的高并发系统设">
+<meta name="keywords" content="Architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="海量高并发系统架构设计">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;rd&#x2F;high-performance-architecture.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="基础篇  高并发系统：它的通用设计方法是什么 高并发代表着大流量，高并发系统设计的魅力就在于我们能够凭借自己的聪明才智设计巧妙的方案，从而抵抗巨大流量的冲击，带给用户更好的使用体验。这些方案好似能操纵流量，让流量更加平稳得被系统中的服务和组件处理。 我们在应对高并发大流量时也会采用类似 抵御洪水 的方案，归纳起来共有三种方法：   Scale-out（横向扩展） 分而治之是一种常见的高并发系统设">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801015445.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801020223.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801022321.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801023138.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801100734.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801104931.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801105052.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801105411.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801105504.png">
+<meta property="og:updated_time" content="2021-08-01T02:57:02.774Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20210412&#x2F;20210801015445.png">
+
+<link rel="canonical" href="http://fayhot.github.io/rd/high-performance-architecture.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>海量高并发系统架构设计 | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/high-performance-architecture.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          海量高并发系统架构设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-08-01 01:28:59 / Modified: 10:57:02" itemprop="dateCreated datePublished" datetime="2021-08-01T01:28:59+08:00">2021-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Research And Develop</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="基础篇"><a class="markdownIt-Anchor" href="#基础篇"></a> 基础篇</h3>
+<h4 id="高并发系统它的通用设计方法是什么"><a class="markdownIt-Anchor" href="#高并发系统它的通用设计方法是什么"></a> 高并发系统：它的通用设计方法是什么</h4>
+<p>高并发代表着大流量，高并发系统设计的魅力就在于我们能够凭借自己的聪明才智设计巧妙的方案，从而抵抗巨大流量的冲击，带给用户更好的使用体验。这些方案好似能操纵流量，让流量更加平稳得被系统中的服务和组件处理。</p>
+<p>我们在应对高并发大流量时也会采用类似 抵御洪水 的方案，归纳起来共有三种方法：</p>
+<ol>
+<li>
+<p>Scale-out（横向扩展）<br>
+分而治之是一种常见的高并发系统设计方法，采用分布式部署的方式把流量分流开，让每个服务器都承担一部分并发和流量。</p>
+</li>
+<li>
+<p>缓存<br>
+使用缓存来提高系统的性能，就好比用 「拓宽河道」的方式抵抗高并发大流量的冲击。</p>
+</li>
+<li>
+<p>异步<br>
+在某些场景下，未处理完成之前，我们可以让请求先返回，在数据准备好之后再通知请求方，这样可以在单位时间内处理更多的请求。</p>
+</li>
+</ol>
+<a id="more"></a>
+<p>我们先来了解第一种方法：Scale-out。</p>
+<h5 id="scale-up-vs-scale-out"><a class="markdownIt-Anchor" href="#scale-up-vs-scale-out"></a> Scale-up vs Scale-out</h5>
+<ul>
+<li>Scale-up 通过购买性能更好的硬件来提升系统的并发处理能力</li>
+<li>Scale-out 将多个低性能的机器组成一个分布式集群来共同抵御高并发流量的冲击。</li>
+</ul>
+<p>一般来讲，在我们系统设计初期会考虑使用 Scale-up 的方式，因为这种方案足够简单，所谓能用堆砌硬件解决的问题就用硬件来解决，但是当系统并发超过了单机的极限时，我们就要使用 Scale-out 的方式。</p>
+<p>Scale-out 虽然能够突破单机的限制，但也会引入一些复杂问题。比如，如果某个节点出现故障如何保证整体可用性？当多个节点有状态需要同步时，如何保证状态信息在不同节点的一致性？如何做到使用方无感知的增加和删除节点？等等。其中每一个问题都涉及很多的知识点，我会在后面的课程中深入地讲解，这里暂时不展开了。</p>
+<p>说完了 Scale-out，我们再来看看高并发系统设计的另一种方法：缓存。</p>
+<h5 id="缓存提升性能"><a class="markdownIt-Anchor" href="#缓存提升性能"></a> 缓存提升性能</h5>
+<p>我们使用缓存的主要作用是提升系统的访问性能，那么在高并发的场景下，就可以支撑更多用户的同时访问。</p>
+<p>那么为什么缓存可以大幅度提升系统的性能呢？我们知道数据是放在持久化存储中的，一般的持久化存储都是使用磁盘作为存储介质的，而普通磁盘数据由机械手臂、磁头、转轴、盘片组成，盘片又分为磁道、柱面和扇区。</p>
+<p>盘片是存储介质，每个盘片被划分为多个同心圆，信息都被存储在同心圆之中，这些 同心圆就是磁道。在磁盘工作时盘片是在高速旋转的，机械手臂驱动磁头沿着径向移动，在磁道上读取所需要的数据。我们把<strong>磁头寻找信息花费的时间叫做寻道时间</strong>。</p>
+<p>普通磁盘的寻道时间是 <code>10ms</code> 左右，而相比于磁盘寻道花费的时间，CPU 执行指令和内存寻址的时间都在是 <code>ns（纳秒）</code>级别，从千兆网卡上读取数据的时间是在 <code>μs（微秒）</code>级别。所以在整个计算机体系中，磁盘是最慢的一环，甚至比其它的组件要慢几个数量级。因此，我们通常使用以内存作为存储介质的缓存，以此提升性能。</p>
+<p>当然，缓存的语义已经丰富了很多，我们<strong>可以将任何降低响应时间的中间存储都称为缓存</strong>。缓存的思想遍布很多设计领域，比如在操作系统中 <code>CPU</code> 有<code>多级缓存</code>，文件有 <code>Page Cache 缓存</code>，你应该有所了解。</p>
+<h5 id="异步处理"><a class="markdownIt-Anchor" href="#异步处理"></a> 异步处理</h5>
+<p>异步 也是一种常见的高并发设计方法，我们在很多文章和演讲中都能听到这个名词，与之共同出现的还有它的反义词：同步。比如，分布式服务框架 Dubbo 中有同步方法调用和异步方法调用，IO 模型中有同步 IO 和异步 IO。</p>
+<p>那么什么是同步，什么是异步呢？ 以方法调用为例，同步调用代表调用方要阻塞等待被调用方法中的逻辑执行完成。这种方式下，当被调用方法响应时间较长时，会造成调用方长久的阻塞，在高并发下会造成整体系统性能下降甚至发生雪崩。</p>
+<p>异步调用恰恰相反，调用方不需要等待方法逻辑执行完成就可以返回执行其他的逻辑，在被调用方法执行完毕后再通过回调、事件通知等方式将结果反馈给调用方。</p>
+<p>异步调用在大规模高并发系统中被大量使用，比如我们熟知的 12306 网站。 当我们订票时，页面会显示系统正在排队，这个提示就代表着系统在异步处理我们的订票请求。在 12306 系统中查询余票、下单和更改余票状态都是比较耗时的操作，可能涉及多个内部系统的互相调用，如果是同步调用就会像 12306 刚刚上线时那样，高峰期永远不可能下单成功。</p>
+<p>而采用异步的方式，后端处理时会把请求丢到消息队列中，同时快速响应用户，告诉用户我们正在排队处理，然后释放出资源来处理更多的请求。订票请求处理完之后，再通知用户订票成功或者失败。</p>
+<p>处理逻辑后移到异步处理程序中，Web 服务的压力小了，资源占用的少了，自然就能接收更多的用户订票请求，系统承受高并发的能力也就提升了。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801015445.png"></p>
+<p>建议一般系统的演进过程应该遵循下面的思路：</p>
+<ol>
+<li>最简单的系统设计满足业务需求和流量现状，选择最熟悉的技术体系。</li>
+<li>随着流量的增加和业务的变化，修正架构中存在问题的点，如单点问题，横向扩展问题，性能无法满足需求的组件。在这个过程中，选择社区成熟的、团队熟悉的组件帮助我们解决问题，在社区没有合适解决方案的前提下才会自己造轮子。</li>
+<li>当对架构的小修小补无法满足需求时，考虑重构、重写等大的调整方式以解决现有的问题。</li>
+</ol>
+<h4 id="架构分层"><a class="markdownIt-Anchor" href="#架构分层"></a> 架构分层</h4>
+<p>软件架构分层在软件工程中是一种常见的设计方式，它是将整体系统拆分成 N 个层次，每个层次有独立的职责，多个层次协同提供完整的功能。</p>
+<p>分层的设计可以简化系统设计，让不同的人专注做某一层次的事情。想象一下，如果你要设计一款网络程序却没有分层，该是一件多么痛苦的事情。而有了分层的设计，你只需要专注设计应用层的程序就可以了，其他的，都可以交给下面几层来完成。再有，分层之后可以做到很高的复用。最后一点，分层架构可以让我们更容易做横向扩展。</p>
+<p>我们可以将原先的三层架构细化成下面的样子：<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801020223.png"></p>
+<p>这个分层架构中的每一层的作用：</p>
+<ul>
+<li>
+<p>终端显示层：<br>
+各端模板渲染并执行显示的层。当前主要是 Velocity 渲染，JS 渲染， JSP 渲染，移动端展示等。</p>
+</li>
+<li>
+<p>开放接口层：<br>
+将 Service 层方法封装成开放接口，同时进行网关安全控制和流量控制等。</p>
+</li>
+<li>
+<p>Web 层：<br>
+主要是对访问控制进行转发，各类基本参数校验，或者不复用的业务简单处理等。</p>
+</li>
+<li>
+<p>Service 层：业务逻辑层。</p>
+</li>
+<li>
+<p>Manager 层：<br>
+通用业务处理层。这一层主要有两个作用：<br>
+其一，你可以将原先 Service 层的一些通用能力下沉到这一层，比如 与缓存和存储交互策略，中间件的接入；<br>
+其二，你也可以在这一层 封装对第三方接口的调用，比如调用支付服务，调用审核服务等。<br>
+DAO 层：</p>
+</li>
+<li>
+<p>数据访问层，与底层 MySQL、Oracle、Hbase 等进行数据交互。</p>
+</li>
+<li>
+<p>外部接口或第三方平台：<br>
+包括其它部门 RPC 开放接口，基础平台，其它公司的 HTTP 接口。</p>
+</li>
+</ul>
+<p>在这个分层架构中 主要增加了 Manager 层，它与 Service 层的关系是：</p>
+<ol>
+<li>Manager 层提供原子的服务接口</li>
+<li>Service 层负责依据业务逻辑来编排原子接口。</li>
+</ol>
+<p>以上面的例子来说，Manager 层提供 创建用户 和 获取用户信息 的接口，而 Service 层负责将这两个接口组装起来。这样就把原先散布在表现层的业务逻辑都统一到了 Service 层，每一层的边界就非常清晰了。</p>
+<blockquote>
+<p><strong>分层架构需要考虑的另一个因素，是层次之间一定是相邻层互相依赖，数据的流转也只能在相邻的两层之间流转</strong>。</p>
+</blockquote>
+<p>我们还是以三层架构为例，数据从表示层进入之后一定要流转到逻辑层，做业务逻辑处理，然后流转到数据访问层来和数据库交互。</p>
+<p><strong>分层架构的不足</strong><br>
+任何事物都不可能是尽善尽美的，分层架构虽有优势也会有缺陷，它最主要的一个缺陷就是增加了代码的复杂度，性能上会有损耗</p>
+<h4 id="系统设计目标高性能-高可用-可扩展"><a class="markdownIt-Anchor" href="#系统设计目标高性能-高可用-可扩展"></a> 系统设计目标：高性能、高可用、可扩展</h4>
+<p>高并发系统设计的三大目标：高性能、高可用、可扩展</p>
+<h5 id="高并发"><a class="markdownIt-Anchor" href="#高并发"></a> 高并发</h5>
+<p><strong>高并发</strong>， 是指运用设计手段让系统能够处理更多的用户并发请求，也就是承担更大的流量。它是一切架构设计的背景和前提，脱离了它去谈性能和可用性是没有意义的。很显然嘛，你在每秒一次请求和每秒一万次请求，两种不同的场景下，分别做到毫秒级响应时间和五个九（99.999%）的可用性，无论是设计难度还是方案的复杂度，都不是一个级别的。</p>
+<p>而<strong>性能和可用性</strong>， 是我们实现高并发系统设计必须考虑的因素。</p>
+<p>性能反应了系统的使用体验，想象一下，同样承担每秒一万次请求的两个系统，一个响应时间是毫秒级，一个响应时间在秒级别，它们带给用户的体验肯定是不同的。</p>
+<p>可用性则表示系统可以正常服务用户的时间。我们再类比一下，还是两个承担每秒一万次的系统，一个可以做到全年不停机、无故障，一个隔三差五宕机维护，如果你是用户，你会选择使用哪一个系统呢？答案不言而喻。</p>
+<p>另一个耳熟能详的名词叫 可扩展性 ，它同样是高并发系统设计需要考虑的因素。为什么呢？我来举一个具体的例子。</p>
+<p>流量分为 <code>平时流量</code> 和 <code>峰值流量</code> 两种，峰值流量可能会是平时流量的几倍甚至几十倍，在应对峰值流量的时候，我们通常需要在架构和方案上做更多的准备。这就是淘宝会花费大半年的时间准备双十一，也是在面对「明星离婚」等热点事件时，看起来无懈可击的微博系统还是会出现服务不可用的原因。 而易于扩展的系统能在短时间内迅速完成扩容，更加平稳地承担峰值流量。</p>
+<p>高性能、高可用和可扩展，是我们在做高并发系统设计时追求的三个目标，下面进一步了解在高并发大流量下如何设计高性能、高可用和易于扩展的系统。</p>
+<p><strong>性能优化原则</strong></p>
+<ol>
+<li>性能优化一定不能盲目，一定是问题导向的<br>
+脱离了问题，盲目地提早优化会增加系统的复杂度，浪费开发人员的时间，也因为某些优化可能会对业务上有些折中的考虑，所以也会损伤业务。</li>
+<li>性能优化也遵循「八二原则」<br>
+即你可以用 20% 的精力解决 80% 的性能问题。所以我们在优化过程中一定要抓住主要矛盾，优先优化主要的性能瓶颈点。</li>
+<li>性能优化也要有数据支撑<br>
+在优化过程中，你要时刻了解你的优化让响应时间减少了多少，提升了多少的吞吐量。</li>
+<li>性能优化的过程是持续的</li>
+</ol>
+<p><strong>性能的度量指标</strong><br>
+一般来说，度量性能的指标是 <code>系统接口的响应时间</code>，但是单次的响应时间是没有意义的，你需要知道一段时间的性能情况是什么样的。所以，我们需要收集这段时间的响应时间数据，然后依据一些统计方法计算出 特征值，这些特征值就能够代表这段时间的性能情况。我们常见的特征值有以下几类。</p>
+<ol>
+<li>平均值</li>
+<li>最大值</li>
+<li>分位值<br>
+分位值有很多种，比如 90 分位、95 分位、75 分位。以 90 分位为例，我们把这段时间请求的 响应时间从小到大排序，假如一共有 100 个请求，那么排在第 90 位的响应时间就是 90 分位值。分位值排除了偶发极慢请求对于数据的影响，能够很好地反应这段时间的性能情况，分位值越大，对于慢请求的影响就越敏感。</li>
+</ol>
+<p>在我来看，分位值是最适合作为时间段内，响应时间统计值来使用的，在实际工作中也应用最多。除此之外，平均值也可以作为一个参考值来使用。</p>
+<p>我在上面提到，脱离了并发来谈性能是没有意义的，我们通常使用 吞吐量 或者 同时在线用户数 来度量并发和流量，使用吞吐量的情况会更多一些。但是你要知道，这两个指标是呈倒数关系的。</p>
+<p>这很好理解，响应时间 1s 时，吞吐量是每秒 1 次，响应时间缩短到 10ms，那么吞吐量就上升到每秒 100 次。所以，一般我们度量性能时都会同时兼顾吞吐量和响应时间，比如我们设立性能优化的目标时通常会这样表述：在每秒 1 万次的请求量下，响应时间 99 分位值在 10ms 以下。</p>
+<p>那么，响应时间究竟控制在多长时间比较合适呢？这个不能一概而论。</p>
+<p>从用户使用体验的角度来看：</p>
+<ul>
+<li>
+<p>200ms 是第一个分界点：<br>
+接口的响应时间在 200ms 之内，用户是感觉不到延迟的，就像是瞬时发生的一样。</p>
+</li>
+<li>
+<p>1s 是另外一个分界点：<br>
+接口的响应时间在 1s 之内时，虽然用户可以感受到一些延迟，但却是可以接受的</p>
+</li>
+<li>
+<p>超过 1s 之后用户就会有明显等待的感觉，等待时间越长，用户的使用体验就越差。</p>
+</li>
+</ul>
+<p>所以，健康系统的 99 分位值的响应时间通常需要控制在 200ms 之内，而不超过 1s 的请求占比要在 99.99% 以上。</p>
+<p><strong>高并发下的性能优化</strong><br>
+假如说，你现在有一个系统，这个系统中处理核心只有一个，执行的任务的响应时间都在 10ms，它的吞吐量是在每秒 100 次。那么我们如何来优化性能从而提高系统的并发能力呢？主要有两种思路：</p>
+<ol>
+<li>一种是提高系统的处理核心数</li>
+<li>一种是减少单次任务的响应时间。</li>
+</ol>
+<h6 id="提高系统的处理核心数"><a class="markdownIt-Anchor" href="#提高系统的处理核心数"></a> 提高系统的处理核心数</h6>
+<p>提高系统的处理核心数就是 <code>增加系统的并行处理能力</code>，这个思路是优化性能最简单的途径。拿上一个例子来说，你可以把系统的处理核心数增加为两个，并且增加一个进程，让这两个进程跑在不同的核心上。这样从理论上，你系统的吞吐量可以增加一倍。当然了，在这种情况下，吞吐量和响应时间就不是倒数关系了，而是：<code>吞吐量 = 并发进程数 / 响应时间</code>。</p>
+<p>计算机领域的阿姆达尔定律（Amdahl’s law）是吉恩·阿姆达尔在 1967 年提出的。它描述了并发进程数与响应时间之间的关系，含义是在固定负载下，并行计算的加速比，也就是并行化之后效率提升情况，可以用下面公式来表示：<code>(Ws + Wp) / (Ws + Wp/s)</code></p>
+<p>其中，<code>Ws</code> 表示任务中的串行计算量，<code>Wp</code> 表示任务中的并行计算量，<code>s</code> 表示并行进程数。从这个公式我们可以推导出另外一个公式：<code>1/(1-p+p/s)</code></p>
+<p>其中，<code>s</code> 还是表示并行进程数，<code>p</code> 表示任务中并行部分的占比。当 <code>p</code> 为 1 时，也就是完全并行时，加速比与并行进程数相等；当 <code>p</code> 为 0 时，即完全串行时，加速比为 1，也就是说完全无加速；当 <code>s</code> 趋近于无穷大的时候，加速比就等于 <code>1/(1-p)</code>，你可以看到它完全和 <code>p</code> 成正比。特别是，当 p 为 1 时，加速比趋近于无穷大。</p>
+<blockquote>
+<p><strong>随着并发进程数的增加，并行的任务对于系统资源的争抢也会愈发严重。在某一个临界点上继续增加并发进程数，反而会造成系统性能的下降，这就是性能测试中的 拐点模型</strong>。</p>
+</blockquote>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801022321.png"></p>
+<p>从图中你可以发现：</p>
+<ul>
+<li>并发用户数处于轻压力区时，响应时间平稳，吞吐量和并发用户数线性相关。</li>
+<li>当并发用户数处于重压力区时，系统资源利用率到达极限，吞吐量开始有下降的趋势，响应时间也会略有上升。</li>
+<li>这个时候，再对系统增加压力，系统就进入拐点区，处于超负荷状态，吞吐量下降，响应时间大幅度上升。</li>
+</ul>
+<p>所以我们在评估系统性能时通常需要做压力测试，目的就是找到系统的「拐点」，从而知道系统的承载能力，也便于找到系统的瓶颈，持续优化系统性能。</p>
+<p>说完了提升并行能力，我们再看看优化性能的另一种方式：减少单次任务响应时间。</p>
+<h6 id="减少单次任务响应时间"><a class="markdownIt-Anchor" href="#减少单次任务响应时间"></a> 减少单次任务响应时间</h6>
+<p>想要减少任务的响应时间，首先要看你的系统是 CPU 密集型 还是 IO 密集型 的，因为不同类型的系统性能优化方式不尽相同。</p>
+<p><strong>CPU 密集型系统</strong><br>
+CPU 密集型系统中，需要处理大量的 CPU 运算，那么选用更高效的算法或者减少运算次数就是这类系统重要的优化手段。比方说，如果系统的主要任务是计算 Hash 值，那么这时选用更高性能的 Hash 算法就可以大大提升系统的性能。发现这类问题的主要方式，是通过一些 Profile 工具来找到消耗 CPU 时间最多的方法或者模块，比如 Linux 的 perf、eBPF 等。</p>
+<p><strong>IO 密集型系统</strong><br>
+IO 密集型系统指的是系统的大部分操作是在等待 IO 完成，这里 IO 指的是磁盘 IO 和网络 IO。我们熟知的系统大部分都属于 IO 密集型，比如数据库系统、缓存系统、Web 系统。这类系统的性能瓶颈可能出在系统内部，也可能是依赖的其他系统，而发现这类性能瓶颈的手段主要有两类。</p>
+<ol>
+<li>
+<p>采用工具<br>
+Linux 的工具集很丰富，完全可以满足你的优化需要，比如网络协议栈、网卡、磁盘、文件系统、内存，等等。这些工具的用法很多，你可以在排查问题的过程中逐渐积累。除此之外呢，一些开发语言还有针对语言特性的分析工具，比如说 Java 语言就有其专属的内存分析工具。</p>
+</li>
+<li>
+<p>通过 监控 来发现性能问题。<br>
+在监控中我们可以对任务的每一个步骤做分时的统计，从而找到任务的哪一步消耗了更多的时间。这一部分在演进篇中会有专门的介绍，这里就不再展开了。</p>
+</li>
+</ol>
+<p>那么找到了系统的瓶颈点，我们要如何优化呢？优化方案会随着问题的不同而不同。比方说，如果是数据库访问慢，那么就要看是不是有锁表的情况、是不是有全表扫描、索引加得是否合适、是否有 JOIN 操作、需不需要加缓存，等等；如果是网络的问题，就要看网络的参数是否有优化的空间，抓包来看是否有大量的超时重传，网卡是否有大量丢包等。</p>
+<h5 id="高可用"><a class="markdownIt-Anchor" href="#高可用"></a> 高可用</h5>
+<p>高可用性（High Availability，HA），它指的是系统具备较高的无故障运行的能力。<br>
+可用性是一个抽象的概念，你需要知道要如何来度量它，与之相关的概念是： MTBF 和 MTTR。</p>
+<p>**MTBF（Mean Time Between Failure）**是平均故障间隔的意思，代表两次故障的间隔时间，也就是系统正常运转的平均时间。这个时间越长，系统稳定性越高。</p>
+<p>**MTTR（Mean Time To Repair）**表示故障的平均恢复时间，也可以理解为平均故障时间。这个值越小，故障对于用户的影响越小。</p>
+<p>可用性与 MTBF 和 MTTR 的值息息相关，我们可以用下面的公式表示它们之间的关系：</p>
+<blockquote>
+<p><code>Availability = MTBF / (MTBF + MTTR)</code></p>
+</blockquote>
+<p>这个公式计算出的结果是一个比例，而这个比例代表着系统的可用性。一般来说，我们会使用几个九来描述系统的可用性。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801023138.png"></p>
+<p><strong>高可用系统设计的思路</strong></p>
+<h6 id="系统设计"><a class="markdownIt-Anchor" href="#系统设计"></a> 系统设计</h6>
+<p><strong>Design for failure</strong> 是我们做高可用系统设计时秉持的第一原则。在承担百万 QPS 的高并发系统中，集群中机器的数量成百上千台，单机的故障是常态，几乎每一天都有发生故障的可能。</p>
+<p>未雨绸缪才能决胜千里。我们在做系统设计的时候，要把发生故障作为一个重要的考虑点，预先考虑如何自动化地发现故障，发生故障之后要如何解决。当然了，除了要有未雨绸缪的思维之外，我们还需要掌握一些具体的优化方法，比如<strong>failover（故障转移）、超时控制以及降级和限流</strong>。</p>
+<p><strong>failover（故障转移）</strong><br>
+一般来说，发生 failover 的节点可能有两种情况：</p>
+<ol>
+<li>是在 完全对等 的节点之间做 failover。</li>
+<li>是在 不对等 的节点之间，即系统中存在主节点也存在备节点。</li>
+</ol>
+<p>在对等节点之间做 failover 相对来说简单些。在这类系统中所有节点都承担读写流量，并且节点中不保存状态，每个节点都可以作为另一个节点的镜像。在这种情况下，如果访问某一个节点失败，那么简单地随机访问另一个节点就好了。<br>
+举个例子，Nginx 可以配置当某一个 Tomcat 出现大于 500 的请求的时候，重试请求另一个 Tomcat 节点，就像下面这样：</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801100734.png"></p>
+<p>针对不对等节点的 failover 机制会复杂很多。比方说我们有一个主节点，有多台备用节点，这些备用节点可以是热备（同样在线提供服务的备用节点），也可以是冷备（只作为备份使用），那么我们就需要在代码中控制如何检测主备机器是否故障，以及如何做主备切换。</p>
+<p>使用最广泛的故障检测机制是「心跳」。你可以在客户端上定期地向主节点发送心跳包，也可以从备份节点上定期发送心跳包。当一段时间内未收到心跳包，就可以认为主节点已经发生故障，可以触发选主的操作。</p>
+<p>选主的结果需要在多个备份节点上达成一致，所以会使用某一种分布式一致性算法，比方说 Paxos，Raft。</p>
+<p><strong>调用超时控制</strong><br>
+除了故障转移以外，对于系统间调用超时的控制也是高可用系统设计的一个重要考虑方面。</p>
+<p>复杂的高并发系统通常会有很多的系统模块组成，同时也会依赖很多的组件和服务，比如说缓存组件，队列服务等等。**它们之间的调用最怕的就是延迟而非失败 ** ，因为失败通常是瞬时的，可以通过重试的方式解决。而一旦调用某一个模块或者服务发生比较大的延迟，调用方就会阻塞在这次调用上，它已经占用的资源得不到释放。当存在大量这种阻塞请求时，调用方就会因为用尽资源而挂掉。</p>
+<p>在系统开发的初期，超时控制通常不被重视，或者是没有方式来确定正确的超时时间。</p>
+<blockquote>
+<p>模块之间通过 RPC 框架来调用，超时时间是默认的 30 秒。平时系统运行得非常稳定，可是一旦遇到比较大的流量，RPC 服务端出现一定数量慢请求的时候，RPC 客户端线程就会大量阻塞在这些慢请求上长达 30 秒，造成 RPC 客户端用尽调用线程而挂掉。后面我们在故障复盘的时候发现这个问题后，调整了 RPC，数据库，缓存以及调用第三方服务的超时时间，这样在出现慢请求的时候可以触发超时，就不会造成整体系统雪崩。</p>
+</blockquote>
+<p>既然要做超时控制，那么我们怎么来确定超时时间呢？这是一个比较困难的问题。</p>
+<blockquote>
+<p>超时时间短了，会造成大量的超时错误，对用户体验产生影响；超时时间长了，又起不到作用。 我<strong>建议你通过收集系统之间的调用日志，统计比如说 99% 的响应时间是怎样的，然后依据这个时间来指定超时时间</strong>。 如果没有调用的日志，那么你只能按照经验值来指定超时时间。不过，无论你使用哪种方式，超时时间都不是一成不变的，需要在后面的系统维护过程中不断地修改。</p>
+</blockquote>
+<p>超时控制实际上就是不让请求一直保持，而是在经过一定时间之后让请求失败，释放资源给接下来的请求使用。这对于用户来说是有损的，但是却是必要的，因为它牺牲了少量的请求却保证了整体系统的可用性。而我们还有另外两种有损的方案能保证系统的高可用，它们就是降级和限流。</p>
+<p><strong>降级</strong><br>
+<strong>降级是为了保证核心服务的稳定而牺牲非核心服务的做法</strong>。 比方说我们发一条微博会先经过反垃圾服务检测，检测内容是否是广告，通过后才会完成诸如写数据库等逻辑。</p>
+<p>反垃圾的检测是一个相对比较重的操作，因为涉及到非常多的策略匹配，在日常流量下虽然会比较耗时却还能正常响应。但是当并发较高的情况下，它就有可能成为瓶颈，而且它也不是发布微博的主体流程，所以我们可以暂时关闭反垃圾服务检测，这样就可以保证主体的流程更加稳定。</p>
+<p><strong>限流</strong><br>
+<strong>限流完全是另外一种思路</strong>， 它通过对并发的请求进行限速来保护系统。</p>
+<p>比如对于 Web 应用，我限制单机只能处理每秒 1000 次的请求，超过的部分直接返回错误给客户端。虽然这种做法损害了用户的使用体验，但是它是在极端并发下的无奈之举，是短暂的行为，因此是可以接受的。</p>
+<p>实际上，无论是降级还是限流，在细节上还有很多可供探讨的地方，我会在后面的课程中，随着系统的不断演进深入地剖析，在基础篇里就不多说了。</p>
+<h6 id="系统运维"><a class="markdownIt-Anchor" href="#系统运维"></a> 系统运维</h6>
+<p>在系统设计阶段为了保证系统的可用性可以采取上面的几种方法，那在系统运维的层面又能做哪些事情呢？其实，我们可以从 <strong>灰度发布、故障演练</strong> 两个方面来考虑如何提升系统的可用性。</p>
+<p>你应该知道，在业务平稳运行过程中，系统是很少发生故障的，90% 的故障是发生在上线变更阶段的。比方说，你上了一个新的功能，由于设计方案的问题，数据库的慢请求数翻了一倍，导致系统请求被拖慢而产生故障。</p>
+<p>如果没有变更，数据库怎么会无缘无故地产生那么多的慢请求呢？因此，为了提升系统的可用性，重视变更管理尤为重要。而除了提供必要回滚方案，以便在出现问题时快速回滚恢复之外， 另一个主要的手段就是灰度发布。</p>
+<p><strong>灰度发布</strong><br>
+灰度发布指的是系统的变更不是一次性地推到线上的，而是按照一定比例逐步推进的。一般情况下，灰度发布是以机器维度进行的。比方说，我们先在 10% 的机器上进行变更，同时观察 Dashboard 上的系统性能指标以及错误日志。如果运行了一段时间之后系统指标比较平稳并且没有出现大量的错误日志，那么再推动全量变更。</p>
+<p>灰度发布给了开发和运维同学绝佳的机会，让他们能在线上流量上观察变更带来的影响，是保证系统高可用的重要关卡。</p>
+<p>灰度发布是在系统正常运行条件下，保证系统高可用的运维手段，那么我们如何知道发生故障时系统的表现呢？这里就要依靠另外一个手段： 故障演练。</p>
+<p><strong>故障演练</strong><br>
+故障演练指的是对系统进行一些破坏性的手段，观察在出现局部故障时，整体的系统表现是怎样的，从而发现系统中存在的，潜在的可用性问题。</p>
+<p>一个复杂的高并发系统依赖了太多的组件，比方说磁盘，数据库，网卡等，这些组件随时随地都可能会发生故障，而一旦它们发生故障，会不会如蝴蝶效应一般造成整体服务不可用呢？我们并不知道，因此，故障演练尤为重要。</p>
+<p>在我来看， <strong>故障演练和时下比较流行的“混沌工程”的思路如出一辙</strong>， 作为混沌工程的鼻祖，Netfix 在 2010 年推出的 <strong>Chaos Monkey</strong> 工具就是故障演练绝佳的工具。它通过在线上系统上随机地关闭线上节点来模拟故障，让工程师可以了解，在出现此类故障时会有什么样的影响。</p>
+<p>当然，这一切是以你的系统可以抵御一些异常情况为前提的。如果你的系统还没有做到这一点，那么 我建议你 另外搭建一套和线上部署结构一模一样的线下系统，然后在这套系统上做故障演练，从而避免对生产系统造成影响。</p>
+<p>说了这么多，你可以看到从开发和运维角度上来看，提升可用性的方法是不同的：</p>
+<ul>
+<li>开发 注重的是如何处理故障，关键词是 冗余和取舍。<br>
+冗余指的是有备用节点，集群来顶替出故障的服务，比如文中提到的故障转移，还有多活架构等等；取舍指的是丢卒保车，保障主体服务的安全。<br>
+ </li>
+<li>从 运维角度 来看则更偏保守，注重的是如何避免故障的发生<br>
+比如更关注变更管理以及如何做故障的演练。</li>
+</ul>
+<p>**你还需要注意的是，**提高系统的可用性有时候是以牺牲用户体验或者是牺牲系统性能为前提的，也需要大量人力来建设相应的系统，完善机制。所以我们要把握一个度，不该做过度的优化。就像我在文中提到的，核心系统四个九的可用性已经可以满足需求，就没有必要一味地追求五个九甚至六个九的可用性。</p>
+<p>另外，一般的系统或者组件都是追求极致的性能的，那么有没有不追求性能，只追求极致的可用性的呢？答案是有的。比如配置下发的系统，它只需要在其它系统启动时提供一份配置即可，所以秒级返回也可，十秒钟也 OK，无非就是增加了其它系统的启动速度而已。但是，它对可用性的要求是极高的，甚至会到六个九，原因是配置可以获取的慢，但是不能获取不到。我给你举这个例子是想让你了解， 可用性和性能有时候是需要做取舍的，但如何取舍就要视不同的系统而定，不能一概而论了。</p>
+<h5 id="易于扩展"><a class="markdownIt-Anchor" href="#易于扩展"></a> 易于扩展</h5>
+<p>从架构设计上来说，高可扩展性是一个设计的指标，**它表示可以通过增加机器的方式来线性提高系统的处理能力，从而承担更高的流量和并发 **。</p>
+<p>你可能会问：在架构设计之初，为什么不预先考虑好使用多少台机器，支持现有的并发呢？<br>
+答案 <strong>是峰值的流量不可控</strong>。</p>
+<p>一般来说，基于成本考虑，在业务平稳期，我们会预留 30%～50% 的冗余以应对运营活动或者推广可能带来的峰值流量，但是当有一个突发事件发生时，流量可能瞬间提升到 2～3 倍甚至更高，我们还以微博为例。</p>
+<p>鹿晗和关晓彤互圈公布恋情，大家会到两个人的微博下面，或围观，或互动，微博的流量短时间内增长迅速，微博信息流也短暂出现无法刷出新的消息的情况。</p>
+<p>那我们要如何应对突发的流量呢？架构的改造已经来不及了，最快的方式就是堆机器。不过我们需要保证，扩容了三倍的机器之后，相应的我们的系统也能支撑三倍的流量。有的人可能会产生疑问：这不是显而易见的吗？很简单啊。真的是这样吗？我们来看看做这件事儿难在哪儿。</p>
+<p><strong>为什么提升扩展性会很复杂</strong><br>
+在上一讲中，我提到可以在单机系统中通过增加处理核心的方式，来增加系统的并行处理能力，但这个方式并不总生效。因为当并行的任务数较多时，系统会因为争抢资源而达到性能上的拐点，系统处理能力不升反降。</p>
+<p>而对于由多台机器组成的集群系统来说也是如此。集群系统中，不同的系统分层上可能存在一些 「瓶颈点」，这些瓶颈点制约着系统的横线扩展能力。这句话比较抽象，我举个例子你就明白了。</p>
+<p>比方说，你系统的流量是每秒 1000 次请求，对数据库的请求量也是每秒 1000 次。如果流量增加 10 倍，虽然系统可以通过扩容正常服务，数据库却成了瓶颈。再比方说，单机网络带宽是 50Mbps，那么如果扩容到 30 台机器，前端负载均衡的带宽就超过了千兆带宽的限制，也会成为瓶颈点。那么，我们的系统中存在哪些服务会成为制约系统扩展的重要因素呢？</p>
+<p>其实，无状态的服务和组件更易于扩展，而像 MySQL 这种存储服务是有状态的，就比较难以扩展。因为向存储集群中增加或者减少机器时，会涉及大量数据的迁移，而一般传统的关系型数据库都不支持。这就是为什么提升系统扩展性会很复杂的主要原因。</p>
+<p>除此之外，从例子中你可以看到，我们需要站在整体架构的角度，而不仅仅是业务服务器的角度来考虑系统的扩展性 。 所以说，<strong>数据库、缓存、依赖的第三方、负载均衡、交换机带宽</strong>等等 都是系统扩展时需要考虑的因素。我们要知道系统并发到了某一个量级之后，哪一个因素会成为我们的瓶颈点，从而针对性地进行扩展。</p>
+<p>针对这些复杂的扩展性问题，我提炼了一些系统设计思路，供你了解。</p>
+<p><strong>高可扩展性的设计思路</strong><br>
+<strong>拆分</strong> 是提升系统扩展性最重要的一个思路，它会把庞杂的系统拆分成独立的，有单一职责的模块。相对于大系统来说，考虑一个一个小模块的扩展性当然会简单一些。将复杂的问题简单化，这就是我们的思路。</p>
+<p>但对于不同类型的模块，我们在拆分上遵循的原则是不一样的。我给你举一个简单的例子，假如你要设计一个社区，那么社区会有几个模块呢？可能有 5 个模块。</p>
+<ol>
+<li>用户：负责维护社区用户信息，注册，登陆等；</li>
+<li>关系：用户之间关注、好友、拉黑等关系的维护；</li>
+<li>内容：社区发的内容，就像朋友圈或者微博的内容；</li>
+<li>评论、赞：用户可能会有的两种常规互动操作；</li>
+<li>搜索：用户的搜索，内容的搜索。</li>
+</ol>
+<p>而部署方式遵照最简单的三层部署架构，负载均衡负责请求的分发，应用服务器负责业务逻辑的处理，数据库负责数据的存储落地。这时，所有模块的业务代码都混合在一起了，数据也都存储在一个库里。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801104931.png"></p>
+<h6 id="存储层的扩展性"><a class="markdownIt-Anchor" href="#存储层的扩展性"></a> 存储层的扩展性</h6>
+<p>无论是存储的数据量，还是并发访问量，不同的业务模块之间的量级相差很大，比如说成熟社区中，关系的数据量是远远大于用户数据量的，但是用户数据的访问量却远比关系数据要大。所以假如存储目前的瓶颈点是容量，那么我们只需要针对关系模块的数据做拆分就好了，而不需要拆分用户模块的数据。 所以<strong>存储拆分首先考虑的维度是业务维度</strong>。</p>
+<p>拆分之后，这个简单的社区系统就有了用户库、内容库、评论库、点赞库和关系库。这么做还能隔离故障，某一个库「挂了」不会影响到其它的数据库。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801105052.png"></p>
+<p><strong>按照业务拆分，在一定程度上提升了系统的扩展性</strong>，但系统运行时间长了之后，单一的业务数据库在容量和并发请求量上仍然会超过单机的限制。 这时，<strong>我们就需要针对数据库做第二次拆分</strong>。</p>
+<p><strong>这次拆分是按照数据特征做水平的拆分</strong> ，比如说我们可以给用户库增加两个节点，然后按照某些算法将用户的数据拆分到这三个库里面，具体的算法我会在后面讲述数据库分库分表时和你细说。</p>
+<p>水平拆分之后，我们就可以让数据库突破单机的限制了。但这里要注意，我们不能随意地增加节点，因为一旦增加节点就需要手动地迁移数据，成本还是很高的。所以基于长远的考虑，<strong>我们最好一次性增加足够的节点以避免频繁地扩容</strong>。</p>
+<p>当数据库按照业务和数据维度拆分之后，我们 <strong>尽量不要使用事务</strong>。因为当一个事务中同时更新不同的数据库时，需要使用二阶段提交，来协调所有数据库要么全部更新成功，要么全部更新失败。这个协调的成本会随着资源的扩展不断升高，最终达到无法承受的程度。</p>
+<p>说完了存储层的扩展性，我们来看看业务层是如何做到易于扩展的。</p>
+<h6 id="业务层的扩展性"><a class="markdownIt-Anchor" href="#业务层的扩展性"></a> 业务层的扩展性</h6>
+<p>我们一般会从三个维度考虑业务层的拆分方案，它们分别是：<strong>业务纬度 ，重要性纬度 和 请求来源纬度</strong>。</p>
+<p>首先，我们需要<strong>把相同业务的服务拆分成单独的业务池</strong>，比方说上面的社区系统中，我们可以按照业务的维度拆分成用户池、内容池、关系池、评论池、点赞池和搜索池。</p>
+<p>每个业务依赖独自的数据库资源，不会依赖其它业务的数据库资源。这样当某一个业务的接口成为瓶颈时，我们只需要扩展业务的池子，以及确认上下游的依赖方就可以了，这样就大大减少了扩容的复杂度。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801105411.png"></p>
+<p>除此之外，我们还可以<strong>根据业务接口的重要程度，把业务分为核心池和非核心池</strong> （池子就是一组机器组成的集群） 。打个比方，就关系池而言，关注、取消关注接口相对重要一些，可以放在核心池里面；拉黑和取消拉黑的操作就相对不那么重要，可以放在非核心池里面。这样，我们可以优先保证核心池的性能，当整体流量上升时优先扩容核心池，降级部分非核心池的接口，从而保证整体系统的稳定性。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20210412/20210801105504.png"></p>
+<p>最后，你还可以根据接入客户端类型的不同做业务池的拆分。比如说，服务于客户端接口的业务可以定义为外网池，服务于小程序或者 HTML5 页面的业务可以定义为 H5 池，服务于内部其它部门的业务可以定义为内网池，等等。</p>
+<p>了解了提升系统扩展性的复杂度以及系统拆分的思路。拆分看起来比较简单，可是什么时候做拆分，如何做拆分还是有很多细节考虑的。</p>
+<p>未做拆分的系统虽然可扩展性不强，但是却足够简单，无论是系统开发还是运行维护都不需要投入很大的精力。拆分之后，需求开发需要横跨多个系统多个小团队，排查问题也需要涉及多个系统，运行维护上，可能每个子系统都需要有专人来负责，对于团队是一个比较大的考验。这个考验是我们必须要经历的一个大坎，需要我们做好准备。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Architecture/" rel="tag"><i class="fa fa-tag"></i> Architecture</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/rd/mysql-protocol.html" rel="prev" title="Mysql浅尝辄止">
+      <i class="fa fa-chevron-left"></i> Mysql浅尝辄止
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础篇"><span class="nav-number">1.</span> <span class="nav-text"> 基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#高并发系统它的通用设计方法是什么"><span class="nav-number">1.1.</span> <span class="nav-text"> 高并发系统：它的通用设计方法是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#scale-up-vs-scale-out"><span class="nav-number">1.1.1.</span> <span class="nav-text"> Scale-up vs Scale-out</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存提升性能"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 缓存提升性能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#异步处理"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 异步处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#架构分层"><span class="nav-number">1.2.</span> <span class="nav-text"> 架构分层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系统设计目标高性能-高可用-可扩展"><span class="nav-number">1.3.</span> <span class="nav-text"> 系统设计目标：高性能、高可用、可扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#高并发"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 高并发</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#提高系统的处理核心数"><span class="nav-number">1.3.1.1.</span> <span class="nav-text"> 提高系统的处理核心数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#减少单次任务响应时间"><span class="nav-number">1.3.1.2.</span> <span class="nav-text"> 减少单次任务响应时间</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#高可用"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 高可用</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#系统设计"><span class="nav-number">1.3.2.1.</span> <span class="nav-text"> 系统设计</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#系统运维"><span class="nav-number">1.3.2.2.</span> <span class="nav-text"> 系统运维</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#易于扩展"><span class="nav-number">1.3.3.</span> <span class="nav-text"> 易于扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#存储层的扩展性"><span class="nav-number">1.3.3.1.</span> <span class="nav-text"> 存储层的扩展性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#业务层的扩展性"><span class="nav-number">1.3.3.2.</span> <span class="nav-text"> 业务层的扩展性</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
