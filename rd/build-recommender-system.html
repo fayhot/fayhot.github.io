@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Mouke基于用户的兴趣分发Feed内容，构建多媒体（目前以图片为主）兴趣社交网络。 基于开源社区从零搭建推荐系统实践。  Flink Redis + Mysql Golang">
+<meta name="keywords" content="Architecture,BigData">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建推荐系统">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;rd&#x2F;build-recommender-system.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="Mouke基于用户的兴趣分发Feed内容，构建多媒体（目前以图片为主）兴趣社交网络。 基于开源社区从零搭建推荐系统实践。  Flink Redis + Mysql Golang">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803193808.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803193929.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803195954.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803200533.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;v2-bb6e39d4eca126d967790a062d3f0e1a_r.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803201233.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803201953.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803203348.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803203857.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204026.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204332.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204306.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204539.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204555.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803204622.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803205005.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803205535.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803205821.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803212008.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803212758.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803213445.png">
+<meta property="og:updated_time" content="2021-08-03T13:41:04.261Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20210803193808.png">
+
+<link rel="canonical" href="http://fayhot.github.io/rd/build-recommender-system.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>搭建推荐系统 | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/rd/build-recommender-system.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建推荐系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-08-03 19:15:16 / Modified: 21:41:04" itemprop="dateCreated datePublished" datetime="2021-08-03T19:15:16+08:00">2021-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/" itemprop="url" rel="index">
+                    <span itemprop="name">Research And Develop</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research-And-Develop/Recommender-System/" itemprop="url" rel="index">
+                    <span itemprop="name">Recommender System</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Mouke基于用户的兴趣分发Feed内容，构建多媒体（目前以图片为主）兴趣社交网络。</p>
+<p>基于开源社区从零搭建推荐系统实践。</p>
+<ul>
+<li>Flink</li>
+<li>Redis + Mysql</li>
+<li>Golang</li>
+</ul>
+<a id="more"></a>
+<h2 id="搭建推荐系统概要"><a class="markdownIt-Anchor" href="#搭建推荐系统概要"></a> 搭建推荐系统概要</h2>
+<h3 id="框架篇"><a class="markdownIt-Anchor" href="#框架篇"></a> 框架篇</h3>
+<p>推荐系统本质是对用户不同行为，从海量物料中选取用户可能感兴趣的物料进行展示，通过策略、算法、规则等途径引导用户产生点击或其他交互行为，那从用户打开特定app起，到展示出相关内容到底经历了何种操作，海量的物料是怎样被筛选出来？如果业务越做越大，用户和物料数据积累越来越多，仅靠规则不能进一步提升用户对物料感兴趣程度，那么该如何升级成为推荐系统为用户带来更好的浏览体验？</p>
+<p>各公司业务系统和场景各有不同，系统有繁有简，技术栈和使用细节千差万别，要搭建推荐系统，我们先把系统模块和数据流梳理清，大多都具有如下模块和流程。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803193808.png"><br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803193929.png"></p>
+<p>如图所示，数据流实线为在线流程，虚线为离线流程。一般在线流程指用户实时访问系统用于计算及使用的服务，离线流程指跟用户请求无直接关系可对数据单独统计计算的过程。</p>
+<h4 id="物料数据"><a class="markdownIt-Anchor" href="#物料数据"></a> 物料数据</h4>
+<p>首先要有被推荐的物料数据，一般来说可推荐物料需要数万到数千万甚至上亿，每个物料具有唯一id，除此之外还应有其自身的各类基础信息，各家业务不同信息也各不相同，例如类型（文本、视频、图片）、类别（新闻、娱乐、体育）、标签（宝马，奥迪，东坡肘子…）、时效、地域等等。物料数量规模庞大，再加上自身各类信息，那需要存储的物料池也会成倍增加，对不同规模的数据量就得盘一盘该如何存储，这里先简单抽象成一个物料池。</p>
+<h4 id="用户数据"><a class="markdownIt-Anchor" href="#用户数据"></a> 用户数据</h4>
+<p>有了物料数据还需要有用户数据，一般是系统日志通过埋点记录用户各类行为，通过日志收集系统计算处理，将有效的用户行为数据结构化并落到存储空间中，一般用数据仓库进行管理，便于后续分析、计算。用户行为一般是用户的浏览、点击、播放等普通行为以及点赞、评论、转发、下单等深层行为，结合访问时获取到的用户设备、时间、地域等，加上各行为打上时间戳，日积月累就能构造出一个用户的多维度行为轨迹和画像。</p>
+<h4 id="用户画像"><a class="markdownIt-Anchor" href="#用户画像"></a> 用户画像</h4>
+<p>用户数据结构化落仓后就方便后续对用户行为的统计分析了，结合用户时序信息，可以计算出所需维度的用户画像，例如用户的兴趣点标签，偏好什么内容，习惯在什么时段访问，常用的地理位置信息，通过浏览内容判断用户年龄段和性别等，深入些的后续还可进行用户聚类、分群等分析处理。</p>
+<h4 id="实时计算"><a class="markdownIt-Anchor" href="#实时计算"></a> 实时计算</h4>
+<p>这里还需要一个实时计算的环节，用于通过实时收集日志并解析物料与用户的实时统计信息，例如物料的曝光数、点击数、评论数等，可以丰富物料的基础信息；对用户来说可以收集用户实时曝光、点击及其他行为的实时数据，用于后续算法特征处理或在线规则处理。</p>
+<h4 id="算法模块"><a class="markdownIt-Anchor" href="#算法模块"></a> 算法模块</h4>
+<p>物料和用户数据齐备，就轮到推荐算法上场了，当然这里也是一个大模块，上面的数据虽有，但此数据非彼数据，算法需要用的还需要转化为特征和样本数据，绝大部分算法模型还是很挑食的，喂进去的数据必须要经过处理，否则再好的模型面对噪声数据也不会有好的结果。数据处理好，选好模型就可以训练了，结果不错皆大欢喜，效果不好不能直接把锅甩给模型不给力，还要分析数据、调整参数，经过几个来回后得到一个还不错的模型，就可以准备给用户使用啦。如果数据规模庞大还需要分布式训练。</p>
+<h4 id="推荐引擎"><a class="markdownIt-Anchor" href="#推荐引擎"></a> 推荐引擎</h4>
+<p>如果业务要求实时性不强，用户和数据量都不是很庞大，那么在离线按小时或天的频次直接计算各个用户可能的偏好物料即可，无论通过用户画像偏好匹配物料，还是使用训练好的模型进行直接预测排序，只要能满足业务要求就是一套好系统。但很多场景用户访问要求实时性高，业务特性复杂，就需要一套专门的推荐引擎将推荐系统及依赖的各模块整合起来，包括构建倒排索引、召回、排序、rerank及其他依赖模块，便于灵活开发与部署。另外评估推荐系统效果也需要科学的分桶实验系统也需要在推荐引擎模块中实现。</p>
+<h4 id="数据报表"><a class="markdownIt-Anchor" href="#数据报表"></a> 数据报表</h4>
+<p>截止目前一套完整的数据流已经可以跑通了，也可以为用户推荐计算好的结果，但还需要一个看起来不起眼却非常重要的模块——报表数据，用来展示推荐系统整体效果，包括AB实验效果，分标签、召回等维度效果等，用于后续迭代优化时提供数据支撑。</p>
+<p>至此，推荐系统的蓝图已构思完毕，数据可以在纸面上完全流动起来形成闭环，不断积累数据，不断迭代算法策略，不断提升效果指标，不断产生业务收益，不断提升程序员的工资，想想是不是很开心？后面我们就把上述的这些坑一块一块填起来，完整实现一套推荐系统。</p>
+<h3 id="算法篇"><a class="markdownIt-Anchor" href="#算法篇"></a> 算法篇</h3>
+<p>推荐系统自诞生之日起就是为解决海量物料如何高效分发给海量用户，一套高效的算法流程就是推荐系统的核心。如今火热的各类机器学习、深度学习、强化学习等都可以在推荐系统中大显身手，推荐也是AI在工业界最广泛的落地场景之一。推荐算法在推荐系统中的位置如图1所示，主要是通过离线或在线拿到特征及样本数据训练模型，将训练好的模型同步给召回或排序的预测服务，推荐引擎实时调用预测结果供召回及排序使用。</p>
+<p>如果更宽泛意义上，推荐内容的质量、类别、理解等都可通过各自AI算法计算，节省大量人工成本，通过NLP、音频、视频、图像理解等领域内的先进算法，丰富物料的正排信息进入资源池，如物料质量、物料类别、关键词提取，图像视频理解、音频转文本、物料属性的embedding向量等等。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803195954.png"></p>
+<p>推荐效果主要以提升ctr为目标，但转化率、完播率、停留时长等均可作为辅助指标，可以说只要能够抽象出问题并描述出要最优化的损失函数，有较丰富的特征及样本，那就一定能够用算法来解决问题。这里我们先以精排阶段的算法为例说明如何构建起完整的排序算法通路。</p>
+<h4 id="特征库服务"><a class="markdownIt-Anchor" href="#特征库服务"></a> 特征库/服务</h4>
+<p>算法需要数据，数据需要特征，特征是模型训练数据中最重要的部分，<strong>各类算法的本质也是根据现有样本分布拟合出一个最接近真实情况的概率分布函数</strong>，需要拟合的参数就是各个特征，通过这个函数即可获取特定用户或物料的特征下用户对物料的感兴趣程度（点击的概率），因此特征工程也是推荐算法工程师的必备技能，人工智能圈广为人知的调侃“人工智能靠人工”，在推荐领域的重要体现就在于通过分析数据来获取重要特征。</p>
+<p>推荐系统连接的是人与物，特别是独特业务场景下的人与物，那么一定也会有独特的物料属性特征与用户行为特征，针对深入理解业务的基础上构造好的特征，那推荐算法出来的结果也就成功了一半以上。从人和物的角度，特征也分为物料特征、用户特征及上下文特征，上下文也可算作用户特征的一种。用户特征一般通过明确记录或统计挖掘得到，如用户的地理位置、访问时段、使用设备、性别年龄（可能通过填写资料获取）一般在访问时即可拿到；挖掘特征通过历史用户的操作行为，统计用户的画像偏好。物料特征一般是物料自身属性及其统计数据，例如类别、关键词、主题等固有属性，以及历史一段时间窗口内的效果统计如曝光、点击、点赞、转发等。从直观含义看可分为类别特征和数值型特征，对不同特征也要多种特征工程处理方式。</p>
+<blockquote>
+<p>特征工程是一项实践性很强的工作，基本的技术方法就那么几种，但真正用来调好模型的特征工程方法一般网上也很少，原因之一就在于是跟自己公司具体业务挂钩的，不具有普遍性，即使放出来也只适用于自己公司业务，无法放之四海而皆准，可以看下各大厂主要产品线的推荐系统特征工程是如何做的。</p>
+</blockquote>
+<p>这里用户特征，包括上下文特征，可以根据用户离线的行为日志统计，类似用户画像，假设此时用户属性类别、各维度偏好、对各行为的统计量等都已用特征工程处理完毕并结构化存入hive表，同理对物料在资源池获取属性类别特征，通过客户端日志获取物料各维度统计类信息，保存至hive表，再通过一个定时任务将hive内的特征数据整合，这样将离线计算的用户及物料维度特征保存至hive表，同时更新至redis供线上实时获取。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803200533.png"></p>
+<p>有了特征就能方便的构建出模型训练样本数据，这时要针对推荐效果指标来构建样本，对于ctr指标来说一般是分类问题，使用用户对物料是否点击作为label，对于视频类播放时长指标一般可作为回归问题，用户对物料的播放时长作为样本y值，这里以ctr作为评价指标，正样本为用户点击物料，负样本为用户曝光未点击物料。</p>
+<h4 id="训练数据"><a class="markdownIt-Anchor" href="#训练数据"></a> 训练数据</h4>
+<p>说到算法并无太多神秘之处，如果了解基础的机器学习原理，各类算法只是针对大量样本数据的一个拟合过程，拟合出一个接近真实数据分布的概率分布函数，即所谓的“规律”，大量的样本正是这条规律的基础，算法只是用数学的方式来求解。通过用户行为日志可获取全量用户曝光点击物料信息，通过用户及物料特征库抽取特征，从而构建出样本矩阵，通过离线计算保存到样本文件。</p>
+<p>接下来需要对整个样本集做处理，否则会引入大量噪声，不能让模型很好的拟合出样本分布。</p>
+<h5 id="非真实用户访问样本"><a class="markdownIt-Anchor" href="#非真实用户访问样本"></a> 非真实用户访问样本</h5>
+<p>例如爬虫、机器人等大量非真实用户的频繁访问，带来大量高曝光未点击行为，会严重影响样本数据分布，一段时间窗口有大量相同用户id频繁访问远超正常访问量的均值等，刷次数方差较大的数据需要去除</p>
+<h5 id="极少行为用户样本"><a class="markdownIt-Anchor" href="#极少行为用户样本"></a> 极少行为用户样本</h5>
+<p>这类用户样本虽然是真实行为，但极少的行为并不能为其在模型中找到属于该类用户的“规律”，或者说引入这些数据后，模型会开始学习这类用户的数据分布，对整体分布的拟合带来噪声，易引起模型过拟合。通常对这类用户可以看做类似新用户，通过用户冷启动的手段为其探索兴趣补充推荐。</p>
+<h5 id="特征缺失值及异常值等处理"><a class="markdownIt-Anchor" href="#特征缺失值及异常值等处理"></a> 特征缺失值及异常值等处理</h5>
+<p>这里参考特征工程处理方法，针对方差较大的少量异常值做抛弃或均值处理，缺失值用均值或中值代替等</p>
+<h5 id="正负样本处理"><a class="markdownIt-Anchor" href="#正负样本处理"></a> 正负样本处理</h5>
+<p>机器学习中正负样本的选取也直接关系着训练出的模型效果，在推荐系统中不同公司也有针对自家业务采取的样本划分方法。</p>
+<ol>
+<li>一次请求会产生N条推荐结果，但大部分手机端通常用户只能看到其中的m条，m&lt;N，通过客户端埋点计算出用户真实可见曝光的物料，在这批物料中选取点击与未点击样本直观上一次曝光中可能有点击或无点击<br>
+ </li>
+<li>早期yutube推荐中，会对所有用户选取相同数量训练样本，可以同时避免低活跃用户和高活跃用户对整体模型的影响，使训练的模型更符合绝大多数用户行为<br>
+ </li>
+<li>对于有曝光无点击行为的用户，其曝光未点击的负样本可随机选取，这样可以学到这类用户<strong>不感兴趣</strong>的部分<br>
+ </li>
+<li>样本在通过定时任务整合时需要做shuffle打散，避免同类用户样本数据扎堆引起数据分布偏差，在训练模型时，也通过batch训练方式中每个batch的样本也进行shuffle打散</li>
+</ol>
+<p>总之正负样本处理还是要根据深入理解业务和用户行为基础上进行调整，可以让模型学习到更适合的效果。</p>
+<p>生成样本数据后，将样本随机分成训练集与测试集，一般为七三开或八二开，丢给模型来训练了</p>
+<h4 id="模型训练"><a class="markdownIt-Anchor" href="#模型训练"></a> 模型训练</h4>
+<p>首次搭建排序模型可以先用基础模型如LR或GBDT跑出一个baseline快速上线，后续逐步迭代为复杂模型。推荐算法模型一般经历了由简入繁的过程，数据量不断增大，模型不断复杂，大规模数据集下深度学习模型已经逐渐成为主流，但这也是行业头部公司所独享，只有他们才有足够的数据和算力来支撑庞大复杂的模型，绝大多数公司在中等数据集下，仍然使用主流的线性模型，通过分析用户行为及数据，构建特征工程及样本数据优化，得来的效果要比深度学习模型更好。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/v2-bb6e39d4eca126d967790a062d3f0e1a_r.jpg"></p>
+<p>模型训练过程根据使用的框架不同，大体流程可以统一成下面的伪代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从文件读入训练集与测试集 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">train_data = read(TRAIN_DATA_FILE) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">test_data = read(TEST_DATA_FILE) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对数据处理并生成样本与特征数据结构 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">y_train, x_train = preprocess(train_data) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">y_test, x_test = preprocess(test_data) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 实例化模型，传入参数 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对经典模型各主流框架中只需传入参数，若需对模型结构调整需要自己实现模型结构 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">model = SomeModel(y_train, x_train, y_test, x_test, batchsize, optimizer, learning_rate, other_param...) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开始训练 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">model.fit() </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 评估模型效果 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">model.evaluate()</span></pre></td></tr></table></figure>
+<p>通过优化训练数据、优化模型超参等方法训练得到AUC指标较好的模型，可提供给线上应用。模型训练可根据数据量和计算复杂度离线按天或小时定时训练更新。</p>
+<h4 id="线上预测"><a class="markdownIt-Anchor" href="#线上预测"></a> 线上预测</h4>
+<p>通常线上使用预测服务的形式实时提供模型推断功能，这时需要通过推荐引擎接口将待排序候选集的物料id、用户id以及请求上下文信息传给预测服务。预测服务中也分为特征抽取、物料打分排序、模型同步校验等模块。通过传入的物料id及用户id，可以从特征库中在线抽取特征，结合上下文特征得到所有候选集的特征信息，进而通过模型中各特征权重，计算每个物料的打分。这个过程中注意被抽取的特征id要同训练好模型中的特征权重id保持一致，同时各物料特征抽取和打分过程可以通过并行化方式提升系统性能。训练好的模型由离线训练流程定时同步到线上预测服务机器，注意同步时需要同时把模型的checksum一并同步并在服务端进行校验，当同步失败时仍使用缓存的上次同步模型进行预测，避免数据不一致。候选集物料被打分后进行整体排序，结果返回给推荐引擎。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803201233.png"></p>
+<p>到此通过算法模型给出个性化排序的流程就打通了。关于模型打分步骤对于基于DNN的模型TensorFlow有专门tf.server用于部署生产环境的模型预测服务，TensorFlow也有为服务端语言golang/java/C++等专门适配。</p>
+<p>对于传统机器学习模型LR、GBDT等，可以将模型特征id及权重直接序列化为文件，在排序服务端定时加载解析，打分预测时直接使用特征id及其权重值运算即可。</p>
+<p>推荐系统算法侧主流程架构大体就是这样，已经可以跑通一个基本模型并应用于线上观察效果。后续算法侧的迭代优化，一方面可以跟进业界前沿的模型方法，一方面通过分析用户行为与业务数据来尝试在特征和样本数据层面做优化，而后者可能才是产生更直接收益的法宝，毕竟不是所有公司都能有Google阿里家那种量级的用户数据，复杂模型应用起来因为过拟合的问题甚至带来负向效果。反过来说大厂在模型上的创新也是基于不断分析累积用户行为的经验得来，比如yutube关于视频推荐的论文。</p>
+<p>也是分析用户点击一个视频不一定是真喜欢，而可能和正好排在前面有关，从而设计模型结构将排序位置特征引入模型，通过多目标学习将这种实际样本“有偏”的影响消除。</p>
+<h3 id="引擎篇"><a class="markdownIt-Anchor" href="#引擎篇"></a> 引擎篇</h3>
+<p>如果把推荐系统比作一辆汽车，那推荐引擎可以看做是传动系统，把发送机、变速箱及底盘三大件串起来，为整车提供正常运行。</p>
+<p>推荐引擎能够实时给用户提供推荐服务，用来解析用户请求，将物料数据与画像数据打通，匹配符合用户兴趣的物料，同时调用算法召回，控制整体候选集多样性。通过排序预测服务为候选集打分排序给出用户可能感兴趣的结果，并根据业务和体验规则对推荐结果进行重排序，呈现给用户最终结果。同时推荐引擎还承担着线上AB实验精准分桶的功能，保证实验流量的科学分配，提升实验效果的置信度。因此涉及推荐引擎核心功能的主要有用户请求解析、实验分桶染色、召回、排序、重排等模块。索引部分在上一篇文章有过概述，可根据系统规模评估是否纳入到整体推荐引擎中。</p>
+<h4 id="实验染色"><a class="markdownIt-Anchor" href="#实验染色"></a> 实验染色</h4>
+<p>AB实验已成为绝大多数互联网公司面向用户展示不同策略的通用做法，尤其推荐系统千人千面，线上系统会有各种策略、算法需要快速迭代验证效果，科学准确的实验分桶策略能够均匀分配实验组对照组流量，同时互斥的实验需要互不干扰，例如在召回阶段做的实验A和B需要互斥，而和重排序阶段的实验C互不影响，在切分流量时需要考虑分层机制，同一层实验要求互斥，流量互不影响；不同层之间的实验并不相干，流量可以打通。目前基本思想都是参考Google的论文：《Overlapping Experiment Infrastructure: More, Better, Faster Experimentation》，具体可根据公司业务特点进行实现。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803201953.png"></p>
+<p>一般实验配置通过一个管理平台，底层通过mysql数据库管理各实验增删改查，用户侧则根据用户id（cookie、设备id等）用于hash分桶标识，这里展示一个简单的分桶逻辑</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># 遍历所有实验，exp_list是从实验平台获取的有效实验列表 </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> exp <span class="keyword">in</span> range exp_list:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">     <span class="comment"># exp_name为唯一实验名，主要用于分层，配合用户deviceid，保证本层hash是唯一的</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">     hashvalue = deviceid + <span class="string">'-'</span> + exp.exp_name</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">     <span class="comment"># 将字符串哈希成int值并模100，这里看做每个实验为100%流量，同层互斥实验从这100%中切分流量桶</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">     <span class="comment"># 例如：&#123;bucketA:20, bucketB:40&#125;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">     hashint = hash(hashvalue)%<span class="number">100</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">     <span class="comment"># 存储当前用户走哪些实验桶</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">     exp_map = &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">     <span class="comment"># 遍历该实验下所有分桶, 找到符合流量分配的桶后记录在exp_map中</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">     <span class="keyword">for</span> bucket_id, bucket_value range exp.buckets:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">         <span class="keyword">if</span> hashint &lt; bucket_value:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">            exp_map[bucket_id] = <span class="literal">True</span>: </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">              <span class="keyword">break</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">          <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">            hashint -= bucket_value: </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> exp_map</span></pre></td></tr></table></figure>
+<p>后续线上做实验时，只需在代码中判断若exp_map[bucketA]==True，则用户需要走bucketA实验桶控制的实验逻辑。</p>
+<h4 id="召回"><a class="markdownIt-Anchor" href="#召回"></a> 召回</h4>
+<p>物料池中的物料千千万，最终曝光给用户展示的只有几十甚至十几条，如果直接对所有物料计算排序无疑成本非常高，需要对物料进行初筛也就是召回用户可能感兴趣的一批候选集，一般是几百到一千条左右。召回的方式主要分为基于兴趣内容类，协同过滤类及算法类，最终候选集的呈现可以是这些召回的组合。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803203348.png"></p>
+<h5 id="兴趣内容召回"><a class="markdownIt-Anchor" href="#兴趣内容召回"></a> 兴趣内容召回</h5>
+<p>基于用户兴趣画像，匹配不同维度物料，用户喜欢体育类的，那就从体育类内容中选取最新/最热内容召回，非常直观且可解释性强。根据不同维度组成一级或多级索引可以组成多路兴趣召回，因为用户画像中各维度兴趣点都有权重，那召回对应物料的数量可根据权重自适应调整。有这些基础召回作为候选集，推荐系统就可以向后进行排序、重排序等工作，基础通路就可打通。</p>
+<h5 id="协同过滤召回"><a class="markdownIt-Anchor" href="#协同过滤召回"></a> 协同过滤召回</h5>
+<p>协同过滤Collaborative Filtering可分为基于用户的和基于物料的，基于用户的原则可理解为“将跟你看过相同物料的用户，他们看过的物料推荐给你”，即User Collaborative Filtering——UCF ，基于物料的原则可以理解为“将你看过物料的相似物料推荐给你”，即Item Collaborative Filtering——ICF，所以根本在于找到相似用户或相似物料的过程。</p>
+<p>计算用户相似有Jaccard相似度、余弦相似度、皮尔逊相似度等。以较直观的Jaccard相似度作为基础版本的UCF，例如有用户A、B，两用户的相似度可以用sim(A,B) = |ra ∩ rb| / |ra ∪ rb|，ra、rb分别为两个用户产生行为的物料集，得分越高代表用户越相似，则基于UCF的召回流程如下，其他得分类相似度计算都可共用流程。</p>
+<blockquote>
+<p>离线部分</p>
+<ol>
+<li>拿到所有用户对应操作行为的物料，及user: item1,item2,item3…</li>
+<li>对全量用户计算两两用户间相似度得分</li>
+<li>对每个用户获取到得分排序最高的topN用户</li>
+<li>获取topN用户的历史行为item并与目标用户的item做去重</li>
+<li>将去重后的item存入以目标用户为key的redis中，userid:“item1,item2,item3…”</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>在线部分</p>
+<ol>
+<li>获取用户id，读取redis拿到物料召回</li>
+</ol>
+</blockquote>
+<p>基于ICF召回需要计算物料间的相似度，直观可以理解为文本、音频、图像、视频等物料类别中，通过NLP、图像理解、视频理解等方式综合计算出物料的向量表达embedding，通过embedding聚类出各物料最近似的物料，从而计算得到目标物料的相似物料。</p>
+<p>另一种应用最多的还是基于向量做内积来计算相似度，所以问题又转化为如何得到用户和物料的向量embedding，这类方法就很多了，从MF矩阵分解到item2vec从用户直观行为计算用户和物料embedding。利用神经网络如yutube dnn及最新火热的图卷积网络GCN通过用户对物料行为的隐式特征表达构建更为丰富的embedding信息，此类模型训练计算更为复杂但在大数据量学习用户行为更加准确。通过高效的faiss服务快速计算embedding间的相似度，从而拿到用户可能感兴趣的物料。这类方法在使用时可以归纳为如下流程</p>
+<blockquote>
+<p>离线部分</p>
+<ol>
+<li>拿到所有用户对应操作行为的物料，及user: item1,item2,item3…</li>
+<li>搭建模型训练出各用户和物料的embedding向量</li>
+<li>可以通过faiss找到目标用户的相似用户（群），获取相似用户的物料（同传统UCF）存入redis</li>
+</ol>
+<p>在线部分</p>
+<ol>
+<li>直接通过redis获取目标用户的物料候选集（同传统UCF）</li>
+<li>或拿到目标用户近期操作的物料id，通过faiss服务获取这些物料embedding距离最近的物料候选集（传统ICF）</li>
+<li>或通过目标用户id，直接从faiss服务中获取同用户embedding距离最近的物料候选集</li>
+</ol>
+</blockquote>
+<p>可以看到，通过计算用户及物料的embedding，使用时更为灵活，从效果上通过向量可以将用户和物料的高维稀疏特征转化为稠密特征，同时也可表示出用户和物料的隐含关系。</p>
+<h5 id="算法类召回"><a class="markdownIt-Anchor" href="#算法类召回"></a> 算法类召回</h5>
+<p>严格来说协同过滤和各类embedding也是算法，但这里算法类召回主要聚焦于通过特征和模型来对所有物料进行排序，筛选出topN物料进入候选集，也就是常说的粗排。因为要在线对万到千万级别的物料进行排序，对计算性能有严格要求，因此这类算法需要模型较为简单，特征较少，主要使用线性模型例如LR、FM、GBDT等。</p>
+<p>离线通过记录的用户、上下文及物料特征及样本数据训练好模型并同步给预测服务，线上获取到用户id及用户上下文，传入预测服务生成用户特征、上下文特征，结合物料特征及模型计算各物料的打分，排序后取topN作为召回集传回推荐引擎，流程如图。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803203857.png"></p>
+<p>上述三类召回可以组合使用，一般为多路召回共同构成候选集，在召回过程中需要根据业务规则对用户曝光、点击或负反馈等数据进行过滤，同时召回层面也需要兼顾用户兴趣与多样性探索，否则用户可能陷入到细化看的内容越来越多，后面精排的操作空间较小，用户未知偏好的内容推不出来。因此需要在召回阶段让候选集类别更多样，协同过滤的原理能够产生一定多样性但也是在相似的圈子里打转，可以通过对更多类别或相似类别进行探索召回。另外多路召回会带来的问题就是各路召回的数量不好控制，如果是统一参数值设定多少才合适？如果要个性化参数就需要按用户实际召回的偏好来制定规则甚至一个小模型来计算，这里也是后续要优化的点。</p>
+<p>在召回阶段还需要重要一环即新用户和新物料冷启动。新用户可以在进入应用时产品层面给出一些偏好选项来做基础画像兴趣，同时根据用户地域、设备信息、访问时段等信息协同出一些热门内容，加上各类别的热门内容，综合出候选集逐渐探索出用户兴趣及行为。新资源冷启是当物料新入物料池时，没有曝光点击等效果信息，虽然可以通过计算质量分等方式判断，但真正效果还需通过上线检验。可以将曝光量小于一定量（例如500）的物料单独建一个池子，通过ICF或embedding或用户兴趣单独进行冷启动召回，通过比较线上效果就可以判定物料的真实情况，结合质量分，效果差的资源就可以打入冷宫，不用进正式物料池给用户推荐了。</p>
+<h5 id="排序"><a class="markdownIt-Anchor" href="#排序"></a> 排序</h5>
+<p>也称精排阶段，针对召回出的候选集进行排序得到用户最可能感兴趣的内容，需要打分的物料只有几百上千条，因此可以使用更多维度的特征和复杂模型进行线上预测，这块流程同算法召回类似，统一调用排序预测服务即可，具体细节会放到本系列算法篇详述。初始搭建可以使用LR或GBDT等线性模型快速实现上线，作为baseline效果，后续通过不断迭代特征工程及模型调参，在线实验对比效果进行更新。</p>
+<h4 id="重排序"><a class="markdownIt-Anchor" href="#重排序"></a> 重排序</h4>
+<p>到这个阶段所有候选物料已经是按用户最可能点击的顺序排好，但这里需要重排来优化用户体验，例如同类内容的控量或打散，当然也需要根据用户行为进行策略上的调整，根据用户连续几刷点或不点来决定下一刷控量打散的度量等。同时还需要调整内容多样性来进行兴趣探索，特别是对于画像及行为不够丰富的用户。同时对于运营业务也需要在这里调整排序，比如时政内容的置顶、热点内容的加权、运营内容的提权或降权等。经过重排序后的所有物料，就整装待发，根据前端调用所需返回结果数量进行topN截断，展示给用户。</p>
+<p>推荐引擎的本质是将各种功能模块串接起来，既保证各模块功能各自独立解耦，又将其有序统一，使数据流顺利流动起来。如果业务越做越大，在召回、排序及重排的逻辑越来越复杂，那可能需要用微服务架构将召回、排序（也可直接看做预测服务）、重排等模块分别抽离成单独服务，便于独立的团队维护独立的服务模块，同时也要尽可能优化网络接口减少网络开销。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204026.png"></p>
+<h3 id="数据篇"><a class="markdownIt-Anchor" href="#数据篇"></a> 数据篇</h3>
+<p>当前大数据的时代数据已经是各大小公司的重要资产和护城河，推荐系统也是对这些数据结合公司业务的合理再分配，将历史数据与现实流量打通，针对用户产生的行为数据挖掘出画像信息，结合物料信息共同构建出个性化的推荐模式。从时效角度可以分成离线数据与实时数据，两套流程可分别计算与存储；从用户和物料角度也可分别对其所属数据进行存储和计算。相对第一篇推荐系统框架，数据部分的角色如图1中黄色元素表示。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204332.png"></p>
+<p>详细数据部分的拆解如图2所示，物料数据需要一个统一模块管理生成的所有物料，结构化后同步到资源池中，供后续正排及倒排的创建。用户日志通过kafka收集后，基于不同的计算方式消费日志数据，定时落入数据仓库或实时计算用户或物料数据，数据仓库中存储原始日志表和基于其生成的各种中间表，用来计算用户画像或统计物料信息。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204306.png"></p>
+<h4 id="物料数据-2"><a class="markdownIt-Anchor" href="#物料数据-2"></a> 物料数据</h4>
+<h5 id="存储"><a class="markdownIt-Anchor" href="#存储"></a> 存储</h5>
+<p>物料资源根据各家家底业务不同可谓千差万别，有图文、视频、图像、音频、社交关系等各种类别，但通常都要有物料唯一标识id，以及其自身特有的属性信息如标题、类别、标签、关键词等，很容易构建结构化数据供后续存储。存储方式根据数据体量大小、使用方式、当前团队技术能力来选择，通常是mysql、redis、文件、MongoDB、elasticsearch、Lucene等，每种方式都够单开一篇介绍其特点与使用方法，不是本系列内容的主旨。</p>
+<p>既然是从零搭建推荐系统，我们暂且以redis的方式作为存储方法，容量够大可扩展，读写及使用较为方便，但key-value的存储结构注定key为物料id，value为json字符串用于结构化物料的其他信息。确定存储方式后，内容生产方或管理方就要定时将物料数据结构化并同步到redis中，过期数据也要及时清理（其他存储方式同理，后面涉及到物料存储的流程基本一致，跟存储方式无关）。</p>
+<h5 id="正排及倒排索引构建"><a class="markdownIt-Anchor" href="#正排及倒排索引构建"></a> 正排及倒排索引构建</h5>
+<p>基础数据备好就该为使用做准备，通常使用方为推荐引擎及算法特征，尤其在推荐引擎侧常用到物料的正排及倒排索引。倒排最初是搜索的概念，一般根据物料某一字段或某些字段组合反查物料id，例如结构化数据如下：</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204539.png"></p>
+<p>如果按关键词建立倒排索引，倒排方式按物料时间倒序，“梅西”关键词对对应倒排索引如下：</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204555.png"></p>
+<p>正排就是相对倒排的概念，本质还是代表物料的各种基础信息。</p>
+<p>在应用倒排和正排信数据时，每次推荐直接读取redis无论对存储和线上推荐引擎性能压力都比较大，为便于推荐引擎使用正排及倒排信息，一般将redis内的所有物料信息定时全量同步到内存中，正排构建数据结构并填充值，倒排可根据业务需要建立倒排索引关系。如果业务量较轻，可直接在推荐引擎中加载，这样的好处是后续应用都可直接在内存中使用物料数据信息，使用快捷。因为是基础数据，每次推荐引擎服务启动都要加载并建立倒排操作，数据量过大时服务启动会耗费大量时间，定时同步也会耗费计算资源，对测试和线上都不友好，因此会把倒排及正排操作与推荐引擎解耦，以服务化的形式独立提供功能，也为其他模块的使用带来便利，但这样会增加服务间的接口调用。因此是选用高耦合还是解耦的方式使用数据，需要根据系统存储和性能对数据的承载力来判断选择。特别是存储方式如果选择es，那么天然自带倒排索引查询功能，适用于解耦方式。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803204622.png"></p>
+<h4 id="数据仓库"><a class="markdownIt-Anchor" href="#数据仓库"></a> 数据仓库</h4>
+<p>数据仓库是数据库的升华版，可以结构化记录下用户及物料的历史数据，便于查询及挖掘使用。数据仓库所有数据来源于日志，通过kafka实时收集并消费日志信息，通过一定计算逻辑整理成结构化数据落入数据仓库中，数据表有的是原始表，有的是根据原始表计算的二级表，根据使用方式不一而同，但目的都是为方便计算用户与物料信息。其中最主要是用户维度，主要有行为、画像及访问的上下文。</p>
+<h5 id="用户行为"><a class="markdownIt-Anchor" href="#用户行为"></a> 用户行为</h5>
+<p>系统日志全量记录用户在业务系统或app中的行为，其中有效行为如浏览、点击、播放、点赞、评论、转发，结合对应操作的物料信息，通过时间的积累从仓库中拿到这些信息后就能完整刻画用户在该系统中的访问路径、行为习惯、使用偏好等。这些数据作为原始用户特征可为算法提供充足的训练数据，如长用的基于时间序列算法RNN、GRU等，基于图神经网络的GNN、GCN等，以及构建用户embedding向量的双塔模型、item2vec等，这里放在后续推荐算法部分单独介绍。</p>
+<h5 id="用户画像-2"><a class="markdownIt-Anchor" href="#用户画像-2"></a> 用户画像</h5>
+<p>通过统计挖掘的方式，计算出用户对特定维度的偏好，以带权列表的方式刻画出不同用户的兴趣偏好，以达到千人千面个性化推荐的第一步，数据直观，可解释性强，有明确的画像数据也可不止用于推荐系统，为公司其他业务层面的个性化也打下基础。挖掘方式主要还是MapReduce技术框架。</p>
+<p>常用统计方式计算一定时间窗口内（用于区分短期兴趣和长期兴趣）用户点击、播放的物料，并通过物料自身属性权重计算对某一个属性值的兴趣程度，尤其对于点赞、评论、转发等深层行为表明用户对这类内容更具偏好性，需要加权处理，可简单归纳为如下公式</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><msub><mi>e</mi><mi>k</mi></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><msub><mi>a</mi><mi>i</mi></msub><msub><mi>ω</mi><mi>i</mi></msub><mi>f</mi><mo stretchy="false">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><msub><mi>N</mi><mi>b</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">score_k = \frac{\sum a_i\omega _if(t_i)}{N_b}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.263em;vertical-align:-0.8360000000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.3139999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">b</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">ω</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8360000000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>score为关键词<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span>的兴趣得分，分子是用户对所有行为物料中带有关键词<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span>的兴趣累加，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">i</span></span></span></span>为用户行为中的第<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">i</span></span></span></span>个物料，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">α</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span>为对该物料行为权重，比如点赞就比点击的权重要高，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ω</mi></mrow><annotation encoding="application/x-tex">ω</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">ω</span></span></span></span>为关键词k在物料上的权重分，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mclose">)</span></span></span></span>是一个时间衰减函数，表明用户在某一时刻对物料关键词的兴趣衰减程度，距离当前时间越长，感兴趣的衰减程度越高。分母是所有行为物料的个数。所有关键词计算出score值后再进行归一化排序，即可得出用户在关键词兴趣上的偏好序列。其他维度依赖的计算方式类似，但各维度计算结果都是带权重分的多值列表，毕竟用户也没实打实告诉你他的真实偏好（可能他自己也不知道）。</p>
+<p>通过这种方式可以初步定量计算用户偏好，但验证和评估不好定量，而且只考虑显示行为反馈信息，隐式反馈如曝光未点击、停留时长这类“不感兴趣”的影响未考虑在内，需要后续再去优化迭代。</p>
+<p>还有一类画像是通过聚类、embedding等算法计算出的用户隐式画像，例如通过用户行为聚类/分群会给特定用户标记上类别id，有的具有含以上的不可解释性。embedding更是将用户兴趣或用户表示为一个向量，隐式的表现出用户兴趣。这也是通过对用户历史行为数据计算得到，聚类算法如kmeans、pca降维等，embedding方式如前文提到的item2vec、yutube dnn等。</p>
+<p>其他诸如用户上下文信息，这类主要是用户访问时的时间、使用设备、系统、城市地域等，也可以输出在用户画像当中，供统计或用户特征。</p>
+<p>此时各类用户画像信息经过计算还是存储在中间数据表中，如果推荐引擎线上使用还需要转存到redis中，为节省redis访问最好一个用户id作为key，所有画像信息用json字符串作为value。但面临到问题就是不同计算任务可能只计算一类画像，但最终存储结果势必要合一，整合过程中要兼顾各类任务的异步性。另一种做法是搭建画像服务，画像服务统一定时同步各类离线任务计算的画像结果，同时也便于整合后文介绍的实时流画像，通过接口调用方式给使用方解析使用，灵活可扩展，通过日志系统也便于分析计算过程中的异常。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803205005.png"></p>
+<h5 id="物料挖掘信息"><a class="markdownIt-Anchor" href="#物料挖掘信息"></a> 物料挖掘信息</h5>
+<p>数仓中记录用户的行为，也间接记录了物料被消费的状态，通过挖掘手段能对物料的历史整体表现作出评估，作为物料特征供算法模型使用。例如统计出物料近3天、5天、7天、10天、15天及30天的曝光和点击数，进而计算分阶段的ctr数据，即可拿到物料在时间维度上的效果表现，作为特征加入到模型训练中，学习到的特性可以预测一个相似物料在未来一段时间内的效果走势。这类数据可以定时计算作为中间结果存在单独的数据表中，后续使用可以直接读取。</p>
+<h4 id="实时流计算"><a class="markdownIt-Anchor" href="#实时流计算"></a> 实时流计算</h4>
+<p>实时流用于实时从日志中获取有效信息，对于用户访问频次较高的应用属于必需品，可以反馈用户的实时行为和物料的实时统计信息，流式计算工具如flink、storm、spark，可针对业务特点任君挑选。</p>
+<p>一般从数据仓库中生成的离线画像数据是天级或小时级的定时任务，对一些需要实时反馈用户行为的场景无法满足要求，例如用户刚曝光过的数据需要过滤或降权，刚点过的物料在一刷推荐时可以推些相似的物品，一些负反馈信息需要记录并实时生效，通过实时收集的用户日志根据不同需求逻辑进行实时计算能快速获取这些信息，反馈给系统快速做出变化，是一个好推荐系统的必备要求。根据功能不同实时计算结果一般输出到不同的redis key当中，供线上取用。</p>
+<p>物料侧的计算目标类似，例如物料被曝光、点击、点赞等数据的实时情况，特别是新物料经过冷启动曝光后，能快速反映出这个物料的效果走势，判别出物料质量优劣，影响其后续的推荐策略。物料的实时计算结果也存在redis当中，一般供数据侧如物料正排信息和建立倒排索引使用，倒排中可能会影响物料的实时热度分从而影响倒排链的变化。</p>
+<h4 id="数据应用"><a class="markdownIt-Anchor" href="#数据应用"></a> 数据应用</h4>
+<p>数据自从被生产出来后的命运主要是被推荐系统消费，在系统当中循环，如同形象好气质佳的鲜肉小哥只能沦落到工厂流水线中拼命工作。而另一类特殊的数据就如同明星般被放在聚光灯下，接受大众的赞美与八卦吐槽，这就是外展及监控数据，一般通过专门平台展示给老板及各使用方，推荐效果的整体好坏，各策略实验对ctr的影响，用户行为的整体情况，一篇物料的历史及实时表现，都需要这类数据加持，因此也需要从数据仓库与实时流中分别计算各取所需，加之web页面炫酷展示，季度的kpi，岁末的年终奖，全依靠数据表现来实现了。</p>
+<h2 id="详解"><a class="markdownIt-Anchor" href="#详解"></a> 详解</h2>
+<h3 id="浅谈短视推荐系统中的特征工程"><a class="markdownIt-Anchor" href="#浅谈短视推荐系统中的特征工程"></a> 浅谈短视推荐系统中的特征工程</h3>
+<p>在推荐系统中，特征工程扮演着重要的角色。俗话说数据和特征决定了机器学习算法的上限，而模型、算法的选择和优化只是在不断逼近这个上限。特征工程的前提是收集足够多的数据，使用数据学习知识，从大量的原始数据中提取关键信息并表示为模型所需要的形式。本文主要说明短视频平台，是如何通过视频内容特征以及用户属性和行为数据，来精准预测用户对短视频的喜好的。</p>
+<p>短视频平台，存在其独有的业务特点，这也给特征构造带来了一定的难度。比如热目类目在播放时长、互动率等指标上表现出天然的优势，长视频相比于时长较短的视频在播放完成度、完播率等指标上存在明显的劣势，如何消除这些 bias 的影响都是特征构造时需要特别注意的地方，而对于我们线上的多目标排序模型来说，不同单目标对应的最优特征组合也不尽相同，这些不仅需要较强的专业领域知识，更重要的是对自身业务场景的深刻认知以及大量线上实验的探索尝试与验证。</p>
+<h4 id="特征提取"><a class="markdownIt-Anchor" href="#特征提取"></a> 特征提取</h4>
+<p>特征工程就是将原始数据空间映射到新的特征向量空间，使得在新的特征空间中，模型能够更好地学习数据中的规律。因此，特征提取就是对原始数据进行处理与变换的过程。常见的原始数据类型有数值型、离散型，还有文本、图像、视频等。如果将这些数据作为一个整体来看待的话，把用户、视频、作者看作节点，用户与视频、作者的交互看作边构建出的复杂网络也是我们的原始数据。</p>
+<p>事实上，如果特征工程做的足够好，即使是简单的模型，也能表现出非常好的效果。而复杂的模型可以在一定程度上减少特征工程的工作量。例如，对于线性模型，我们需要将类别变量进行独热编码等处理，但对于复杂一些的模型如树模型，则可以直接处理类别变量。像推荐系统中常用的 LR 模型，需要手工构造组合特征，而 FM 模型可以解决特征组合的问题，直接输入原始特征。而更复杂的 DNN 模型，可以自动学习特征的表示。</p>
+<p>在短视频场景下，视频的播放时长、播放完整度、点赞、转发、分享、评论等多种互动行为都是推荐模型的训练目标，根据模型所要学习的目标和业务逻辑，我们需要考虑数据中有哪些可能相关的信息，从现有数据中挖掘出对模型预测有用的特征。比如在微视排序中，用户的兴趣，在 App 上的播放、互动等行为以及视频的类别、标签、热度等都是强相关的因素。在确定了哪些因素可能与预测目标相关后，我们需要将此信息抽取成特征，下面会对不同特征的处理方式做具体介绍。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803205535.png"></p>
+<h5 id="数值特征"><a class="markdownIt-Anchor" href="#数值特征"></a> 数值特征</h5>
+<p>数值类型的数据具有实际统计意义，例如用户对不同类目下视频的兴趣分，或者是计数，例如一个视频被播放了多少次、被点赞、转发以及评论了多少次等。虽然一些机器学习模型可以直接输入数值类型的数据，但是通常情况下，对数值型数据进行适当的变换和处理能带来更优的效果。对于数值特征，我们主要考虑的因素是它的大小和分布。下面介绍几种我们用到的数值特征的处理方法。</p>
+<h6 id="分桶"><a class="markdownIt-Anchor" href="#分桶"></a> 分桶</h6>
+<p>比如视频一周内被播放次数应该是一个有用的特征，因为播放次数跟视频的热度有很强的相关性，但是如果不同视频的播放次数跨越不同的数量级，则很难发挥想要的作用。例如 LR 模型，模型往往只对比较大的特征值敏感。对于这种情况，通常的解决方法是进行分桶。分桶操作可以看作是对数值变量的离散化，之后通过二值化进行 one-hot 编码。</p>
+<p>分桶的数量和宽度可以根据业务领域的经验来指定，也有一些常规做法。</p>
+<ol>
+<li>等距分桶，每个桶的值域是固定的，这种方式适用于样本分布较为均匀的情况；</li>
+<li>等频分桶，即使得每个桶里数据一样多，这种方式可以保证每个桶有相同的样本数，但也会出现特征值差异非常大的样本被放在一个桶中的情况；</li>
+<li>模型分桶，使用模型找到最佳分桶，例如利用聚类的方式将特征分成多个类别，或者树模型，这种非线性模型天生具有对连续型特征切分的能力，利用特征分割点进行离散化。</li>
+</ol>
+<p>分桶是离散化的常用方法，将连续特征离散化为一系列 0/1 的离散特征，离散化之后得到的稀疏向量，内积乘法运算速度更快，计算结果方便存储。离散化之后的特征对于异常数据也具有很强的鲁棒性。需要注意的是：</p>
+<ol>
+<li>要使得桶内的属性取值变化对样本标签的影响基本在一个不大的范围，即不能出现单个分桶的内部，样本标签输出变化很大的情况；</li>
+<li>使每个桶内都有足够的样本，如果桶内样本太少，则随机性太大，不具有统计意义上的说服力；</li>
+<li>每个桶内的样本尽量分布均匀。</li>
+</ol>
+<h6 id="截断"><a class="markdownIt-Anchor" href="#截断"></a> 截断</h6>
+<p>对于连续型数值特征，有时精度太高可能只是噪声，并不具备太多的信息，也使得特征维度急剧上升。因此可以保留一定的精度，之后当作类别特征进行处理。对于长尾的数据，可以先进行对数缩放，再进行精度截断，之后可以当做类别变量做二值化处理，这也是我们实际应用中的做法。</p>
+<h6 id="缺失值处理"><a class="markdownIt-Anchor" href="#缺失值处理"></a> 缺失值处理</h6>
+<p>实际问题中经常会遇到特征缺失的情形，对于特征缺失，可以选择补一个值，例如使用均值，中位数，众数等进行替代，需要视具体情况进行选择；也可直接忽略，即将缺失作为一种信息进行编码输入模型让其进行学习，比如用户性别缺失，可以直接将未知作为一种类别进行处理；还可以使用模型预测缺失值，当然也有一些模型可以直接处理缺失值特征，比如 XGBoost。</p>
+<h6 id="特征交叉"><a class="markdownIt-Anchor" href="#特征交叉"></a> 特征交叉</h6>
+<p>特征交叉可以表示特征之间的相互作用，有助于表示非线性关系，增强对问题的刻画，缺点是维度快速增长，需要更多的训练样本。提升模型表达能力常见的关联方式有内积、笛卡尔积、哈达玛积等。内积是将两个或多个特征相乘，若向量 a=(a1,b1)，向量 b=(a2,b2)，则向量 a·向量 b=a1a2+b1b2；笛卡积是将所有元素两两相乘，例如，A={a,b}，B={0,1,2}，则 A×B={(a, 0), (a, 1), (a, 2), (b, 0), (b, 1), (b, 2)} ；Hadamard 积是将对应位置的元素相乘，例如，A={a,b}，B={0,1}，则 A×B={(a, 0) (b, 1) } 。下图旨在说明笛卡尔积与 Hadamard 积在具体特征构造上的差异。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803205821.png"></p>
+<p>特征交叉可以通过一些特征选择方法来选择有效的组合特征，比如卡方检验、特征相关性分析等；也可以根据经验进行组合， 有些 cross 特征，虽然可能没有直观的解释，但也常常会给模型带来很大的效果提升。除了手工构造交叉特征外，有些模型可以自动进行特征的交叉组合，比如常用的 FM 和 FFM 模型等。</p>
+<h6 id="标准化与缩放"><a class="markdownIt-Anchor" href="#标准化与缩放"></a> 标准化与缩放</h6>
+<p>数据的标准化或者归一化是将数据按比例缩放，将其转化为无量纲的纯数值，使得不同单位或量级的特征之间具有可比性，对于利用梯度下降来训练模型参数的算法，有助于提升模型的收敛速度。需要强调的是，不同业务的数据，其数据分布是不同的，缩放的方法一定要符合其特定的数据分布。一般会根据实际数据的情况，对常规做法或者公式进行调整，但大体思路上还是一致的，下面介绍 3 类相对通用的做法。</p>
+<p><strong>0-1 标准化</strong><br>
+是对原始数据的线性变换，使结果落到[0,1]区间，其中 max 为样本数据的最大值，min 为样本数据的最小值。这种方法有一个缺陷就是当有新数据加入时，可能会导致 max 值和 min 值的变化，需要重新定义。如果 max 值和 min 值波动较大，容易使得标准化结果不稳定，因此在实际使用中常用经验常量值来替代最大最小值。</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><mo>∗</mo></msup><mo>=</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>m</mi><mi>i</mi><mi>n</mi></mrow><mrow><mi>m</mi><mi>a</mi><mi>x</mi><mo>−</mo><mi>m</mi><mi>i</mi><mi>n</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">x^* = \frac{x - min}{max - min}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.738696em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.738696em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.10585em;vertical-align:-0.7693300000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3365200000000002em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693300000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p><strong>z-score 标准化</strong><br>
+经过处理的数据符合标准正态分布，即均值为 0，标准差为 1，其中 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">μ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">μ</span></span></span></span> 为所有样本数据的均值，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">σ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">σ</span></span></span></span> 为所有样本数据的标准差。这种标准化方式要求原始数据的分布可以近似为高斯分布，否则效果会变得很糟糕。</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><mo>∗</mo></msup><mo>=</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac></mrow><annotation encoding="application/x-tex">x^* = \frac{x - \mu}{\sigma}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.738696em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.738696em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.9463300000000001em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.2603300000000002em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">σ</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">μ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p><strong>非线性标准化</strong><br>
+这种方法一般使用在数值差异较大的场景，通过一些数学函数，比如对数、指数、正切等，将原始值做映射变换。实际使用中，需要根据不同业务的数据分布来选择，比如对数缩放，对数缩放对于处理长尾分布且取值为正数的数值变量非常有效，可以压缩数据范围，将长尾变为短尾，像 log2 和 log10 转换在微视中也都有使用，是一种方差稳定的变换。</p>
+<h6 id="数据平滑"><a class="markdownIt-Anchor" href="#数据平滑"></a> 数据平滑</h6>
+<p>常用的行为次数与曝光次数比值类的特征，由于数据的稀疏性，这种计算方式得到的统计量通常具有较大的偏差，需要做平滑处理，比如广告点击率常用的贝叶斯平滑技术。而在我们推荐场景中，也会用到很多统计类特征、比率特征。如果直接使用，比如由于不同 item 的下发量是不同的，这会让推荐偏向热门的类目，使得越推越窄，无法发现用户的个体差异，也不利于多样性的探索。我们可以把曝光量进行分段，同一个曝光量级的指标进行比较，也可以用该 item 所属类目统计量的平均值进行平滑处理。对于离群值较多的数据，我们会使用更加健壮的处理方法，比如使用中位数而不是均值，基于分位数而不是方差。而在短视频业务上较短或较长的视频在播放完成度上存在天然的差距，我们按视频本身长度离散，观看时长做分位数处理，同时做威尔逊置信区间平滑，使得各视频时长段播放完成度相对可比，避免出现打分因视频长度严重倾斜的情况。以及短视频 app 的投稿数量大，对于长尾的视频和类目都是需要做平滑处理的。下面介绍两种较为常用的平滑技术。</p>
+<ol>
+<li>贝叶斯平滑</li>
+<li>威尔逊区间平滑</li>
+</ol>
+<p><strong>贝叶斯平滑</strong></p>
+<p>电商领域中经常需要计算或预测一些转化率指标，比如 CTR。这些转化率可以是模型的预测值，也可以作为模型的特征使用。以商品点击率预测为例，CTR 的值等于点击量除以曝光量。理想情况下，例如某个广告点击量是 10000 次，转化量是 100 次，那转化率就是 1%。但有时，例如某个广告点击量是 2 次，转化量是 1 次，这样算来转化率为 50%。但此时这个指标在数学上是无效的。因为大数定律告诉我们，在试验不变的条件下，重复试验多次，随机事件的频率近似于它的概率。后者点击量只有 2 次，不满足“重复试验多次”的条件。如果对于一个新上线的商品，其曝光为 0，点击量也为 0，此时这件商品的 CTR 应该设为 0 还是赋一个初始值？初始值设 0 是可以的，但不太合理。当 CTR 作为特征使用时，表示这个商品完全没有点击，不太符合日常推断，通常是赋一个大于 0 的初始值。</p>
+<p>以上两个问题可以使用平滑技术来解决。贝叶斯平滑的思想是给 CTR 预设一个经验初始值，再通过当前的点击量和曝光量来修正这个初始值。如果某商品的点击量和曝光量都是 0，那么该商品的 CTR 就是这个经验初始值；如果商品 A 和商品 B 的曝光量差别很大，那么可以通过这个经验初始值来修正。贝叶斯平滑就是确定这个经验值的过程。贝叶斯平滑是基于贝叶斯统计推断的，因此经验值计算的过程依赖于数据的分布情况。对于一件商品或一条广告，对于某次曝光，用户要么点击，要么没点击，这符合二项分布。因此对于点击率类的贝叶斯平滑，都可以基于以下假设：对于某件商品或广告，其是否被点击是一个伯努利分布。伯努利分布的共轭分布就是 Beta 分布，也就是说，点击率服从 Beta 分布。而所有的数据有一个自身的点击率分布，这个分布可以用不同的 beta 分布来拟合。beta 分布可以看做是对点击率的一个先验知识，我们可以根据观测来修改我们的先验，所以贝叶斯平滑就是估计 Beta 分布中的参数 α 和 β，其中 C 和 I 是点击次数和曝光量。实际应用时根据历史数据得到的 α 和 β 可以帮助确定平滑参数的大致范围，防止设置参数时偏离过大。</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>=</mo><mfrac><mrow><mi>C</mi><mo>+</mo><mi>α</mi></mrow><mrow><mi>I</mi><mo>+</mo><mi>α</mi><mo>+</mo><mi>β</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">r = \frac{C + \alpha}{I + \alpha + \beta}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.2407700000000004em;vertical-align:-0.8804400000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804400000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p><strong>威尔逊区间平滑</strong></p>
+<p>在现实生活中我们会接触到很多评分系统，如豆瓣书评、YouTube 影评，在这些评分中有 1 个共同问题是每个 item 的评分人数是不同的，比如 10000 个人打了 90 分似乎比只有 10 个人打了 90 分更能被相信该 item 是 90 分的。威尔逊区间法常用来解决此类问题，是一种基于二项分布的计算方法，综合考虑评论数与好评率，平滑样本量对评价的影响，我们画像兴趣分上也用到了威尔逊区间平滑。</p>
+<p>假设 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">u</span></span></span></span> 表示正例数（好评），<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 表示实例总数（评论总数），那么好评率 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 就等于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi><mi mathvariant="normal">/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">u/n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">u</span><span class="mord">/</span><span class="mord mathdefault">n</span></span></span></span>。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 越大，表示这个 item 的好评比例越高，越应该排在前面。但是，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 的可信性，取决于有多少人，如果样本太小，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 就不可信。我们已知 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 是二项分布中某个事件的发生概率，因此我们可以计算出 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 的置信区间。置信区间实际就是进行可信度的修正，弥补样本量过小的影响。如果样本多，就说明比较可信，不需要很大的修正，所以置信区间会比较窄，下限值会比较大；如果样本少，就说明不一定可信，必须进行较大的修正，所以置信区间会比较宽，下限值会比较小。威尔逊区间就是一个很好的修正公式，在小样本上也具有很强的鲁棒性。</p>
+<p>在下面的公式中， <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 表示样本的好评率，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 表示样本的大小，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi></mrow><annotation encoding="application/x-tex">z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span></span></span></span> 表示对应某个置信水平的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi></mrow><annotation encoding="application/x-tex">z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span></span></span></span> 统计量，是一个常数。一般情况下，在 95%的置信水平下，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi></mrow><annotation encoding="application/x-tex">z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span></span></span></span> 统计量的值为 1.96。可以看到，当 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 的值足够大时，这个下限值会趋向 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span> 。如果 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 非常小，这个下限值会远小于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span>，起到了降低好评率的作用，使得该 item 的打分变低、排名下降。</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo>=</mo><mfrac><mrow><mi>p</mi><mo>+</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msubsup><mi>z</mi><mrow><mn>1</mn><mo>−</mo><mi>α</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow><mn>2</mn></msubsup><mo>−</mo><msub><mi>z</mi><mrow><mn>1</mn><mo>−</mo><mi>α</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow></msub><msqrt><mrow><mfrac><mrow><mi>p</mi><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="false">)</mo></mrow><mi>n</mi></mfrac><mo>+</mo><mfrac><msubsup><mi>z</mi><mrow><mn>1</mn><mo>−</mo><mi>α</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow><mn>2</mn></msubsup><mrow><mn>4</mn><msup><mi>n</mi><mn>2</mn></msup></mrow></mfrac></mrow></msqrt></mrow><mrow><mn>1</mn><mo>+</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><msubsup><mi>z</mi><mrow><mn>1</mn><mo>−</mo><mi>α</mi><mi mathvariant="normal">/</mi><mn>2</mn></mrow><mn>2</mn></msubsup></mrow></mfrac></mrow><annotation encoding="application/x-tex">score = \frac{p + \frac{1}{2n}z^2_{1-\alpha/2} -z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n} + \frac{z^2_{1-\alpha/2}}{4n^2}}}{1+\frac{1}{n}z^2_{1-\alpha/2}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.584518em;vertical-align:-1.250308em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.33421em;"><span style="top:-2.712102em;"><span class="pstrut" style="height:3.44721em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.795908em;"><span style="top:-2.3598em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.0037em;">α</span><span class="mord mtight">/</span><span class="mord mtight">2</span></span></span></span><span style="top:-3.0448000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5151999999999999em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.67721em;"><span class="pstrut" style="height:3.44721em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.334210000000001em;"><span class="pstrut" style="height:3.44721em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathdefault mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999998em;"><span style="top:-2.378em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.0037em;">α</span><span class="mord mtight">/</span><span class="mord mtight">2</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.49699999999999994em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.34480000000000005em;"><span style="top:-2.5198em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.0037em;">α</span><span class="mord mtight">/</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3551999999999999em;"><span></span></span></span></span></span></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.44721em;"><span class="svg-align" style="top:-3.8em;"><span class="pstrut" style="height:3.8em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mopen mtight">(</span><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight">p</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.26942em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">4</span><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463142857142857em;"><span style="top:-2.786em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.7058400000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8051142857142857em;"><span style="top:-2.1487999999999996em;margin-left:-0.04398em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5357142857142856em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.0037em;">α</span><span class="mord mtight">/</span><span class="mord mtight">2</span></span></span></span><span style="top:-2.880514285714286em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5357142857142856em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5654857142857143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.40721em;"><span class="pstrut" style="height:3.8em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.8800000000000001em;"><svg width="400em" height="1.8800000000000001em" viewbox="0 0 400000 1944" preserveaspectratio="xMinYMin slice"><path d="M1001,80H400000v40H1013.1s-83.4,268,-264.1,840c-180.7,
+572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7s-12,0,-12,0c-1.3,-3.3,-3.7,-11.7,
+-7,-25c-35.3,-125.3,-106.7,-373.3,-214,-744c-10,12,-21,25,-33,39s-32,39,-32,39
+c-6,-5.3,-15,-14,-27,-26s25,-30,25,-30c26.7,-32.7,52,-63,76,-91s52,-60,52,-60
+s208,722,208,722c56,-175.3,126.3,-397.3,211,-666c84.7,-268.7,153.8,-488.2,207.5,
+-658.5c53.7,-170.3,84.5,-266.8,92.5,-289.5c4,-6.7,10,-10,18,-10z
+M1001 80H400000v40H1013z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.39279em;"><span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250308em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<h6 id="bias-消除"><a class="markdownIt-Anchor" href="#bias-消除"></a> bias 消除</h6>
+<p>短视频项目会用到一些不同时间窗口以及实时的统计特征，比如不同类目或者不同时长区间下的完播率、平均播放时长等，考虑到冷热门类目以及长短视频在统计量上本身存在明显的差异，平滑之后我们会用统计量均值进行消偏，这也相当于有一个对热门视频降权，对长视频提权的作用。</p>
+<h6 id="多维度定义"><a class="markdownIt-Anchor" href="#多维度定义"></a> 多维度定义</h6>
+<p>有些特征可以结合多个属性或者统计量来定义，比如用户所属用户群特征，用户群可以从画像、操作系统等维度来定义；比如用户的活跃度特征可以从周/月登录次数、日播放时长、日播放个数、平均完播率等维度联合定义。</p>
+<h6 id="根据目标定制"><a class="markdownIt-Anchor" href="#根据目标定制"></a> 根据目标定制</h6>
+<p>有效的特征应该是与模型训练目标、样本定义紧密相关的，需要从数据中发掘与模型目标强相关的因素。比如视频的播放时长、播放完整度是我们的直接学习目标，同时考虑到用户在短视频 app 上的互动类型比较多，包括点赞、评论、分享、关注等，而不同的行为对于用户有着不同的价值，点赞表示兴趣偏好，评论反映用户的真实感受，分享利于传播分发，关注建立了一种好友兴趣关系，我们会同时利用这些用户互动行为进行建模。与广告点击率预估中的 ctr 特征类似，我们可以根据不同目标正负样本的定义，分别为每个单目标模型构造正样本率特征。以及比如从评论文本中分析用户对视频的“内容、bgm、速度、清晰度”等属性的情感倾向，对评论文本进行情感分析，让文本评论好评率来指导模型根据真实评价推荐视频就显得很有意义。</p>
+<h5 id="类别特征"><a class="markdownIt-Anchor" href="#类别特征"></a> 类别特征</h5>
+<p>类别特征可以是标签、属性、类型 ，比如视频的 id、作者、类别、标签、清晰度、质量、topic、bgm 曲风与速度等视频属性特征。同时也可以将数值特征离散化，从定量数据中获得定性数据。下面介绍几种我们对类别变量的处理方法。</p>
+<ol>
+<li>
+<p>独热编码<br>
+独热编码通常用于处理类别间不具有大小关系的特征，每个特征取值对应一维特征，能够处理缺失值，在一定程度上也起到了扩充特征的作用。但是当类别的数量很多时，特征空间会变得非常大。在这种情况下，一般可以用 PCA 等方法进行降维。<br>
+ </p>
+</li>
+<li>
+<p>散列编码<br>
+对于有些取值特别多的类别特征，使用独热编码得到的特征矩阵非常稀疏，再加上如果还有笛卡尔积等构造的组合特征，会使得特征维度爆炸式增长。特征数量多的问题自古有之，目前也已经有很多用于降维的方法。比如聚类、PCA 等都是常用的降维方法。但这类方法在特征量和样本量很多的时候本身就计算量很大，所以对大问题也基本无能为力。特征哈希就是一种简单的降维方法，在微视使用也较多，特征哈希法的目标就是是把原始的高维特征向量压缩成较低维特征向量，且尽量不损失原始特征的表达能力，其优势在于实现简单，所需额外计算量小；降低特征维度，从而加速算法训练与预测的时间，以及降低内存消耗；但代价是通过哈希转换后学习到的模型变得很难检验，我们很难对训练出的模型参数做出合理解释。特征哈希法的另一个问题是它会把多个原始特征哈希到相同的位置上，出现哈希 collision 现象，但实际实验表明这种 collision 对算法的精度影响很小。<br>
+ </p>
+</li>
+<li>
+<p>打分排名编码<br>
+比如在对用户画像的使用上，我们既直接使用了连续值画像特征，同时考虑到画像兴趣分之间天然的序列关系，分别对用户一、二级类目的 top1~top10 兴趣进行 one-hot，利用打分的排名对类别特征进行编码，强化兴趣打分排名的信号，且这种方式对于异常点较为不敏感；还有比如用户活跃度较高的前 topn 类目和不活跃度较高的前 topn 类目也可按次序排名作为离散特征。<br>
+ </p>
+</li>
+<li>
+<p>异常值处理<br>
+实际应用中，我们常常关心的一个点是异常值对整个统计以及离散化的影响，对于数值变量我们可以把绝对值处理为一个相对值，作为一个次序变量进行 one-hot 编码，或者做分箱离散化，都可以较好的减轻离群点的影响。对于分类变量，可以考虑神经网络中常见的做法，将分类变量做特征嵌入。比如说这里有 1 万个不同的标签，把它投影到 64 维或者 128 维的 vector 上面，相当于原来一个 1 万维的 one-hot 特征，现在只需要 64 维或 128 维就可以进行表示，将原本十分稀疏的向量空间转换到语义更为丰富且低维的特征 embedding 空间，且内存需求更少，精度也会更高。<br>
+ </p>
+</li>
+<li>
+<p>类别特征之间交叉组合<br>
+比如用户性别、操作系统 cross 得到用户分群特征，视频类别与标签之间的组合特征。在实际应用中，类别特征之间的组合方式千变万化，这类特征一般从业务逻辑的角度出发进行构造。相比类别特征之间的笛卡尔积操作，基于分组统计的特征组合方式计算更加复杂，需要对业务数据有较好的理解。<br>
+ </p>
+</li>
+<li>
+<p>类别特征和数值特征之间交叉组合<br>
+这类特征通常是在类别特征某个具体类别中计算一些统计量。例如用户对不同类目视频的完播率、平均播放时长，不同用户群体的互动指标等利用数值特征对类别特征进行处理。<br>
+ </p>
+</li>
+</ol>
+<p>例如我们构造了视频一二级类目的曝光次数 cross 快划次数的组合特征，这个可以有很直观的解释，比如分析某个用户的样本发现类似王者荣耀_31_31 的组合，即我们的推荐系统给这个用户曝光了 31 个王者荣耀的视频，但是每个都快速划过了，如果还是继续推，这个用户体验将会是极度糟糕的，而这个特征会很大程度的解决这个问题，使得尽可能的给这个用户曝光感兴趣的类目。这个特征可以进一步细化为类目曝光次数 cross 一些统计量，比如完播次数、互动次数等，因为没有快划可能是用户愿意尝试去看，完播可能是喜欢这个视频内容，而互动比如说转发或者点赞，可以看做是用户表现出了更为强烈的兴趣。</p>
+<p>比如为了提升视频的清晰度，我们给视频清晰等级打标签，但是发现直接加入清晰度属性特征后，清晰视频分布和线上指标并没有改善。通过对终端屏幕匹配情况，视频相比于屏幕过度拉伸比例的分析，我们发现约有十分之一的播放体验表现出过度拉伸，对于部分大屏幕用户，过度拉伸比例会更高，于是我们进一步尝试了视频清晰度分别与用户手机屏幕拉伸度和手机型号的笛卡尔积特征，清晰视频播放占比有了较为明显的提升，这对用户体验起到了一定的优化作用。</p>
+<h5 id="embedding-特征"><a class="markdownIt-Anchor" href="#embedding-特征"></a> Embedding 特征</h5>
+<h6 id="视频-embedding"><a class="markdownIt-Anchor" href="#视频-embedding"></a> 视频 embedding</h6>
+<p>视频 embedding 分为基于内容的 embedding 和基于行为的 embedding，前者使用视频的标题、封面、图像，音频等视频自身属性信息，通过 nlp、图像视觉等技术获得 embedding，后者是基于用户与视频的交互行为数据获得，比如我们发现用户在一个 session 中，前后点击的视频存在一定的相似性，通常会表现出对某类型视频的兴趣偏好，可能是同个风格类别，或者是相似的话题人物等。因此我们将一段时间内用户点击的视频 id 序列作为训练数据，使用 skip-gram 模型学习视频的 embedding 特征。由于用户点击行为具有上下文承接关系，因此得到的 embedding 特征有很好的聚类效果，使得在特征空间中，同类目的视频聚集在一起，相似类目的视频在空间中距离相近。在微视推荐系统里，视频 embedding 不仅可以作为排序特征，利用用户最近点击过视频的平均 embedding 进行召回，也是带来了效果提升。</p>
+<p>我们使用 TSNE 对视频 embedding 进行降维，从可视化结果来看，同一个类目下的视频是聚在一起的；相似的类目在特征空间中离得较近，如“猫”和“狗”，“亲子互动”和“亲情”；差异较大的类目离得较远，如“旅行 Vlog”和“猫”。这还是很符合预期的，一个用户的主要兴趣可能就集中在某几类，比如有的用户喜欢“猫”，那这个用户很大可能对“猫”的视频有大量的播放以及互动行为，那我们学习出来关于猫这个类目的视频 embedding 就会很相似，表现出在嵌入空间中聚集在一起的情形。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803212008.png"></p>
+<p>但是如果只是简单的对视频 id 序列学习 embedding 特征，我们是无法获得新视频 embedding 的。针对这个问题，我们使用了 side information 来解决视频冷启动问题，side information 指的是视频的一、二级类目、视频标签、视频时长、清晰度、距离发布的时间等视频属性信息，像距离发布的时间属性对于新闻资讯类视频，提升视频时新性有一定的帮助，尤其我们发现用户比较偏爱新发布的视频。我们将视频 embedding 特征转化为视频属性的 embedding 特征，取一段时间内同属性视频的平均 embedding 作为这个属性的 embedding 特征。这样当有新的视频进入到推荐库时，可以计算出新视频的视频属性 embedding。这样做的好处是在同一个语义空间做运算，排序模型不需要再重新学习 embedding 的空间分布。</p>
+<p>基于 side information 获得的视频 embedding 区分能力还是受到一定限制的，只要视频属性相同，不同视频 embedding 是完全一样的，而且如果增加了新的类目标签或者其他属性分类也是没有办法处理的。针对以上情况，实际使用中我们采用增量式 skip-gram 模型学习视频的 embedding，使用推荐库最新资源线上实时训练，将新入库的视频加入到模型中做增量式学习。Incremental skip-gram 模型与传统 skip-gram 模型的不同之处在于 embedding 空间分布是动态更新的。</p>
+<h6 id="user-embedding"><a class="markdownIt-Anchor" href="#user-embedding"></a> user embedding</h6>
+<p>想让 embedding 表达什么，主要在于选择哪一种方式构建语料，不同的用户行为序列，表达的兴趣也不同，比如快速划过行为、完播行为，点赞转发行为等表达的兴趣以及程度也都是不同的。因此视频 embedding 向量最终的作用，是不同 item 在用户兴趣空间中的位置表达。目前使用较多的主要是基于 word2vec 以及相应衍生的 embedding 技术和基于图神经网络的 embedding 技术，像我们在隐式画像上就使用了基于异构图的 user embedding。</p>
+<p>我们也可以把推荐问题建模成一个大规模的多分类问题，使用 softmax loss 学习一个 DNN 模型，即在某一时刻某一上下文信息下为用户在视频推荐库中精准地预测出下一次播放视频的类别，最后把训练好的 DNN 模型最后一层隐层输出作为 user embedding。深度学习模型虽然能够减少一部分特征工程的工作，但有些原始数据是不能直接输入到 DNN 中，与 CV、NLP 不同的是，推荐系统对特征工程格外依赖，好的特征能够起到非常关键的作用。我们的输入融合多种信息，主要包括人口统计学信息，播放历史，搜索历史，上下文信息，兴趣画像等，同时使用全场景数据而不是只使用用户播放数据。同时考虑了一些泛化能力比较强的数值和时间特征，比如完播该类目的视频数，最近一次播放该类目视频距离现在的时间等刻画用户与视频类别关系的特征。除了这些偏正向的特征，用户对于一些类目曝光但不点击快速划过等负反馈的信号同样非常重要。</p>
+<p>简单一点的做法也可以将一段时间内用户点击过的视频的平均 embedding 作为该用户的 embedding 特征，当然这里的“平均”可以是简单的算术平均，也可以是根据视频的热度和时间属性等进行加权平均或者尝试用 RNN 替换掉平均操作。同时将时间跨度取长一点，可以表达用户的长期兴趣；取短一点，可以用于刻画用户的短期兴趣，当然用户覆盖率也会随之降低。比如用户最近一周内主要点击观看的都是关于“猫”的视频，那该用户 embedding 特征，就会跟“猫”的向量很相近。我们也尝试将用户点赞或者分享转发过的视频序列作为训练数据，为用户互动过的视频提权。这里需要注意的是，有时单个用户行为序列太稀疏了，无法直接训练，一般可以先对用户做聚类再训练。</p>
+<h6 id="作者-embedding"><a class="markdownIt-Anchor" href="#作者-embedding"></a> 作者 embedding</h6>
+<p>可以取作者近一个月内发布视频的平均 embedding，作为该作者的 embedding 特征。这样做的出发点是，如果两个作者发布的视频相似，那么这两个作者的 embedding 向量也应该是相近的。假设此时某个用户喜欢作者 A，那么我们可以试着把与作者 A 相似的作者 B 发布的视频推荐给该用户。</p>
+<h5 id="context-特征"><a class="markdownIt-Anchor" href="#context-特征"></a> context 特征</h5>
+<p>context 特征通常是客户端带的信息，在用户授权的前提下可以直接获取，比如请求时间、用户手机品牌、手机型号、操作系统、当前网络状态（3g/4g/wifi）、用户渠道等实时属性特征以及之间的 cross 特征。</p>
+<h5 id="session-特征"><a class="markdownIt-Anchor" href="#session-特征"></a> session 特征</h5>
+<p>session 特征一般是基于用户最近的行为流水，常见的 session 划分方法有以下几种：</p>
+<p>固定行为数窗口，例如最近 100 条行为中分视频类别的完播个数、快速划过个数；<br>
+固定时间窗口，例如最近 3 天里有过正向行为的 item id 或者一些统计量；<br>
+连续行为窗口，例如用户 1 次打开 app 到关闭 app 期间的播放互动行为。<br>
+如上几种 session 定义的方法没有优劣之分，一般会结合具体业务场景做混合定义。在获取到用户的 session 数据后，可以直接将 session 里对应的 item id 序列作为特征，或者是 session 内的类别统计数据，也可以将预训练好的 item embedding 构造成 session 特征。</p>
+<h4 id="特征选择"><a class="markdownIt-Anchor" href="#特征选择"></a> 特征选择</h4>
+<p>特征选择是指选择相关特征子集的过程，好的特征选择能够提升模型的性能，更能帮助我们理解数据的特点、底层结构，这对进一步改善模型、算法都有着重要作用。特征选择主要有以下两个目的：</p>
+<ol>
+<li>简化模型，节省存储和计算开销；</li>
+<li>减少特征数量、降维，改善通用性、降低过拟合的风险。</li>
+</ol>
+<p>下面介绍几种特征选择的常用方法。</p>
+<h5 id="过滤式filtering"><a class="markdownIt-Anchor" href="#过滤式filtering"></a> 过滤式（Filtering）</h5>
+<p>过滤式特征选择独立于学习算法，不需要依赖任何模型，直接由数据集求得，评估依赖于数据集本身。一般主要考虑特征变量和目标变量之间的相关性以及特征变量之间的相互关系，一般认为相关度大的特征或者特征子集会对后续学习算法带来较高的准确率。这类方法在预处理时也使用较多，优点是计算效率高、复杂度低，独立于算法，但也可能选出冗余的特征。</p>
+<ul>
+<li>覆盖率。首先计算每个特征的覆盖率，覆盖率很小的特征对模型的预测效果作用不大，可以剔除。</li>
+<li>方差分析。分析特征的数据分布，比如说某个特征方差接近于 0，说明不同样本在这个特征上基本没有什么差异，可以说这个特征是对于样本区分基本没有太大作用的无关变量。因此通常可以选择方差大于某个阈值的特征，去掉取值变化小的特征。</li>
+<li>Pearson 相关系数。皮尔森相关系数是一种简单的，能帮助理解特征和目标变量之间关系的方法，用于衡量变量之间的线性相关性，取值区间为[-1，1]，-1 表示完全的负相关，+1 表示完全的正相关，0 表示没有线性相关。通过分析特征与目标之间的相关性，优先选择与目标相关性高的特征。</li>
+<li>假设检验。假设特征变量和目标变量之间相互独立，选择适当检验方法计算统计量，然后根据统计量做出统计推断。例如对于特征变量为类别变量而目标变量为连续数值变量的情况，可以使用方差分析，对于特征变量和目标变量都为连续数值变量的情况，可以使用皮尔森卡方检验。卡方统计量取值越大，特征相关性越高。</li>
+<li>互信息。在概率论和信息论中，互信息用来度量两个变量之间的相关性。互信息越大则表明两个变量相关性越高，互信息为 0 时，两个变量相互独立。</li>
+</ul>
+<h5 id="封装式wrapping"><a class="markdownIt-Anchor" href="#封装式wrapping"></a> 封装式（Wrapping）</h5>
+<p>与过滤方法不同，封装式特征选择直接使用机器学习算法评估特征子集的效果，直接面向算法优化，效果好，缺点是需要对每一组特征子集训练一个模型，计算复杂度高。常用的特征子集搜索算法有：完全搜索；基于贪心的启发式搜索（前向/后向搜索等）；随机搜索（模拟退火、遗传算法等）。</p>
+<h5 id="嵌入式embedding"><a class="markdownIt-Anchor" href="#嵌入式embedding"></a> 嵌入式（Embedding）</h5>
+<p>过滤式方法与模型算法相互独立，不需要交叉验证，计算效率比较高，但是没有考虑具体模型算法的特点。封装式方法使用模型来评估特征子集的质量，需要多次训练模型，计算效率很低。嵌入式方法将特征选择本身作为组成部分嵌入到学习算法里，速度快，效果好，不足是与算法绑定，需要知识调整结构和参数配置。</p>
+<ul>
+<li>基于正则化<br>
+使用带正则惩罚项的模型，比如 L1 正则化，通过对回归系数添加 L1 惩罚项来防止过拟合，因产生稀疏解，天然具有特征选择的作用。<br>
+ </li>
+<li>基于树模型<br>
+基于决策树的算法，如随机森林、GBDT，xgboost，在每次选择分类节点时，都会选择最佳分类特征来进行切分，重要的特征更有可能出现在分裂较早的节点，作为分裂节点的次数也越多。</li>
+</ul>
+<p>因此，可以基于树模型中特征出现次数等指标对特征重要性进行排序。</p>
+<h4 id="特征重要性分析"><a class="markdownIt-Anchor" href="#特征重要性分析"></a> 特征重要性分析</h4>
+<p>特征重要性分析是用来判断哪些变量对模型预测的影响力最大，可以帮助我们理解数据，指导模型参数的设置以及特征的选择，使模型具有良好的可解释性。</p>
+<h5 id="单特征-auc"><a class="markdownIt-Anchor" href="#单特征-auc"></a> 单特征 auc</h5>
+<p>对每个单特征训练模型，计算每个特征的 auc 或 gauc，并对其进行排名，精度越高表示该特征重要程度越高。这个方法需要训练多个模型，效率较低。实际应用中，可以有选择的对某些特征子集进行实验。</p>
+<ol>
+<li>特征值置为 0<br>
+在预测时可以依次将某个特征取值置为 0，即不考虑该特征对模型的影响，计算模型 auc，精度降低越多，表示这个特征对于模型预测越重要；<br>
+ </li>
+<li>特征取随机值<br>
+将某个特征取随机值，可以使用均匀或者高斯分布随机抽取值，然后计算模型的准确率。对于某个特征，如果用一个随机值替代后表现比之前差很多，说明该特征很重要；<br>
+ </li>
+<li>特征值随机打乱<br>
+随机打乱验证集中某一特征变量的值，使用训好的模型进行预测，精度损失越多，说明该特征对于预测结果的影响越大，可以按照精度损失的多少对特征重要性进行排序。这个方法比随机取值更科学，保证了与原始特征分布是一致的。举个例子说明一下，我们有一个已经训练好的模型以及评估该模型表现的评价指标（如 RMSE）。假设这是一个短视频播放时长的预测模型，本来在验证集上的 RMSE 是 200，然后我们把某一个变量的值（如性别）全部打乱重新做预测，比如说此时 RMSE 变成了 500，那么性别这个变量的重要性就可以记为 300，即让 loss 增加了 300。<br>
+<img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803212758.png"></li>
+</ol>
+<h4 id="结语"><a class="markdownIt-Anchor" href="#结语"></a> 结语</h4>
+<p>在实际的工程应用中，具体采用什么特征处理方式不仅依赖于业务和数据本身，还依赖于所选取的模型，因此首先要理解数据和业务逻辑以及模型的特点，才能更好地进行特征工程。通常可以考虑对样本做归一化、离散化、平滑处理以及特征变换与特征交叉，我们也会使用一些跨场景的特征迁移方法，复用现有知识域数据，比如手 Q 场景下的特征数据，具体方法的选择依赖于数据、资源等实际因素，复杂的模型虽然可以减轻我们在特征工程上的工作，但这并不代表我们不需要特征工程了。我们只是把更多的精力放在了模型难以直接从原始数据中学习到，需要借助对业务的理解与外部知识的特征构造上。</p>
+<p>特征工程不仅与模型算法相关，与实际问题更是强相关的。针对不同场景，特征工程所用的方法可能相差较大，所以很难总结出适用于不同业务的一套比较通用的方法。尽管如此，但仍然有很多特征工程的方法和技巧在不同问题中都适用。</p>
+<h3 id="标签体系搭建"><a class="markdownIt-Anchor" href="#标签体系搭建"></a> 标签体系搭建</h3>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20210803213445.png"></p>
+<h3 id="引用"><a class="markdownIt-Anchor" href="#引用"></a> 引用</h3>
+<ol>
+<li><a href="https://github.com/massquantity/Flink-Reinforcement-Learning/blob/master/README_zh.md" target="_blank" rel="noopener">Flink-Reinforcement-Learning</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Architecture/" rel="tag"><i class="fa fa-tag"></i> Architecture</a>
+              <a href="/tags/BigData/" rel="tag"><i class="fa fa-tag"></i> BigData</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/rd/mysql-protocol.html" rel="prev" title="Mysql浅尝辄止">
+      <i class="fa fa-chevron-left"></i> Mysql浅尝辄止
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建推荐系统概要"><span class="nav-number">1.</span> <span class="nav-text"> 搭建推荐系统概要</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#框架篇"><span class="nav-number">1.1.</span> <span class="nav-text"> 框架篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#物料数据"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 物料数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户数据"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 用户数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户画像"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 用户画像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实时计算"><span class="nav-number">1.1.4.</span> <span class="nav-text"> 实时计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法模块"><span class="nav-number">1.1.5.</span> <span class="nav-text"> 算法模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#推荐引擎"><span class="nav-number">1.1.6.</span> <span class="nav-text"> 推荐引擎</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据报表"><span class="nav-number">1.1.7.</span> <span class="nav-text"> 数据报表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法篇"><span class="nav-number">1.2.</span> <span class="nav-text"> 算法篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特征库服务"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 特征库/服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练数据"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 训练数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#非真实用户访问样本"><span class="nav-number">1.2.2.1.</span> <span class="nav-text"> 非真实用户访问样本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#极少行为用户样本"><span class="nav-number">1.2.2.2.</span> <span class="nav-text"> 极少行为用户样本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#特征缺失值及异常值等处理"><span class="nav-number">1.2.2.3.</span> <span class="nav-text"> 特征缺失值及异常值等处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#正负样本处理"><span class="nav-number">1.2.2.4.</span> <span class="nav-text"> 正负样本处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型训练"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 模型训练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线上预测"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 线上预测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引擎篇"><span class="nav-number">1.3.</span> <span class="nav-text"> 引擎篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实验染色"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 实验染色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#召回"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 召回</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#兴趣内容召回"><span class="nav-number">1.3.2.1.</span> <span class="nav-text"> 兴趣内容召回</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#协同过滤召回"><span class="nav-number">1.3.2.2.</span> <span class="nav-text"> 协同过滤召回</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#算法类召回"><span class="nav-number">1.3.2.3.</span> <span class="nav-text"> 算法类召回</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#排序"><span class="nav-number">1.3.2.4.</span> <span class="nav-text"> 排序</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重排序"><span class="nav-number">1.3.3.</span> <span class="nav-text"> 重排序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据篇"><span class="nav-number">1.4.</span> <span class="nav-text"> 数据篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#物料数据-2"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 物料数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#存储"><span class="nav-number">1.4.1.1.</span> <span class="nav-text"> 存储</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#正排及倒排索引构建"><span class="nav-number">1.4.1.2.</span> <span class="nav-text"> 正排及倒排索引构建</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据仓库"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 数据仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#用户行为"><span class="nav-number">1.4.2.1.</span> <span class="nav-text"> 用户行为</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用户画像-2"><span class="nav-number">1.4.2.2.</span> <span class="nav-text"> 用户画像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#物料挖掘信息"><span class="nav-number">1.4.2.3.</span> <span class="nav-text"> 物料挖掘信息</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实时流计算"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 实时流计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据应用"><span class="nav-number">1.4.4.</span> <span class="nav-text"> 数据应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详解"><span class="nav-number">2.</span> <span class="nav-text"> 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#浅谈短视推荐系统中的特征工程"><span class="nav-number">2.1.</span> <span class="nav-text"> 浅谈短视推荐系统中的特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特征提取"><span class="nav-number">2.1.1.</span> <span class="nav-text"> 特征提取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数值特征"><span class="nav-number">2.1.1.1.</span> <span class="nav-text"> 数值特征</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#分桶"><span class="nav-number">2.1.1.1.1.</span> <span class="nav-text"> 分桶</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#截断"><span class="nav-number">2.1.1.1.2.</span> <span class="nav-text"> 截断</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#缺失值处理"><span class="nav-number">2.1.1.1.3.</span> <span class="nav-text"> 缺失值处理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#特征交叉"><span class="nav-number">2.1.1.1.4.</span> <span class="nav-text"> 特征交叉</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#标准化与缩放"><span class="nav-number">2.1.1.1.5.</span> <span class="nav-text"> 标准化与缩放</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#数据平滑"><span class="nav-number">2.1.1.1.6.</span> <span class="nav-text"> 数据平滑</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#bias-消除"><span class="nav-number">2.1.1.1.7.</span> <span class="nav-text"> bias 消除</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#多维度定义"><span class="nav-number">2.1.1.1.8.</span> <span class="nav-text"> 多维度定义</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#根据目标定制"><span class="nav-number">2.1.1.1.9.</span> <span class="nav-text"> 根据目标定制</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#类别特征"><span class="nav-number">2.1.1.2.</span> <span class="nav-text"> 类别特征</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#embedding-特征"><span class="nav-number">2.1.1.3.</span> <span class="nav-text"> Embedding 特征</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#视频-embedding"><span class="nav-number">2.1.1.3.1.</span> <span class="nav-text"> 视频 embedding</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#user-embedding"><span class="nav-number">2.1.1.3.2.</span> <span class="nav-text"> user embedding</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#作者-embedding"><span class="nav-number">2.1.1.3.3.</span> <span class="nav-text"> 作者 embedding</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#context-特征"><span class="nav-number">2.1.1.4.</span> <span class="nav-text"> context 特征</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#session-特征"><span class="nav-number">2.1.1.5.</span> <span class="nav-text"> session 特征</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征选择"><span class="nav-number">2.1.2.</span> <span class="nav-text"> 特征选择</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#过滤式filtering"><span class="nav-number">2.1.2.1.</span> <span class="nav-text"> 过滤式（Filtering）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#封装式wrapping"><span class="nav-number">2.1.2.2.</span> <span class="nav-text"> 封装式（Wrapping）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#嵌入式embedding"><span class="nav-number">2.1.2.3.</span> <span class="nav-text"> 嵌入式（Embedding）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征重要性分析"><span class="nav-number">2.1.3.</span> <span class="nav-text"> 特征重要性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#单特征-auc"><span class="nav-number">2.1.3.1.</span> <span class="nav-text"> 单特征 auc</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结语"><span class="nav-number">2.1.4.</span> <span class="nav-text"> 结语</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标签体系搭建"><span class="nav-number">2.2.</span> <span class="nav-text"> 标签体系搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">2.3.</span> <span class="nav-text"> 引用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+
+
+  
+
+</body>
+</html>
