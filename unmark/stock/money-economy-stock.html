@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="货币与金融  大杂烩  蒙代尔不可能三角  本国货币政策的独立性 汇率的稳定性 资本的完全流动性  三者不能同时实现。 最多只能同时满足两个目标，而放弃另外一个目标。">
+<meta name="keywords" content="量化交易,技术形态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Money And Economy">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;unmark&#x2F;stock&#x2F;money-economy-stock.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="货币与金融  大杂烩  蒙代尔不可能三角  本国货币政策的独立性 汇率的稳定性 资本的完全流动性  三者不能同时实现。 最多只能同时满足两个目标，而放弃另外一个目标。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20220325185117.png">
+<meta property="og:updated_time" content="2022-03-25T12:56:21.183Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;fayhot&#x2F;figurebed&#x2F;master&#x2F;20200824&#x2F;20220325185117.png">
+
+<link rel="canonical" href="http://fayhot.github.io/unmark/stock/money-economy-stock.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Money And Economy | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/unmark/stock/money-economy-stock.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Money And Economy
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-03-25 20:27:45 / Modified: 20:56:21" itemprop="dateCreated datePublished" datetime="2022-03-25T20:27:45+08:00">2022-03-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D/" itemprop="url" rel="index">
+                    <span itemprop="name">金融</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D/%E8%82%A1%E7%A5%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">股票</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="货币与金融"><a class="markdownIt-Anchor" href="#货币与金融"></a> 货币与金融</h2>
+<h3 id="大杂烩"><a class="markdownIt-Anchor" href="#大杂烩"></a> 大杂烩</h3>
+<h4 id="蒙代尔不可能三角"><a class="markdownIt-Anchor" href="#蒙代尔不可能三角"></a> 蒙代尔不可能三角</h4>
+<ol>
+<li>本国货币政策的独立性</li>
+<li>汇率的稳定性</li>
+<li>资本的完全流动性</li>
+</ol>
+<p>三者不能同时实现。 最多只能同时满足两个目标，而放弃另外一个目标。</p>
+<a id="more"></a>
+<h4 id="索罗斯金融观点"><a class="markdownIt-Anchor" href="#索罗斯金融观点"></a> 索罗斯金融观点</h4>
+<ol>
+<li>股票的价格并非围绕股票的价值而波动，而是具有“反身性”。即过去价格的提升带来升值预期，故而新进入的投资者会买入持有。</li>
+</ol>
+<p>买入持有者并不是看好每股收益而购入，而是他们预期股价会继续上涨，可以卖给后来的投资者。虽然股票的价值有升值空间，但投机者在这里预期的事情和庞氏骗局是差不多的。即，<strong>我所期望的收益是后来的加入者给出的</strong>。</p>
+<p>所有的人都盼望着后来的加入者加入进来，但参与者的上限，或者说参与者的资金上限并不是无穷的。这导致整个过程必然面临和旁氏骗局一样的后果——泡沫的破灭。</p>
+<p>不同的是股票毕竟是有价值的，而一般的庞氏骗局背后没有任何有实际价值的东西。也就是说，当股价一路下降的时候，一样会产生正反馈效应，后来的做空者会预期价格更加低，所以更加卖出。而前期的投机者会产生类似踩踏事故中的情况。</p>
+<p>一旦股价下跌到，光持有股票，获得的股息也是一笔不错的投资时。套利者就会出现，或者我们可以叫他们<strong>价值投资者</strong>。光持有这些廉价的股票，赚取股息即可获得不错的回报率。</p>
+<p>简言之，<strong>不围绕价值简单波动，投资者自己的行为本身是影响未来价格的因素</strong>。</p>
+<ol start="2">
+<li>当价格被投机者推高的时候，该上市公司的融资能力会增强而导致本来的价值提升。</li>
+</ol>
+<p>买股票的人多了，这公司的融资能力会帮助其扩展业务。下降的时候，会有类似银行挤兑的现象。<br>
+本来基本面良好的公司可能因为惨烈的股价下跌而遭受损失，造成该公司的价值受损。</p>
+<p><strong>观察者本身会影响被观察到事物，而非经典模型的观察者无关</strong>。</p>
+<h4 id="戴维斯双杀-戴维斯双击"><a class="markdownIt-Anchor" href="#戴维斯双杀-戴维斯双击"></a> 戴维斯双杀、戴维斯双击</h4>
+<p>货币的增发贬值，是减轻债务问题的一个重要手段</p>
+<h2 id="量化交易"><a class="markdownIt-Anchor" href="#量化交易"></a> 量化交易</h2>
+<h2 id="技术指标图形分析"><a class="markdownIt-Anchor" href="#技术指标图形分析"></a> 技术指标图形分析</h2>
+<h3 id="kdj"><a class="markdownIt-Anchor" href="#kdj"></a> KDJ</h3>
+<h4 id="kdj-计算公式"><a class="markdownIt-Anchor" href="#kdj-计算公式"></a> KDJ 计算公式</h4>
+<p>futu版本</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">RSV＝<span class="comment">(CLOSE-LLV(lOW,N1)</span>)/<span class="comment">(HHV(HIGH,N1)</span>-LLV（LOW,<span class="symbol">N1</span>))*<span class="number">100</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">K＝MA（RSV，<span class="symbol">N2</span>）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">D＝MA（K，<span class="symbol">N3</span>）</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">J=<span class="number">3</span>*K<span class="number">-2</span>*D </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其中N1＝9，N2＝3，N3＝3</span></span></pre></td></tr></table></figure>
+<p>K与D值永远介于0与1之间。</p>
+<p>KD线中的RSV，随着9日中高低价、收盘价的变动而有所不同。<br>
+如果行情是一个明显的涨势，会带动K线（快速平均值）与D线（慢速平均值）向上升。<br>
+如果涨势开始迟缓，便会慢慢反应到K值与D值，使K线跌破D线，此时中短期跌势确立。</p>
+<p>由于KD线本质上是一个随机波动的观念，对于掌握中短期的行情走势非常正确。<br>
+缺省时，系统在副图上绘制三条线，分别为RSV值的三日平均线K，K值的三日平均线D，三倍K值减二倍D值所得的J线。</p>
+<h4 id="指标盲区"><a class="markdownIt-Anchor" href="#指标盲区"></a> 指标盲区</h4>
+<p>KDJ 适合在均衡震荡的区间做参考指标。对于单调递增、单调递减的走势会产生钝化，进而有极大的误判。</p>
+<p><strong>正确使用黄金、死亡交叉信号</strong></p>
+<p>在应用金叉死叉作交易信号前，先研判目前是处于多头还是空头趋势。在多头上涨行情出现死亡交叉时，将注意力集中在产生讯号的当根或下一根蜡烛图，若没有创新低，前期的死叉反而会是确认多方切入点。同理，在空头趋势出现黄金交叉一般都会遇卖压，不宜做多。金叉死叉应用前必须看清历史趋势强度。下图中，STO指标死叉时反而是逢低入场好时机。</p>
+<p><img alt data-src="https://raw.githubusercontent.com/fayhot/figurebed/master/20200824/20220325185117.png"></p>
+<h3 id="gmma"><a class="markdownIt-Anchor" href="#gmma"></a> GMMA</h3>
+<h3 id="ema"><a class="markdownIt-Anchor" href="#ema"></a> EMA</h3>
+<h3 id="macd"><a class="markdownIt-Anchor" href="#macd"></a> MACD</h3>
+<p>原名是Moving Average Convergence and Divergence。本指标是一个很流行又管用的指标，可以去除掉移动平均线频烦的假讯号缺陷又能确保移动平均线最大的战果。</p>
+<p>MACD是利用两条不同速度（长期与中期）的平滑移动平均线 （EMA）来计算二者之间的差离状况作为研判行情的基础。在绘制的图形上，DIF与DEA形成了两条快慢移动平均线，买进卖出信号也就决定于这两条线的交叉点。很明显，MACD是一个中长期趋势的投资技术工具。</p>
+<h4 id="macd-计算公式"><a class="markdownIt-Anchor" href="#macd-计算公式"></a> MACD 计算公式</h4>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// SHORT=12，LONG=26， MID=9时的DIF线、DEA线、MACD线（柱状线）。</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">EMA<span class="comment">(CLOSE, N)</span> = PrePeriodEMA<span class="comment">(CLOSE, N)</span> * <span class="comment">(N - 1)</span> / <span class="comment">(N + 1)</span> + <span class="number">2</span> / <span class="comment">(N + 1)</span> * CLOSE</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">DIF = EMA<span class="comment">(CLOSE,SHORT)</span>-EMA<span class="comment">(CLOSE,LONG)</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">DEA = EMA<span class="comment">(DIF,MID)</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">MACD = <span class="comment">(DIF-DEA)</span>*<span class="number">2</span>;</span></pre></td></tr></table></figure>
+<p>MACD计算步骤：</p>
+<ol>
+<li>计算快速移动平均线，即12日的EMA1；计算慢速移动平均线，即26日的EMA2；<br>
+当日EMA(12)=前一日EMA(12)×11/13＋当日收盘价×2/13<br>
+当日EMA(26)=前一日EMA(26)×25/27＋当日收盘价×2/27</li>
+<li>以EMA1，EMA2数值之间的差值得出DIFF.<br>
+DIFF=当日EMA(12)－当日EMA(26)</li>
+<li>再求出DIFF的9日平滑移动平均线DEA.<br>
+当日DEA=前一日DEA×8/10＋当日DIFF×2/10</li>
+<li>最后得出MACD=2×(DIFF－DEA).</li>
+</ol>
+<h3 id="rsi"><a class="markdownIt-Anchor" href="#rsi"></a> RSI</h3>
+<p>RSI反应了股价变动的四个因素：上涨的天数、下跌的天数、上涨的幅度、下跌的幅度。</p>
+<p>它对股价的四个构成要素都加以考虑，所以在股价预测方面其准确度较为可信。<br>
+根据正态分布理论，随机变数在靠近中心数值附近区域出现的机会最多，离中心数值越远，出现的机会就越小。<br>
+在股市的长期发展过程中，绝大多数时间里相对强弱指数的变化范围介于30 和70之间，其中又以40和60之间的机会最多，超过80或者低于20的机会较少。 而出现机会最少的是高于90及低于10。</p>
+<h4 id="rsi计算公式"><a class="markdownIt-Anchor" href="#rsi计算公式"></a> RSI计算公式</h4>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// futu code</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">LC＝REF(<span class="keyword">CLOSE</span>,1)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">RSI1＝<span class="built_in">SUM</span>(<span class="built_in">MAX</span>(<span class="keyword">CLOSE</span>-LC,0),N1)/<span class="built_in">SUM</span>(<span class="built_in">ABS</span>(<span class="keyword">CLOSE</span>-LC),N1)*100</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">RSI2＝<span class="built_in">SUM</span>(<span class="built_in">MAX</span>(<span class="keyword">CLOSE</span>-LC,0),N2)/<span class="built_in">SUM</span>(<span class="built_in">ABS</span>(<span class="keyword">CLOSE</span>-LC),N2)*100</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">RSI3＝<span class="built_in">SUM</span>(<span class="built_in">MAX</span>(<span class="keyword">CLOSE</span>-LC,0),N3)/<span class="built_in">SUM</span>(<span class="built_in">ABS</span>(<span class="keyword">CLOSE</span>-LC),N3)*100</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其中N1＝6，N2＝12，N3＝24</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// 缺省时，系统在副图上绘制三条线，分别为6日线RSI1，12日线RSI2，24 日线RSI3。</span></span></pre></td></tr></table></figure>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">// raw code</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">RSI = 100 – 100 / ( 1 + RS )</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">RS = Relative Strength = AvgU / AvgD</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">AvgU = 在最后N个bar里所有向上移动（涨了多少）的平均值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">AvgD = 在最后N个bar里所有向下移动（跌了多少）的平均值</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">N = RSI周期</span></pre></td></tr></table></figure>
+<p><strong>RSI手把手计算</strong></p>
+<p>有3中种常用的计算AvgU 、 AvgD的方法</p>
+<p>计算 up moves（涨了多少 和 down moves（跌了多少） (get U and D)</p>
+<p>计算 Relative Strength (get RS)<br>
+计算 Relative Strength Index (get RSI)</p>
+<h5 id="step-1-计算-up-moves-和-down-moves"><a class="markdownIt-Anchor" href="#step-1-计算-up-moves-和-down-moves"></a> Step 1: 计算 Up Moves 和 Down Moves</h5>
+<p>我们会以14天为一个period来做参考，14天是最常用的参数。<br>
+要计算RSI，你需要最近15天的收盘价(closing prices)。（如果是10天为一个周期的话，你需要最近11天的收盘价）。</p>
+<p>咱开始计算最近14天的up moves 和 down moves。<br>
+首先，计算每个bar之间的差值：Chng = Closet – Closet-1<br>
+也就是当天的收盘价 - 前一天的收盘价</p>
+<p>每个bar中，up move (U) 等于:<br>
+<code>Closet – Closet-1</code>，如果价格变动是正数的话<br>
+0，如果价格变动是负数或0的话。</p>
+<p>Down move (D) 等于:<br>
+<code>Closet – Closet-1</code> 的绝对值，如果价格变动是负数的话<br>
+0，如果价格变动是正数或0的话。</p>
+<p>现在，你已经有了RSI公式的输入，也就是最近N天的增长或下降（N是RSI周期）。</p>
+<p>下一步就是求平均</p>
+<h5 id="step2-平均-上涨和下跌"><a class="markdownIt-Anchor" href="#step2-平均-上涨和下跌"></a> Step2: 平均 上涨和下跌</h5>
+<p>有3个常用的方法。每个计算up 、 down moves的方式都不同：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">Simple Moving Average</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Exponential Moving Average</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">Wilder’s Smoothing Method</span></pre></td></tr></table></figure>
+<h6 id="simple-moving-average"><a class="markdownIt-Anchor" href="#simple-moving-average"></a> Simple Moving Average</h6>
+<p>这是最直接的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">AvgU &#x3D; 把最近N个bars里的所有的up move(U)相加，然后除以N</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">AvgD &#x3D; 把最近N个bars里的所有的down move(D)相加，然后除以N</span></pre></td></tr></table></figure>
+<h6 id="exponential-moving-average"><a class="markdownIt-Anchor" href="#exponential-moving-average"></a> Exponential Moving Average</h6>
+<p>这方法跟上面的方法是一样的，只是用EMA来算。EMA周期就是RSI周期。公式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">AvgUt &#x3D; α * Ut + ( 1 – α ) * AvgUt-1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">AvgDt &#x3D; α * Dt + ( 1 – α ) * AvgDt-1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">α &#x3D; 2 &#x2F; ( N + 1 )</span></pre></td></tr></table></figure>
+<h6 id="wilders-smoothing-method"><a class="markdownIt-Anchor" href="#wilders-smoothing-method"></a> Wilder’s Smoothing Method</h6>
+<p>J. Welles Wilder是RSI的发明者。这方法跟Exponential Moving Average的逻辑是一样的，只是 <code>α</code> 不同：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">α = <span class="number">1</span> / N</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> – α = ( N – <span class="number">1</span> ) / N</span></pre></td></tr></table></figure>
+<p>比如，计算RSI 14的 average up move：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">AvgUt = <span class="number">1</span>/<span class="number">14</span> * Ut + <span class="number">13</span>/<span class="number">14</span> * AvgUt<span class="number">-1</span></span></pre></td></tr></table></figure>
+<h5 id="step-3-计算relative-strength"><a class="markdownIt-Anchor" href="#step-3-计算relative-strength"></a> Step 3: 计算Relative Strength</h5>
+<p>现在最近14天的AvgU，AvgD都有了，下一步就是要计算Relative Strength，也就是计算AvgU 和 AvgD的比</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="attr">RS</span> = AvgU / AvgD</span></pre></td></tr></table></figure>
+<h5 id="step-4-计算-relative-strength-index-rsi"><a class="markdownIt-Anchor" href="#step-4-计算-relative-strength-index-rsi"></a> Step 4: 计算 Relative Strength Index (RSI)</h5>
+<p>最后，我们知道Relative Strength，就可以计算RSI了。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">RSI = <span class="number">100</span> – <span class="number">100</span> / ( <span class="number">1</span> + RS)</span></pre></td></tr></table></figure>
+<h4 id="指标盲区-2"><a class="markdownIt-Anchor" href="#指标盲区-2"></a> 指标盲区</h4>
+<p>指标盲区：<strong>持续暴涨、暴跌</strong>的股票，如2020的Tsla，2021的快手。</p>
+<p><strong>最低的 RSI</strong></p>
+<p>什么情况下RSI的值最低呢？<strong>完全的熊市~</strong>。<br>
+想象下，每天的收盘价都会低于前一天的收盘价。这将没有up的天数，最近N天的所有的U会是0.<br>
+AvgU会是0。<br>
+另一方面，AvgD会是某个正数<br>
+Relative Strength会是0，因为是 0除以某个正数，所以是0<br>
+RSI也是0：<br>
+<code>RSI = 100 – 100 / ( 1 + 0 ) = 100 – 100 = 0</code></p>
+<p><strong>最高RSI</strong></p>
+<p>和上面的特殊情况相反咯，就是每天都涨涨涨，超级牛市<br>
+AvgD 会是0, AvgU 是某个正数. RS会是某个正数除以0。但是数学上，这是非法的。所以这种特殊情况会定义RSI为100。<br>
+如果 AvgD不是0，是一个非常小的数。RS会接近正无穷，RSI会非常靠近0。</p>
+<p><code>RSI = 100 – 100 / ( 1 + a big number ) = 100 – 0 = 100</code></p>
+<p>3种方法会给我们3种不同的结果。交易员看你自己的喜好而定，但是一般选用了某种方法，就统一用那种方法好了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag"><i class="fa fa-tag"></i> 量化交易</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E5%BD%A2%E6%80%81/" rel="tag"><i class="fa fa-tag"></i> 技术形态</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/rd/build-recommender-system.html" rel="prev" title="搭建推荐系统">
+      <i class="fa fa-chevron-left"></i> 搭建推荐系统
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#货币与金融"><span class="nav-number">1.</span> <span class="nav-text"> 货币与金融</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大杂烩"><span class="nav-number">1.1.</span> <span class="nav-text"> 大杂烩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#蒙代尔不可能三角"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 蒙代尔不可能三角</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索罗斯金融观点"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 索罗斯金融观点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#戴维斯双杀-戴维斯双击"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 戴维斯双杀、戴维斯双击</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#量化交易"><span class="nav-number">2.</span> <span class="nav-text"> 量化交易</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术指标图形分析"><span class="nav-number">3.</span> <span class="nav-text"> 技术指标图形分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kdj"><span class="nav-number">3.1.</span> <span class="nav-text"> KDJ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kdj-计算公式"><span class="nav-number">3.1.1.</span> <span class="nav-text"> KDJ 计算公式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指标盲区"><span class="nav-number">3.1.2.</span> <span class="nav-text"> 指标盲区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gmma"><span class="nav-number">3.2.</span> <span class="nav-text"> GMMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ema"><span class="nav-number">3.3.</span> <span class="nav-text"> EMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#macd"><span class="nav-number">3.4.</span> <span class="nav-text"> MACD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#macd-计算公式"><span class="nav-number">3.4.1.</span> <span class="nav-text"> MACD 计算公式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rsi"><span class="nav-number">3.5.</span> <span class="nav-text"> RSI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rsi计算公式"><span class="nav-number">3.5.1.</span> <span class="nav-text"> RSI计算公式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#step-1-计算-up-moves-和-down-moves"><span class="nav-number">3.5.1.1.</span> <span class="nav-text"> Step 1: 计算 Up Moves 和 Down Moves</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#step2-平均-上涨和下跌"><span class="nav-number">3.5.1.2.</span> <span class="nav-text"> Step2: 平均 上涨和下跌</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#simple-moving-average"><span class="nav-number">3.5.1.2.1.</span> <span class="nav-text"> Simple Moving Average</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#exponential-moving-average"><span class="nav-number">3.5.1.2.2.</span> <span class="nav-text"> Exponential Moving Average</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#wilders-smoothing-method"><span class="nav-number">3.5.1.2.3.</span> <span class="nav-text"> Wilder’s Smoothing Method</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#step-3-计算relative-strength"><span class="nav-number">3.5.1.3.</span> <span class="nav-text"> Step 3: 计算Relative Strength</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#step-4-计算-relative-strength-index-rsi"><span class="nav-number">3.5.1.4.</span> <span class="nav-text"> Step 4: 计算 Relative Strength Index (RSI)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指标盲区-2"><span class="nav-number">3.5.2.</span> <span class="nav-text"> 指标盲区</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
