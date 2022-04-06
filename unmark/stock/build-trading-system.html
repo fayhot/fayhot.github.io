@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Trading System(交易系统)  交易系统 交易系统是定义了交易出入场条件的一组规则。任何交易系统都有8种基本要素。  交易者类型 交易类型 选择指标 选择机会 资金管理 退出条件 一致性和纪律 构建正反馈回路">
+<meta name="keywords" content="量化交易,技术形态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Build Trading System">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;unmark&#x2F;stock&#x2F;build-trading-system.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="Trading System(交易系统)  交易系统 交易系统是定义了交易出入场条件的一组规则。任何交易系统都有8种基本要素。  交易者类型 交易类型 选择指标 选择机会 资金管理 退出条件 一致性和纪律 构建正反馈回路">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2022-04-06T04:40:58.408Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fayhot.github.io/unmark/stock/build-trading-system.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Build Trading System | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/unmark/stock/build-trading-system.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Build Trading System
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-26 21:17:26" itemprop="dateCreated datePublished" datetime="2022-03-26T21:17:26+08:00">2022-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-06 12:40:58" itemprop="dateModified" datetime="2022-04-06T12:40:58+08:00">2022-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D/" itemprop="url" rel="index">
+                    <span itemprop="name">金融</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%87%91%E8%9E%8D/%E8%82%A1%E7%A5%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">股票</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="trading-system交易系统"><a class="markdownIt-Anchor" href="#trading-system交易系统"></a> Trading System(交易系统)</h2>
+<h3 id="交易系统"><a class="markdownIt-Anchor" href="#交易系统"></a> 交易系统</h3>
+<p>交易系统是定义了交易出入场条件的一组规则。任何交易系统都有8种基本要素。</p>
+<ol>
+<li>交易者类型</li>
+<li>交易类型</li>
+<li>选择指标</li>
+<li>选择机会</li>
+<li>资金管理</li>
+<li>退出条件</li>
+<li>一致性和纪律</li>
+<li>构建正反馈回路</li>
+</ol>
+<a id="more"></a>
+<h4 id="交易者类型"><a class="markdownIt-Anchor" href="#交易者类型"></a> 交易者类型</h4>
+<ol>
+<li>当日交易者</li>
+<li>短线交易者 2，3～5天</li>
+<li>头寸交易者 几周，几个月</li>
+<li>激进交易者 趋势未明朗进场，并期望趋势按预期发展</li>
+<li>慎重交易者 指标确认信号时买入</li>
+<li>保守交易者 指标完全确认后买入</li>
+</ol>
+<h4 id="交易类型"><a class="markdownIt-Anchor" href="#交易类型"></a> 交易类型</h4>
+<ul>
+<li>趋势交易</li>
+<li>突破交易</li>
+<li>抢帽子交易</li>
+<li>动量交易</li>
+<li>反弹交易</li>
+<li>中期趋势交易</li>
+</ul>
+<h2 id="超越技术分析"><a class="markdownIt-Anchor" href="#超越技术分析"></a> 超越技术分析</h2>
+<p>人们在股票交易过程中常见的3个<strong>错误</strong>：</p>
+<ol>
+<li>投机者明显倾向于过早的获利了结，而让自己的亏损自由发展；</li>
+<li>投机者倾向于做多而不是做空；</li>
+<li>看多者在容易在市场虚弱时买多而被套牢；看空者容易在市场强劲时卖空而被扎空。这说明他们是<strong>价位交易者</strong>，而非<strong>价格运动交易者</strong>。应该跟随趋势而不是立场来决策交易。</li>
+</ol>
+<h3 id="技术分析的理论基础"><a class="markdownIt-Anchor" href="#技术分析的理论基础"></a> 技术分析的理论基础</h3>
+<ul>
+<li>技术分析中最重要的假设是<strong>历史会重演</strong>，过去的价格会对未来的价格运动做出重要的暗示</li>
+<li>第二个假设主要是当前趋势会按当前方向继续发展，直到被取代为止。而且在较长时间框架中观测到的趋势比在较短时间框架中观测到的趋势更重要</li>
+<li>第三个假设是与被交易工具相关的所有公共领域的信息都被完全反映在市场中（该假设未必真实，但是需要）。</li>
+</ul>
+<h3 id="交易系统设计基础"><a class="markdownIt-Anchor" href="#交易系统设计基础"></a> 交易系统设计基础</h3>
+<h4 id="预测市场趋势"><a class="markdownIt-Anchor" href="#预测市场趋势"></a> 预测市场趋势</h4>
+<p>市场以两种形式存在，</p>
+<ol>
+<li>趋势， 市场定向的稳定运动即趋势运动</li>
+<li>区间，市场在一个相对窄的价格变动范围内来回运动即区间运动</li>
+</ol>
+<blockquote>
+<p>通常情况下，市场不可能在趋势运动和区间运动之间迅速的来回变换。</p>
+</blockquote>
+<h4 id="入场-出场策略设计"><a class="markdownIt-Anchor" href="#入场-出场策略设计"></a> 入场、出场策略设计</h4>
+<p>市场信息可以分为基本面信息和技术信息。技术信息是市场内部信息，产生于交易过程中，包括诸如交易价格、成交量、持仓兴趣和交易委托等等。基本面信息或者外部信息，在常规商业活动中产生，通产包括生产和消费信息。</p>
+<p><strong>入场设计问题</strong></p>
+<ol>
+<li>趋势跟随策略， 在检测到的趋势方向上建仓。</li>
+<li>逆势策略，是一种预测型策略。目的是寻找在预期的新趋势中建仓的机会。</li>
+<li>突破性策略，当价格“果断”超出预设的价格屏障时，在价格运动强劲时买进，在市场疲软时卖出。</li>
+<li>基于形态的策略，使用传统或非传统的“图表”分析来辨识具有预测能力的价格棒线群组。如：三重底/顶，头肩顶/底，W底，M头。</li>
+</ol>
+<p><strong>出场设计问题</strong><br>
+基于时间或者价位做相关的退出。</p>
+<h2 id="趋势交易"><a class="markdownIt-Anchor" href="#趋势交易"></a> 趋势交易</h2>
+<p>趋势交易不是用来确切地预测市场的底部和顶部的。</p>
+<blockquote>
+<p>允许对市场的底部做预测和锚定底部和顶部的价格。但是当趋势在达到预期值前已经发生改变时，不应该拘泥于波浪理论和锚定的目标价不放，应该顺势而为，改变交易策略。</p>
+</blockquote>
+<h3 id="交易不能依靠预测"><a class="markdownIt-Anchor" href="#交易不能依靠预测"></a> 交易不能依靠预测</h3>
+<h4 id="压力测试"><a class="markdownIt-Anchor" href="#压力测试"></a> 压力测试</h4>
+<p>在已经确立的趋势中搭乘价格运动的走向来获利。潜在搭乘的选择很多，通过对候选股票进行不同的压力测试，来筛选和选择交易对象。</p>
+<ul>
+<li>视觉测试</li>
+<li>趋势线测试</li>
+<li>顾比复合移动平均线特征测试</li>
+<li>顾比倒数线买入点测试</li>
+<li>持仓规模测试</li>
+<li>表现测试</li>
+</ul>
+<h4 id="趋势线管理"><a class="markdownIt-Anchor" href="#趋势线管理"></a> 趋势线管理</h4>
+<p>指定交易管理解决方案，趋势线是最有用的。<br>
+通过画趋势线来理解趋势的发展，决定何时买入，以及在以后趋势反转的时候卖出。</p>
+<p>画趋势线是交易计划的重要组成部分，即：</p>
+<ul>
+<li>市场</li>
+<li>趋势线</li>
+<li>交易计划</li>
+</ul>
+<p>趋势线的目的是建立在趋势持续的概率基础上，来定义我们对股票的分析，从而作出一个交易管理计划</p>
+<h3 id="测试趋势特性"><a class="markdownIt-Anchor" href="#测试趋势特性"></a> 测试趋势特性</h3>
+<h4 id="市场的特征"><a class="markdownIt-Anchor" href="#市场的特征"></a> 市场的特征</h4>
+<p>分辨不同趋势的<strong>性质</strong>以及<strong>特征</strong>可以提供重要的交易机会。</p>
+<blockquote>
+<p><strong>不要把长期下跌趋势中的价格反弹看成新趋势的开始</strong>。</p>
+</blockquote>
+<p>市场由 <strong>投资者</strong> 和 <strong>交易者</strong> 组成。交易者总是引领着趋势的变化，推高或者压低股票价格以期待趋势的改变；投资者花更多的时间认识趋势中的变化，总是被动跟在交易者的后面行动。</p>
+<blockquote>
+<p>使用3，5，8，10，12，15日的指数移动平均线来跟踪交易者的隐含活动。<br>
+使用30，35，40，45，50，60日的指数移动平均线来跟踪投资者的潜在活动。</p>
+</blockquote>
+<p>这些移动平均线的组合反映了顾比复合移动平均线最初的发展，不同时间维度下的移动平均线的交叉点传递的是价格和价值一致的信息。</p>
+<blockquote>
+<p>顾比复合移动平均线是针对移动平均线的缺陷上发展出来的。</p>
+<p>移动平均线主要缺陷为</p>
+<ol>
+<li>缺乏未来股价运动的信息</li>
+<li>交叉信号的延迟</li>
+</ol>
+<p>顾比复合移动平均线针对这些缺陷做出了改进。</p>
+<ul>
+<li>顾比复合移动平均线在理解趋势的性质上更有用，可以更明显的看出和理解概率分解。</li>
+<li>顾比复合移动平均线甄别真正的趋势反转和移动平均线的交叉发出买入信号的时间差。</li>
+</ul>
+</blockquote>
+<h5 id="顾比复合移动平均线的特征"><a class="markdownIt-Anchor" href="#顾比复合移动平均线的特征"></a> 顾比复合移动平均线的特征</h5>
+<ol>
+<li>6条短期移动平均线重复出现密集和稀疏的形态</li>
+<li>6条长期移动平均线重复出现密集和稀疏的形态</li>
+<li>运动形态在不同的时间维度上是分形重复的，这种分形重复性是新的混沌理论的特征</li>
+<li>一组内移动平均线和组与组之间移动平均线的<strong>离散</strong>程度提供了理解趋势和趋势变化的方法</li>
+<li>同步性不依赖于每条移动平均线的长度。在主要的趋势转折点，长期组、短期组会同时发生收缩。</li>
+</ol>
+<p>从这些特征，得出假设结论，即顾比复合移动平均线的理论基础。</p>
+<blockquote>
+<p>移动平均线之间的关系可以认为是价值与价格的关系。两组移动平均线的交叉表示在两种不同的时间维度上价值的一致。在一个连续竞价的市场机制下，价格和价值的一致是暂时的。这种一致经常出现在趋势发生大的变化之前。</p>
+</blockquote>
+<p><strong>平均线的分离宽度，证明了趋势的强度，宽的分离代表强的趋势，窄的分离代表弱的趋势</strong>。</p>
+<blockquote>
+<p>顾比复合移动平均线是以移动平均线为基础的指标，但它很少用移动平均线的标准解释，也就是说并不倾向于关注平均线的交叉。其长期组和短期组时用来洞察市场中两类主要力量——投资者和交易者行为的工具。<br>
+这个指标并<strong>不能指出何时买入何时卖出</strong>，而是用来<strong>确认由其他指标发出信号的真实性</strong>。</p>
+</blockquote>
+<h4 id="理解趋势特征"><a class="markdownIt-Anchor" href="#理解趋势特征"></a> 理解趋势特征</h4>
+<p>顾比复合移动平均线提供了一个理解趋势的方法，据此交易者可以自信的评估趋势的性质和强度。有三种基本类型的进行中的趋势行为：</p>
+<ol>
+<li>快速移动中的陡峭趋势</li>
+<li>交易不太活跃的长期稳定趋势</li>
+<li>交易活动稳定的长期趋势</li>
+</ol>
+<h4 id="趋势突破交易"><a class="markdownIt-Anchor" href="#趋势突破交易"></a> 趋势突破交易</h4>
+<p>突破是指价格偏离现行的运动模式。突破有两种重要的形式。</p>
+<ol>
+<li>V型突破（最普遍）</li>
+<li>箱体震荡或横盘整理后出现的突破</li>
+</ol>
+<h5 id="牛市突破"><a class="markdownIt-Anchor" href="#牛市突破"></a> 牛市突破</h5>
+<p>在评估突破交易中顾比复合移动平均线关系时，主要考虑4种关系。</p>
+<ol>
+<li>收缩。 趋势突破的早期，因为投资者对股票价值的一致认同，长期组开始收缩</li>
+<li>方向。 收缩意味着认同。长期组收缩的方向能提供趋势未来发展的线索</li>
+<li>崩溃。 短线组崩溃的性质显示了交易者活动的强度</li>
+<li>迅速反弹。 短期组迅速反弹确认了交易活动的增加，进而促使有兴趣的投资者更高价低买入股票</li>
+</ol>
+<h5 id="反弹与回落"><a class="markdownIt-Anchor" href="#反弹与回落"></a> 反弹与回落</h5>
+<p>价格的下跌不总是趋势改变的信号。区分价格疲软和趋势疲软时重要的交易技巧。重要的关系可以从长期组看出来。</p>
+<h5 id="扩展与收缩"><a class="markdownIt-Anchor" href="#扩展与收缩"></a> 扩展与收缩</h5>
+<p>顾比复合移动平均线潜在的分析特征时收缩和扩展关系。<strong>收缩表示意见一致，扩展表示意见不同</strong>。</p>
+<ol>
+<li>长期组向下并开始收缩  =&gt;  投资者正在抛售股票</li>
+<li>长期组缓慢横盘整理或稍微向下倾斜，同时相互分开  =&gt;  投资者正在吸筹</li>
+</ol>
+<blockquote>
+<p>当价格在交易者的抛盘压力下下跌时，投资者就不用付出更高的价格。一致地，他们都在压低自己的买入价。这种情况下，长期组会稍微向下倾斜，但相互之间仍然保持平行。<br>
+长期组的方向不向下，股价必然停滞，并横盘整理，但趋势不会反转。</p>
+</blockquote>
+<h4 id="交易离场"><a class="markdownIt-Anchor" href="#交易离场"></a> 交易离场</h4>
+<p>没有单纯一个或者一组退出指标能对各种退出要求提供最好的解决方案。</p>
+<p>顾比复合移动平均线可以用于以下4种情况的退出：</p>
+<ol>
+<li>股价反弹乏力意味着趋势疲软</li>
+<li>多次反弹，力度逐渐减弱。这显示趋势正慢慢衰竭</li>
+<li>价格泡沫交易的退出</li>
+<li>短期组飞速下跌穿透长期组。这是明显的趋势改变信号</li>
+</ol>
+<blockquote>
+<p>每种情况的退出条件都由特定的工具来管理。顾比复合移动平均线能帮我们找出最合适的工具。<br>
+<strong>顾比复合移动平均线</strong>就是用来<strong>帮助交易者理解趋势的性质和特征</strong>。</p>
+</blockquote>
+<h5 id="反弹失败"><a class="markdownIt-Anchor" href="#反弹失败"></a> 反弹失败</h5>
+<p>使用顾比复合移动平均线来做离场分析时，我们检验两种关系：</p>
+<ol>
+<li>长期组的关系</li>
+<li>价格下跌后短期组中的所有反弹的特征</li>
+</ol>
+<h5 id="多次衰退中的反弹"><a class="markdownIt-Anchor" href="#多次衰退中的反弹"></a> 多次衰退中的反弹</h5>
+<p>很多趋势转变很缓慢，很容易使我们相信趋势停滞了而不是在改变。趋势缓慢的崩溃给了我们足够的时间做出最优的退出。<br>
+<strong>长期组的横向移动</strong>并<strong>开始收敛</strong>，最终它们开始缓慢下行。</p>
+<p>这种情况下，反弹的高度并不重要。<strong>需要关注的是，每次反弹崩溃后短期组对长期组越来越深的渗透程度</strong>。当这种情况与长期组的收缩相结合时，就是明显的趋势改变的警告。<strong>收缩意味着对价值的认同</strong>。</p>
+<h5 id="价格泡沫退出"><a class="markdownIt-Anchor" href="#价格泡沫退出"></a> 价格泡沫退出</h5>
+<p>泡沫的关键特征是短期组显著高于长期组并很宽地分开。短期组的坡度陡峭度增加，分开的程度也显著增加。分开的越宽，说明交易者之间的竞争越疯狂。</p>
+<h6 id="投机型价格泡沫"><a class="markdownIt-Anchor" href="#投机型价格泡沫"></a> 投机型价格泡沫</h6>
+<p>可以选择 顾比倒数线、2倍平均真实波幅(ATR)、平均价格波动止损、抛物线SAR或者其他给予波动的指标来退出。</p>
+<h6 id="强趋势中的价格泡沫"><a class="markdownIt-Anchor" href="#强趋势中的价格泡沫"></a> 强趋势中的价格泡沫</h6>
+<p>强趋势中的价格泡沫属于异常点。表现为趋势已经很好的确立，交易者和投资者可以通过长期组的相互分开并平行发展看出来。此时，短期组突然快速上移。</p>
+<h6 id="趋势结束时的泡沫"><a class="markdownIt-Anchor" href="#趋势结束时的泡沫"></a> 趋势结束时的泡沫</h6>
+<h5 id="飞速下跌"><a class="markdownIt-Anchor" href="#飞速下跌"></a> 飞速下跌</h5>
+<p>在短期组穿透长期组之前表现为：短期组迅速收缩然后开始扩展。这种扩展确认了交易者正疯狂的抛售股票。<br>
+短期组在触到长期组之前就已经开始收缩并在新的下跌趋势中互相分开。</p>
+<h2 id="股市均线技术"><a class="markdownIt-Anchor" href="#股市均线技术"></a> 股市均线技术</h2>
+<h3 id="基础理论"><a class="markdownIt-Anchor" href="#基础理论"></a> 基础理论</h3>
+<ul>
+<li>移动平均线的<strong>峰与谷</strong>是移动平均线的精华。</li>
+</ul>
+<blockquote>
+<p>不是所有的峰谷都是卖出买入信号。只有升到顶的峰，跌到底的谷，才是相应的信号。<br>
+一般来说，股价上涨/下跌的幅度达到20%以上时，出现的峰与谷，是可信的卖出/买入信号。</p>
+</blockquote>
+<ul>
+<li>
+<p>移动平均线的<strong>转点</strong></p>
+</li>
+<li>
+<p>移动平均线的<strong>排列与组合</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>短期移动平均线、中期移动平均线和长期移动平均线的排列和移动的方向经常出现两种情况：</p>
+<ol>
+<li>趋于一致</li>
+<li>趋于不一致</li>
+</ol>
+</blockquote>
+<ul>
+<li>移动平均线的<strong>支撑与反压</strong></li>
+</ul>
+<blockquote>
+<p>在短期和中期表现十分明显，长期移动平均线次之。<br>
+移动平均线对上升行情中的股价支撑力是很大的，特别是10日和30日移动平均线。<br>
+移动平均线对下降行情中的股价有反压作用。30日移动平均线的反压是熊市行情的典型特征。</p>
+<blockquote>
+<p>30日移动平均线如不出现向上抬头的趋势或10日均线低位由下向上穿过30日均线，则难以解除反压。</p>
+</blockquote>
+</blockquote>
+<p><strong>移动平均线的八大法则</strong></p>
+<ol>
+<li>平均线从下降趋势逐渐转为水平移动，随后出现向上抬头的迹象，此时股价从平均线的下方突破平均线，即是买入信号。</li>
+<li>股价在平均线的上方移动，上升到一定高度回调，股价下跌时，没有跌破平均线，然后再度上升，此时也是买入信号。</li>
+<li>股价从平均线的上方跌到移动平均线的下方时，而平均线依然维持上升趋势，这也是买入信号。</li>
+<li>股价在平均线的下方运动，突然暴跌且距离平均线较远时，常会出现向平均线靠拢的走势，这也是买入短持时机。</li>
+<li>股价上升中，且走在平均线上，离平均线越来越远，会随时产生获利回吐的卖压，股价会出现向平均线回靠的走势，此时位卖出信号。</li>
+<li>平均线运动的方向，若从上升趋势逐渐转为水平方向，而股价则从平均线的上方向下跌破平均线时，表明卖压渐重，为卖出信号。</li>
+<li>股价在平均线下方，反弹回升时，没有超越平均线，而平均线已经出现从水平方向转为向下运动的趋势，这是转势卖出的信号。</li>
+<li>股价在平均线上徘徊，切平均线继续向下移动，表明下降行情还会持续一段时间，显示继续卖出的信号。</li>
+</ol>
+<blockquote>
+<p>经过实践检验，条3和条8可信度较低，风险较大。</p>
+</blockquote>
+<h3 id="技术应用"><a class="markdownIt-Anchor" href="#技术应用"></a> 技术应用</h3>
+<p>移动平均线的技术分为 “乖离率、MA5金叉MA30、MA5死叉MA30、三线扭成团、一线穿三线、米字交叉、下降三离三靠、上升三离三靠、M头、W底、头肩顶、头肩底、三重顶、三重底、跌破平台、突破平台、跌破前低、突破前高”等17中形态，每一种形态可独立应用，独立捕捉买卖点。</p>
+<h4 id="乖离率"><a class="markdownIt-Anchor" href="#乖离率"></a> 乖离率</h4>
+<p>即股价的偏离度，BIAS，简称Y值。以当日的平均数为准，计算出股价与平均数值之间的差距，即乖离程度，在用乖离程度除以平均数的百分比，得出的数值，就是“乖离率”。</p>
+ <figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">乖离率  = （当日指数 - 最近<span class="built_in">N</span>日平均数）/ <span class="built_in">N</span>日平均数 x <span class="number">100%</span></span></pre></td></tr></table></figure>
+<p>乖离率分短期、中期、长期，分别为5日&amp;10日，30日&amp;60日， 240日为代表。</p>
+<h4 id="ma5金叉ma30"><a class="markdownIt-Anchor" href="#ma5金叉ma30"></a> MA5金叉MA30</h4>
+<p>指5日移动平均线在运行过程中，由下向上穿过30日移动平均线的一种走势。MA5金叉MA30，可在上升行情、下降行情、横盘行情中出现。处在不同行情中的金叉，显示的信号也是不同的。</p>
+<ol>
+<li>上升行情中，显示做多信号</li>
+<li>下降、横盘行情中，显示做空信号</li>
+</ol>
+<p>操作要点：</p>
+<blockquote>
+<ol>
+<li>上升行情中MA5金叉MA30的买入信号是相当可信的。需要注意的是，MA5在<strong>低位</strong>金叉MA30时，股价上涨的力度有时来得相当凶猛，如火箭升空，仅几个交易日，股价就可以上升到20%以上，买入时应果断。错过好的买入时机后，不要追涨，静待回调。<br>
+ </li>
+<li>不同行情中的MA5金叉MA30，多数能按照法则的要求上涨或者下跌。但有时候会出现逆势走势，该涨不涨该跌不跌，或是微涨微跌后，掉过头来却大跌大涨。遇到这种走势，不要惊慌，不要割肉，设置好<strong>止损</strong>点，股价不跌破止损点，就耐心持有。</li>
+</ol>
+</blockquote>
+<h4 id="ma5死叉ma30"><a class="markdownIt-Anchor" href="#ma5死叉ma30"></a> MA5死叉MA30</h4>
+<p>指5日移动平均线在运行过程中，由上向下跌破30日移动平均线的一种走势。MA5死叉MA30，可在上升行情、下降行情、横盘行情中出现。依据波浪理论，且MA5的运动轨迹比股价运动慢半拍，MA30比MA5又慢半拍，由以下应用要点：</p>
+<ol>
+<li>下降行情中的死叉，做空</li>
+<li>上升行情中的死叉，做多</li>
+<li>横盘行情中的死叉，做多</li>
+</ol>
+<p>操作要点：操作MA5死叉MA30的均线形态，应特别注意不同的行情走势，趋势判断准确，操作才能成功，否则会造成损失。</p>
+<ol>
+<li>是否为“横盘行情”，主要看MA30走向，MA30平均线的走势处于平移状态时，就可认定近一段的行情为横盘行情。</li>
+<li>是否为“下降行情“，既要看MA30的走向，也要结合股价的位置。</li>
+<li>是否为“上升行情“，既要看MA30是否由下降趋势转为上升趋势，也要看股价是否跌到低位后形成反弹走势。</li>
+</ol>
+<h4 id="三线扭成团"><a class="markdownIt-Anchor" href="#三线扭成团"></a> 三线扭成团</h4>
+<p>指5日、10日、20日和30日等移动平均线中，任意三条线走到一起，形成粘连形态的一种走势。</p>
+<h4 id="一线穿三线"><a class="markdownIt-Anchor" href="#一线穿三线"></a> 一线穿三线</h4>
+<p>指5日平均线在同一天，由下向上穿越10日，20日，30日三条移动平均线；或者由上向下跌破10日、20日、30日三条移动平均线。这种走势，就称为“一线穿三线”。</p>
+<h4 id="米字交叉"><a class="markdownIt-Anchor" href="#米字交叉"></a> 米字交叉</h4>
+<p>指由两条以上的快速移动平均线，穿插一条慢速移动平均线，形成米字形态图案的一种组合形态，称为“米字交叉”。</p>
+<h4 id="下降三离三靠"><a class="markdownIt-Anchor" href="#下降三离三靠"></a> 下降三离三靠</h4>
+<p>指下降行情中，MA5三次离开和三次靠近MA10的一种走势形态。该形态应具备的特征和应用法则：</p>
+<ol>
+<li>该形态出现前，MA5，MA10，MA20，MA30 四条移动平均线应成空头排列</li>
+<li>下降三离三靠只能出现在同一个下跌波段里，不能跨波段计算</li>
+</ol>
+<p>应用法则：</p>
+<ol>
+<li>第一离第二离：不买不卖</li>
+<li>第一靠第二靠：卖出</li>
+<li>第三离第三靠：买入</li>
+</ol>
+<h4 id="上升三离三靠"><a class="markdownIt-Anchor" href="#上升三离三靠"></a> 上升三离三靠</h4>
+<p>指一段上升行情中，MA5平均线三次离开和靠近MA10的一种走势形态。该形态应具备的特征：</p>
+<ol>
+<li>该形态出现前，MA5，MA10，MA20，MA30 四条移动平均线空头排列</li>
+<li>上升三离三靠只能出现在一个上升波段中，不能跨波段计算</li>
+</ol>
+<p>应用法则：</p>
+<ol>
+<li>第一离第二离：不买不卖</li>
+<li>第一靠第二靠：买入</li>
+<li>第三离第三靠：卖出</li>
+</ol>
+<h4 id="m头"><a class="markdownIt-Anchor" href="#m头"></a> M头</h4>
+<p>指5日移动平均线上升到高位后，走出了如同英文字母<strong>M</strong>的一种走势形态，简称M头。<br>
+M头实际就是<strong>双顶</strong>。<br>
+图形形态特征：</p>
+<ol>
+<li>MA5移动平均线的两头顶部高点大体处在同一水平线上，落差不能太大</li>
+<li>MA5构成的M头形态，不像由股价K线构成的M头形态那样注重颈线位</li>
+<li>M头是典型的顶部反转信号。卖点为右顶形成时的高点，或者MA5下穿MA10的跌破位置。</li>
+</ol>
+<blockquote>
+<p>K线图构成的M头形态是不能忽略颈线作用的，因为颈线是下跌的分水岭。M头形成后，颈线下的跌幅，至少是“M”头顶部高点到颈线垂直距离的一倍。MA5的M头可以不考虑颈线的位置和存在。<br>
+ <br>
+K线的M头构建和形成比MA5要早，MA5的M头的买卖点要多参考和对比K线的M头形态。</p>
+</blockquote>
+<h4 id="w底"><a class="markdownIt-Anchor" href="#w底"></a> W底</h4>
+<p>指股价经过一段深跌后，5日移动平均线在低位形成一个如同<strong>W</strong>字形的走势，这一形态就称为<strong>W底</strong>。</p>
+<p>图形特征：<br>
+MA5在低位形成一个底部低点后，反弹至某个高点（颈线），然后又重新下行，下跌到前面的地点附近时，再次抬头，形成右底，反弹的高度超过颈线的高点时，就可确认<strong>W底</strong>的形成。该形态是判断行情是否跌到底部的一个重要信号。该形态出现后，股价上涨的高度，至少为底部低点到颈线垂直距离的2倍。</p>
+<p>操作要点：</p>
+<ol>
+<li>操作5日移动平均线的W底形态，要注意采取分次建仓的办法买入股票。</li>
+<li>操作5日移动平均线的W底形态，要结合K线形态走势。通常情况下，K线笔MA5显示的信号要早。</li>
+<li>注意区分W底底位置。在高位和下降途中的W底形态，只适合短线操作。</li>
+</ol>
+<h4 id="头肩底"><a class="markdownIt-Anchor" href="#头肩底"></a> 头肩底</h4>
+<p>指股价上升到高位后，5日移动平均线上下波动，形成一个中间高、两边低底三顶形态，即头肩顶。</p>
+<p>图形特征：</p>
+<ol>
+<li>一般由3个高低不一的顶部高点组成，左右两边的高点分别称为左肩和右肩，中间的一个高点称为头部。</li>
+<li>该形态出现前，股价应有一段较大的升幅，也就是说，该形态应处在天顶高位或者波段峰顶高位，在低位出现的3个不同的顶部，不能视为头肩顶。</li>
+<li>头肩顶形态分为标准型和非标准型。标准型头肩顶的头部和左右肩均只有一个，非标准的头肩顶左右两肩可能是多个，但是头部只能为一个。</li>
+<li>无论是标准型还是非标准型，左右两肩的高点均应大体处在同一水平线上，左右肩的高点落差太大，就会失去判断意义。</li>
+<li>该形态显示做空信号，最佳卖点是股价向下跌破5日移动平均线颈线低点时的价位。</li>
+</ol>
+<h4 id="头肩底-2"><a class="markdownIt-Anchor" href="#头肩底-2"></a> 头肩底</h4>
+<p>头肩底是和头肩顶完全相反的一种走势形态。</p>
+<p>图形特征：</p>
+<ol>
+<li>头肩底的出现，股价须有一段较深的跌幅</li>
+<li>头肩底形态的头部低点与左右两肩低点的落差既不能太大也不能太小，太大就不是头肩底，而是箱体整理。太小容与与“三重底”混淆</li>
+<li>头肩底分为标准型和复合型。复合型形态的头部和左右肩均可出现多个。</li>
+<li>头肩底是抄底的可靠信号，最佳买点时股价向上突破5日移动平均线颈线的高点附近。</li>
+</ol>
+<h4 id="三重顶"><a class="markdownIt-Anchor" href="#三重顶"></a> 三重顶</h4>
+<p>指股价上升到高位后，5日移动平均线在顶部盘整的过程中，形成的3、4个顶部高点的走势。</p>
+<p>图形特征：</p>
+<ol>
+<li>三个顶部高点大体处在同一水平线，不能像头肩顶形态那样高矮不一</li>
+<li>三重顶形成之前，股价应有一段较大的升幅，升幅越大，有效性越高</li>
+<li>三重顶形态显示做空信号</li>
+</ol>
+<h4 id="三重底"><a class="markdownIt-Anchor" href="#三重底"></a> 三重底</h4>
+<p>三重底与三重顶形态相反，图形特征和应用法则也相反。</p>
+<h4 id="跌破平台"><a class="markdownIt-Anchor" href="#跌破平台"></a> 跌破平台</h4>
+<p>平台： 指股价在盘整行情中，5日移动平均线横向波动，形成的波谷低点大体处在同一水平线上的一种走势。</p>
+<p>股价跌破了5日移动平均线很盘中的波谷低点，就称为<strong>跌破平台</strong>。</p>
+<p>形态特征：</p>
+<ol>
+<li>平台中的5日移动平均线所形成的波谷低点不得少于3个 ，应大体处在同一水平线</li>
+<li>平台波谷低点的个数没有限制，一般来讲，低点的个数越多，后市的反弹力度越大。横盘期间，5日移动平均线的波谷低点达到5个以上最为理想</li>
+<li>股价跌破5日移动平均线平台最低点的波谷时才被视为跌破，跌破时应及时做空，卖出股票。</li>
+</ol>
+<h4 id="突破平台"><a class="markdownIt-Anchor" href="#突破平台"></a> 突破平台</h4>
+<p>与跌破平台相反。</p>
+<p>跌破平台&amp;突破平台 都应该谨慎的做多和做空，需要结合具体的股价位置和情况跟进交易策略。</p>
+<h4 id="跌破前低"><a class="markdownIt-Anchor" href="#跌破前低"></a> 跌破前低</h4>
+<p>指股价在下降行情中，跌破了5日移动平均线在前一波段中形成的波谷低点的一种走势。</p>
+<p>形态特征：</p>
+<ol>
+<li>5日移动平均线的波谷低点应处在前一波段中，在同一波段中出现的跌破，不能按照跌破形态操作</li>
+<li>收盘价跌破了5日移动平均线的波谷低点时，才视为跌破，如果只是股价的下影线跌破5日移动平均线的低点，不能算作跌破</li>
+<li>跌破前低形态，不考虑股价与5日移动平均线前低的跨度与时间的长短，只要出现跌破了前波段中5日移动平均线的低点时，就可以操作</li>
+<li>该形态显示的是继续下跌信号，应继续做空</li>
+</ol>
+<h4 id="突破前高"><a class="markdownIt-Anchor" href="#突破前高"></a> 突破前高</h4>
+<p>与跌破前低相反。</p>
+<p>跌破前低&amp;突破前高 都应该谨慎的做多和做空，需要结合具体的股价位置和情况跟进交易策略。</p>
+<h2 id="大均线原理及应用"><a class="markdownIt-Anchor" href="#大均线原理及应用"></a> 大均线原理及应用</h2>
+<h3 id="大均线设置法"><a class="markdownIt-Anchor" href="#大均线设置法"></a> 大均线设置法</h3>
+<p>大均线是指100MA以上的均线，均线参数以及条数的设置法均会影响测定的准确性。</p>
+<p>如何正确设定大均线的参数：</p>
+<blockquote>
+<p>常规的年线为240或者250天，考虑到斐波那契数列对股指或者股价的共振作用，可使用89与144之和233作为年线的天数，记为233MA。其好处是比250MA更能提前捕捉到势转信号。其次确定半年线，233的50%约为117，记为117MA。<br>
+以半年线和年线为标准，350MA为一年半线，583MA为2.5年线</p>
+</blockquote>
+<h3 id="死叉买入原则"><a class="markdownIt-Anchor" href="#死叉买入原则"></a> 死叉买入原则</h3>
+<p>对于大均线系统，由于均线天数较大，可以设想，如果股价或指数在熊市中下跌很多天后，才能看到大均线之间的死叉，而大均线的死叉出现，往往意味着股价或者指数阶段性见底，因此是相对的买入信号。</p>
+<h2 id="短线交易技术指南"><a class="markdownIt-Anchor" href="#短线交易技术指南"></a> 短线交易技术指南</h2>
+<h3 id="缺口"><a class="markdownIt-Anchor" href="#缺口"></a> 缺口</h3>
+<p>技术分析的一个显著特征是缺口的概念。当一个柱形的交易范围完全高于或者低于前一柱形的交易范围，就显示出一个空白的区域，通常缺口不出现在一日内柱形图中。</p>
+<p>市场厌恶缺口 &amp; 缺口早晚会回补， 这在绝大多数例子中会被证实。大部分跳空缺口的一弥补的原因是情绪因素，反映了交易者有强烈的心理动机，可以称为过度恐惧或者过度贪婪，这取决于趋势的方向。</p>
+<blockquote>
+<p>在任一成本下做出买卖的决定都不是客观的，这意味着人们的动机有第二意识，当行情已经趋于平淡时，投资者的情绪却高涨，跳空缺口的回补或者至少在情绪上弥补缺口的意图，代表了第二意识。</p>
+</blockquote>
+<p>缺口是由强烈的情绪波动引起的，市场交易者倾向于作为买方还是卖方，取决于交易方向。通常，这种情绪瞬间爆发，当买方力量枯竭时就不会再有多余的能量。这意味着当投资者尝试以更高价格抛出股票或者由于买方乏力，或者迫于更强大的卖方力量，价格被迫下跌。</p>
+<h3 id="摆动量指标的应用"><a class="markdownIt-Anchor" href="#摆动量指标的应用"></a> 摆动量指标的应用</h3>
+<p>摆动量时一个非常有用的技术指标，它让我们了解在上涨和下跌趋势中何时出现过度反应。</p>
+<ol>
+<li>过度买入、过度卖出</li>
+<li>正背离、负背离</li>
+</ol>
+<h3 id="osc摆动量-移动平均和parabolic指标的结合"><a class="markdownIt-Anchor" href="#osc摆动量-移动平均和parabolic指标的结合"></a> OSC(摆动量)、移动平均和parabolic指标的结合</h3>
+<h3 id="kst"><a class="markdownIt-Anchor" href="#kst"></a> KST</h3>
+<h2 id="股市趋势技术分析"><a class="markdownIt-Anchor" href="#股市趋势技术分析"></a> 股市趋势技术分析</h2>
+<h2 id="短线技术大师操盘绝招"><a class="markdownIt-Anchor" href="#短线技术大师操盘绝招"></a> 短线技术大师操盘绝招</h2>
+<h2 id="高胜算交易策略"><a class="markdownIt-Anchor" href="#高胜算交易策略"></a> 高胜算交易策略</h2>
+<h3 id="适用于任何市场及任何时间结构的高胜算交易策略"><a class="markdownIt-Anchor" href="#适用于任何市场及任何时间结构的高胜算交易策略"></a> 适用于任何市场及任何时间结构的高胜算交易策略</h3>
+<p>介绍一套从入场到出场的完整策略，包括如何识别最优交易条件、确定进出场价格、怎样用止损管理交易直到最终出场。最重要的是，怎样考虑动量、形态、价格和时间这四大因素；如何识别能用来做交易决定的市场信息；以及怎么从入场到出场执行交易决策。</p>
+<p>高胜算交易策略基于市场的四个方面：</p>
+<ol>
+<li>多重时间结构动量</li>
+<li>简单模式识别</li>
+<li>价格回撤目标</li>
+<li>时间回撤目标</li>
+</ol>
+<p><strong>超前指标</strong> &amp; <strong>滞后指标</strong><br>
+绝大部分交易者在交易中仅仅使用滞后指标。所有交易平台和行情软件中的每个指标或震荡指标都是滞后指标。<br>
+这些滞后指标都是基于过去给定区间的数据而表明当前的市场状况，但没什么预见性的能力。<br>
+把动量指标和多重时间结构动量策略结合使用，那么这些指标就可以用来识别趋势方向和交易机会。</p>
+<blockquote>
+<p><strong>动量策略</strong>只有当它<strong>融合进一个包含超前指标</strong>的交易计划的时候，才是有用的。</p>
+</blockquote>
+<h3 id="多重时间结构动量策略"><a class="markdownIt-Anchor" href="#多重时间结构动量策略"></a> 多重时间结构动量策略</h3>
+<p>多重时间结构动量策略是在任何市场和任何时间结构中，确定交易方向和出入场计划的最强有力的方法。</p>
+<p><strong>动量</strong><br>
+在交易范畴里，有上百个动量指标（也叫振荡指标）。大多数指标采用相同信息，每根K线的开盘、最高、最低、收盘价，因此表示了同样的东西——价格变化率。</p>
+<blockquote>
+<p>所有的价格指标都统计过去一段给定期数区间的数据，这一段期数区间被称作回顾期数区间。这些指标通过计算价格数据，用回顾期数区间的价格状态来对比现在的价格状态。不同的指标运算和展示不同的结果，但所有的价格指标都代表同一个东西：<strong>价格变化率</strong>或者<strong>价格趋势变化的速度</strong></p>
+</blockquote>
+<p>第一个并且最基本的概念是：<strong>动量</strong>指标不代表价格趋势。动量指标代表动量趋势。</p>
+<blockquote>
+<p>价格和动量并不总是同向运动。价格一直上升时，动量指标可能会产生熊向反转并逐渐下滑。这种情况下，价格继续上涨，但价格趋势变化率正在下降。牛市趋势仅仅是慢了下来，所以即使价格趋势继续牛市，而动量指标却已经时熊市。结果就是：价格趋势和动量趋势背道而驰。</p>
+</blockquote>
+<h4 id="最根本的双重时间结构动量策略"><a class="markdownIt-Anchor" href="#最根本的双重时间结构动量策略"></a> 最根本的双重时间结构动量策略</h4>
+<ol>
+<li>在大时间结构动量指标方向上交易</li>
+<li>随着小时间结构动量指标反转执行交易入场计划</li>
+</ol>
+<blockquote>
+<p>长线交易者寻找能持续几个星期到几个月的机会，可用周线和日线动量指标趋势<br>
+中线交易者寻找能持续几天的机会，可用日线和小时线数据<br>
+日内交易者或许会用60分钟和15分钟或者更小时间结构的数据</p>
+</blockquote>
+<p><strong>大时间结构动量趋势确定交易方向</strong><br>
+动量趋势并不总是与价格同向运动。但一个较好的指标调到合适的回顾期数参数通常与价格趋势同向运动，价格趋势反转后几个K线内就会发生反转。</p>
+<p><strong>双重时间结构动量规则一</strong>：如果大时间结构动量状态不在超卖或者超买区域，那么就顺着该动量趋势方向进行交易</p>
+<blockquote>
+<p>大时间结构动量状态确定交易方向。这并不意味着开始交易，它仅表明潜在交易的方向，做多还是做空。在考虑具体交易之前，小时间结构动量反转必须确立。出现小时间结构动量反转也不能立即开始交易建仓，但它满足了可以考虑执行建仓的前提条件。</p>
+</blockquote>
+<p><strong>随小时间结构动量反转执行交易入场计划</strong><br>
+动量策略的关键之处在于至少采用两套时间结构——大时间结构识别交易方向，小时间结构确定交易可以建仓机会。</p>
+<p><strong>双重时间结构动量规则二</strong>：以大时间结构动量趋势方向为交易方向，随着小时间结构动量产生顺向反转而执行交易入场计划。</p>
+<h4 id="动量反转"><a class="markdownIt-Anchor" href="#动量反转"></a> 动量反转</h4>
+<p>动量反转就是动量由空转多或由多转空。一个动量指标包括两个指标线，像随机指标或者相对强弱指标，当快线穿越满线时就会产生反转。</p>
+<blockquote>
+<p>大多数双线指标中，快线通常由原始数据计算得来；慢线通常是快线的移动平均线。如果指标本身存在超买超卖区域，则指标在超买超卖区域的快慢线交叉就是动量反转的信号。<br>
+MACD指标，当柱线变长或变短或穿越零线，动量速度就开始变化。</p>
+</blockquote>
+<p>对于任何给定的指标，不同市场有不同的设置，不同时间结构也不同。</p>
+<blockquote>
+<p>回顾期数——最基本的设置。指指标计算其数值时使用的从最近烛线往回数的烛线数量。</p>
+</blockquote>
+<h3 id="识别趋势和调整"><a class="markdownIt-Anchor" href="#识别趋势和调整"></a> 识别趋势和调整</h3>
+<p>形态识别的目标：</p>
+<ol>
+<li>识别市场是否处于趋势或调整状态</li>
+<li>确定当前形态是否满足趋势或调整状态正在进行或即将结束的既定条件</li>
+<li>预测趋势或者调整结束后将会发生什么</li>
+</ol>
+<h4 id="基于艾略特波浪理论的简单形态识别"><a class="markdownIt-Anchor" href="#基于艾略特波浪理论的简单形态识别"></a> 基于艾略特波浪理论的简单形态识别</h4>
+<p><strong>重叠准则辨别趋势或调整</strong></p>
+<blockquote>
+<p>我们需要形态分析告诉我们两个关键信息：</p>
+<ol>
+<li>市场当前在趋势还是调整状态中</li>
+<li>当前市场处于趋势或者调整中的什么位置</li>
+</ol>
+<p>确定当前市场是否正在形成调整是上面问题的关键。如果市场出现调整，那就不会突破前一波趋势的起点。而且最终会重新回到调整前的趋势方向上，并形成新的趋势波段极点。<br>
+一个简单可靠的形态准则，提醒我们市场是否可能在调整而没有形成新的反向趋势。<strong>如果市场出现波段重叠，则它很可能是一个调整</strong>。<strong>重叠</strong>是指市场出现新低或者新高时，回撤到上一波段的区间内。</p>
+</blockquote>
+<p><strong>ABC</strong>调整形态<br>
+如果波段重叠时调整的典型特征，则意味着调整形态通常至少有3个波段。</p>
+<p><strong>复杂调整形态</strong></p>
+<h2 id="多空交易日志"><a class="markdownIt-Anchor" href="#多空交易日志"></a> 多空交易日志</h2>
+<p>市面上绝大多数的分析工具都倾向于做“预测”，从基本分析中盈余的估算、本益比，到技术分析中如波浪理论、江恩理论等等都是纯粹的预测，既然是预测，就必然存在误差。</p>
+<ol>
+<li>要专注于交易本身，而非计算过程中的损益。</li>
+<li>只是单纯的买进绩优股并持有，是因为缺乏策略所导致。</li>
+<li>你无法控制走势的发展，但可以控制自己的策略及方向。</li>
+</ol>
+<h2 id="戴维朗德里波段交易法则"><a class="markdownIt-Anchor" href="#戴维朗德里波段交易法则"></a> 戴维朗德里波段交易法则</h2>
+<h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3>
+<blockquote>
+<p>根据对冲基金经理马克鲍勃的研究，70%的市场行情发生在20%的时间内，其余时间，市场是通过反复震荡进行巩固来“消化”筹码。</p>
+</blockquote>
+<p>中线交易者愿意等待数周或者数月。灵活的波段交易者会谨慎的建仓，并且能够捕捉到市场运动的核心因素以避免长期市场暴露的额外风险。</p>
+<blockquote>
+<p>“惊喜往往发生在趋势的方向”，惊喜发生在趋势的方向需要经过几天，持仓2-7天，大幅的市场波段可以被捕捉到。短线交易者不持仓的确切原因(避免过夜风险)正是中线交易者进行波段交易的原因。</p>
+</blockquote>
+<h3 id="基础知识"><a class="markdownIt-Anchor" href="#基础知识"></a> 基础知识</h3>
+<h4 id="朗德里波动理论规则与资金管理"><a class="markdownIt-Anchor" href="#朗德里波动理论规则与资金管理"></a> 朗德里波动理论规则与资金管理</h4>
+<ol>
+<li>视交易为生意——做好前期的准备</li>
+<li>做好功课——进行交易时，必须主动投入一定的时间多做准备</li>
+<li>自我管理——进行交易时，对自己的决定负责，进行决策时务必保持清醒头脑。身体不适，精力分散，开车过程中等场景中，尽量避免进行交易</li>
+<li>与趋势为友——股市涨跌的持续时间通常比大多数人预期的要长，波动的幅度也更大。<strong>企图预测顶部和底部</strong>的交易者<strong>通常会损失惨重，或者错过重大行情机会</strong></li>
+<li>善于止损——一旦开始建立头寸，多头应该在当前支撑线的下方设置止损，空头应该在当前阻力线上方设置止损</li>
+<li>无策略，不交易——波段交易需要确认短期的支撑位和阻力位，以及市场可能会在哪个位置重新确认。这里并不是预测头部和顶部的逆势操作。</li>
+<li>快速锁定部分利润——绝大多数时候，波段交易的收益都很少，而且机会稍纵即逝</li>
+<li>锁定超额收益——作为波段交易者，获取超额收益的机会可遇不可求</li>
+<li>在流动性好、交易活跃的市场中操作</li>
+<li>让机会朝着对你有利的方向发展——在交易中，越多的难题组合在一起越好。这些因素包括整体市场的乖离率，在最强的板块交易最强的股票（对于空头，在最差的板块交易最差的股票），组合更多的图表技术模式，研究股票的波动性</li>
+<li>合理保持仓位——波段交易时一种概率性游戏。一般而言，不要在任何交易中承担超过账户价值2%的风险</li>
+<li>绝不在 亏损的仓位上加仓——如果错了，要么及时认输止损离场。在持续的下跌中不断补仓，扩大账户的亏损额，这是失败者的游戏</li>
+</ol>
+<h4 id="趋势标识符"><a class="markdownIt-Anchor" href="#趋势标识符"></a> 趋势标识符</h4>
+<p>首先讲解识别趋势的方法和指标。</p>
+<p><strong>趋势的衡量</strong>：<br>
+ADX（趋势平均值指标），用来反映市场趋势的变动强度，而不是方向。指标值越高，表明市场趋势越强劲，而不管趋势方向时向上还是向下。<br>
+市场趋势方向由ADX指标的两个组成部分识别：正向运动指标(+DMI)和负向运动指标(-DMI)。</p>
+<blockquote>
+<p>当ADX大于等于30，且 +DMI &gt; -DMI时，表示上涨趋势<br>
+当ADX大于等于30，且 +DMI &lt; -DMI时，表示下跌趋势</p>
+</blockquote>
+<p><strong>形成对趋势敏锐的鉴定能力</strong>:<br>
+不应该沉迷于找到精确的公式来衡量趋势——因为ADX指标值小于X，或者RS指标值没有超过Y而不敢交易。就像大多数交易一样，事实上并不存在精确的测量趋势方法。</p>
+<p>趋势标识符：</p>
+<ol>
+<li>底部突破</li>
+<li>趋势方向中的缺口</li>
+<li>趋势方向中的高开</li>
+<li>新高</li>
+<li>强涨幅</li>
+<li>强收盘——股票收盘价在当天最高价下25%范围内</li>
+<li>趋势方向中的长阳线</li>
+<li>移动平均线——偏好使用 SMA10， EMA20，EMA30。10日简单移动平均线可以准确反映出股价近2周的情况。20日和30日EMA可以分别给出近1个月和6周的大体情况。在较长的交易时间内使用EMA更具有前瞻性，可以快速跟踪价格。</li>
+</ol>
+<blockquote>
+<p>移动平均线的特征可以帮助我们判别趋势，这些特征包括：<strong>斜率</strong>，<strong>曙光</strong>，<strong>正确的顺序</strong></p>
+</blockquote>
+<p><strong>趋势应该是明显的</strong>。</p>
+<blockquote>
+<p>不必过于追求趋势的细节问题，好的趋势是很分明的。<br>
+<strong>市场行情中只有30%的时间内会形成趋势</strong>。<strong>在这30%的时间内进行交易并且要忽视剩余70%的时间</strong>。</p>
+</blockquote>
+<p><strong>股票选择</strong>：</p>
+<blockquote>
+<p>作为趋势波段交易者，依靠捕捉强烈的短期市场波动。因此，交易那些能够即刻显示出潜能的股票，这点很重要。股票必须是易于波动的，处在最强的板块，价格足够高并且处于合理的差价使得短期交易有利可图。</p>
+</blockquote>
+<h2 id="引用"><a class="markdownIt-Anchor" href="#引用"></a> 引用</h2>
+<ol>
+<li>Beyond Technical Analysis: How To Develop And Implement A Winning Trading System.</li>
+<li>Better Trend Trading.</li>
+<li>均线之歌——股市均线技术.</li>
+<li>神奇的大均线——大均线原理及应用.</li>
+<li>Technician’s Guide to Day &amp; Swing Trading.</li>
+<li>TECHNICAL ANALYSIS OF STOCK TRENDS</li>
+<li>短线技术大师操盘绝招</li>
+<li>High Probability Trading Strategies: Entry to Exit Tactics for the Forex, Futures, and Stock Markets</li>
+<li>多空交易日志</li>
+<li>DAVE LANDRAY ON SWING TRADING</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag"><i class="fa fa-tag"></i> 量化交易</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E5%BD%A2%E6%80%81/" rel="tag"><i class="fa fa-tag"></i> 技术形态</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/unmark/stock/money-economy-stock.html" rel="prev" title="Money And Economy">
+      <i class="fa fa-chevron-left"></i> Money And Economy
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#trading-system交易系统"><span class="nav-number">1.</span> <span class="nav-text"> Trading System(交易系统)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交易系统"><span class="nav-number">1.1.</span> <span class="nav-text"> 交易系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#交易者类型"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 交易者类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交易类型"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 交易类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超越技术分析"><span class="nav-number">2.</span> <span class="nav-text"> 超越技术分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#技术分析的理论基础"><span class="nav-number">2.1.</span> <span class="nav-text"> 技术分析的理论基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交易系统设计基础"><span class="nav-number">2.2.</span> <span class="nav-text"> 交易系统设计基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预测市场趋势"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 预测市场趋势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#入场-出场策略设计"><span class="nav-number">2.2.2.</span> <span class="nav-text"> 入场、出场策略设计</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#趋势交易"><span class="nav-number">3.</span> <span class="nav-text"> 趋势交易</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交易不能依靠预测"><span class="nav-number">3.1.</span> <span class="nav-text"> 交易不能依靠预测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#压力测试"><span class="nav-number">3.1.1.</span> <span class="nav-text"> 压力测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#趋势线管理"><span class="nav-number">3.1.2.</span> <span class="nav-text"> 趋势线管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试趋势特性"><span class="nav-number">3.2.</span> <span class="nav-text"> 测试趋势特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#市场的特征"><span class="nav-number">3.2.1.</span> <span class="nav-text"> 市场的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#顾比复合移动平均线的特征"><span class="nav-number">3.2.1.1.</span> <span class="nav-text"> 顾比复合移动平均线的特征</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#理解趋势特征"><span class="nav-number">3.2.2.</span> <span class="nav-text"> 理解趋势特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#趋势突破交易"><span class="nav-number">3.2.3.</span> <span class="nav-text"> 趋势突破交易</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#牛市突破"><span class="nav-number">3.2.3.1.</span> <span class="nav-text"> 牛市突破</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#反弹与回落"><span class="nav-number">3.2.3.2.</span> <span class="nav-text"> 反弹与回落</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#扩展与收缩"><span class="nav-number">3.2.3.3.</span> <span class="nav-text"> 扩展与收缩</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交易离场"><span class="nav-number">3.2.4.</span> <span class="nav-text"> 交易离场</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#反弹失败"><span class="nav-number">3.2.4.1.</span> <span class="nav-text"> 反弹失败</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#多次衰退中的反弹"><span class="nav-number">3.2.4.2.</span> <span class="nav-text"> 多次衰退中的反弹</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#价格泡沫退出"><span class="nav-number">3.2.4.3.</span> <span class="nav-text"> 价格泡沫退出</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#投机型价格泡沫"><span class="nav-number">3.2.4.3.1.</span> <span class="nav-text"> 投机型价格泡沫</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#强趋势中的价格泡沫"><span class="nav-number">3.2.4.3.2.</span> <span class="nav-text"> 强趋势中的价格泡沫</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#趋势结束时的泡沫"><span class="nav-number">3.2.4.3.3.</span> <span class="nav-text"> 趋势结束时的泡沫</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#飞速下跌"><span class="nav-number">3.2.4.4.</span> <span class="nav-text"> 飞速下跌</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#股市均线技术"><span class="nav-number">4.</span> <span class="nav-text"> 股市均线技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础理论"><span class="nav-number">4.1.</span> <span class="nav-text"> 基础理论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#技术应用"><span class="nav-number">4.2.</span> <span class="nav-text"> 技术应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#乖离率"><span class="nav-number">4.2.1.</span> <span class="nav-text"> 乖离率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ma5金叉ma30"><span class="nav-number">4.2.2.</span> <span class="nav-text"> MA5金叉MA30</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ma5死叉ma30"><span class="nav-number">4.2.3.</span> <span class="nav-text"> MA5死叉MA30</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三线扭成团"><span class="nav-number">4.2.4.</span> <span class="nav-text"> 三线扭成团</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一线穿三线"><span class="nav-number">4.2.5.</span> <span class="nav-text"> 一线穿三线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#米字交叉"><span class="nav-number">4.2.6.</span> <span class="nav-text"> 米字交叉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下降三离三靠"><span class="nav-number">4.2.7.</span> <span class="nav-text"> 下降三离三靠</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上升三离三靠"><span class="nav-number">4.2.8.</span> <span class="nav-text"> 上升三离三靠</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#m头"><span class="nav-number">4.2.9.</span> <span class="nav-text"> M头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#w底"><span class="nav-number">4.2.10.</span> <span class="nav-text"> W底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#头肩底"><span class="nav-number">4.2.11.</span> <span class="nav-text"> 头肩底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#头肩底-2"><span class="nav-number">4.2.12.</span> <span class="nav-text"> 头肩底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三重顶"><span class="nav-number">4.2.13.</span> <span class="nav-text"> 三重顶</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三重底"><span class="nav-number">4.2.14.</span> <span class="nav-text"> 三重底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跌破平台"><span class="nav-number">4.2.15.</span> <span class="nav-text"> 跌破平台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#突破平台"><span class="nav-number">4.2.16.</span> <span class="nav-text"> 突破平台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跌破前低"><span class="nav-number">4.2.17.</span> <span class="nav-text"> 跌破前低</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#突破前高"><span class="nav-number">4.2.18.</span> <span class="nav-text"> 突破前高</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大均线原理及应用"><span class="nav-number">5.</span> <span class="nav-text"> 大均线原理及应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大均线设置法"><span class="nav-number">5.1.</span> <span class="nav-text"> 大均线设置法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死叉买入原则"><span class="nav-number">5.2.</span> <span class="nav-text"> 死叉买入原则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#短线交易技术指南"><span class="nav-number">6.</span> <span class="nav-text"> 短线交易技术指南</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缺口"><span class="nav-number">6.1.</span> <span class="nav-text"> 缺口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#摆动量指标的应用"><span class="nav-number">6.2.</span> <span class="nav-text"> 摆动量指标的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#osc摆动量-移动平均和parabolic指标的结合"><span class="nav-number">6.3.</span> <span class="nav-text"> OSC(摆动量)、移动平均和parabolic指标的结合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kst"><span class="nav-number">6.4.</span> <span class="nav-text"> KST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#股市趋势技术分析"><span class="nav-number">7.</span> <span class="nav-text"> 股市趋势技术分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#短线技术大师操盘绝招"><span class="nav-number">8.</span> <span class="nav-text"> 短线技术大师操盘绝招</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高胜算交易策略"><span class="nav-number">9.</span> <span class="nav-text"> 高胜算交易策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#适用于任何市场及任何时间结构的高胜算交易策略"><span class="nav-number">9.1.</span> <span class="nav-text"> 适用于任何市场及任何时间结构的高胜算交易策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多重时间结构动量策略"><span class="nav-number">9.2.</span> <span class="nav-text"> 多重时间结构动量策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#最根本的双重时间结构动量策略"><span class="nav-number">9.2.1.</span> <span class="nav-text"> 最根本的双重时间结构动量策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动量反转"><span class="nav-number">9.2.2.</span> <span class="nav-text"> 动量反转</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#识别趋势和调整"><span class="nav-number">9.3.</span> <span class="nav-text"> 识别趋势和调整</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于艾略特波浪理论的简单形态识别"><span class="nav-number">9.3.1.</span> <span class="nav-text"> 基于艾略特波浪理论的简单形态识别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多空交易日志"><span class="nav-number">10.</span> <span class="nav-text"> 多空交易日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#戴维朗德里波段交易法则"><span class="nav-number">11.</span> <span class="nav-text"> 戴维朗德里波段交易法则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">11.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础知识"><span class="nav-number">11.2.</span> <span class="nav-text"> 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#朗德里波动理论规则与资金管理"><span class="nav-number">11.2.1.</span> <span class="nav-text"> 朗德里波动理论规则与资金管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#趋势标识符"><span class="nav-number">11.2.2.</span> <span class="nav-text"> 趋势标识符</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用"><span class="nav-number">12.</span> <span class="nav-text"> 引用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
