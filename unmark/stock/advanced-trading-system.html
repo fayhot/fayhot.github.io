@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Fayhot's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-pace-theme-center-atom.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://fayhot.github.io').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="交易系统设计原理与实践 基于MACD、KDJ、顾比复合均线设计的量化交易系统。 设计目标：  支持日内交易 支持中期交易 支持长线交易 支持多空交易  设计原理：基于趋势、区间交易。">
+<meta name="keywords" content="量化交易,技术分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Advanced Trading Strategies And Instruments">
+<meta property="og:url" content="http:&#x2F;&#x2F;fayhot.github.io&#x2F;unmark&#x2F;stock&#x2F;advanced-trading-system.html">
+<meta property="og:site_name" content="Fayhot&#39;s Blog">
+<meta property="og:description" content="交易系统设计原理与实践 基于MACD、KDJ、顾比复合均线设计的量化交易系统。 设计目标：  支持日内交易 支持中期交易 支持长线交易 支持多空交易  设计原理：基于趋势、区间交易。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2022-04-08T03:47:25.135Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fayhot.github.io/unmark/stock/advanced-trading-system.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Advanced Trading Strategies And Instruments | Fayhot's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fayhot's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://fayhot.github.io/unmark/stock/advanced-trading-system.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Fayhot">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fayhot's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Advanced Trading Strategies And Instruments
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-04-06 21:04:40" itemprop="dateCreated datePublished" datetime="2022-04-06T21:04:40+08:00">2022-04-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-08 11:47:25" itemprop="dateModified" datetime="2022-04-08T11:47:25+08:00">2022-04-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%82%A1%E7%A5%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">股票</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%82%A1%E7%A5%A8/%E9%87%91%E8%9E%8D/" itemprop="url" rel="index">
+                    <span itemprop="name">金融</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="交易系统设计原理与实践"><a class="markdownIt-Anchor" href="#交易系统设计原理与实践"></a> 交易系统设计原理与实践</h2>
+<p>基于MACD、KDJ、顾比复合均线设计的量化交易系统。</p>
+<p>设计目标：</p>
+<ol>
+<li>支持日内交易</li>
+<li>支持中期交易</li>
+<li>支持长线交易</li>
+<li>支持多空交易</li>
+</ol>
+<p>设计原理：基于趋势、区间交易。</p>
+<a id="more"></a>
+<p>关键词：</p>
+<ol>
+<li>做日内min级别交易时，除了看macd，kdj，顾比均线外，也要留意时间单元下的成交量来判断拐点的交易。</li>
+<li>观察1，3，5，15，30min的K线形态图，确认当前K线走势。这个比数浪要简单和靠谱。</li>
+<li>5分钟GMMA走势图可以作为趋势反转的重要标志。</li>
+<li>集成消息面日历数据，提示相关的信息。尤其是FOMC等相关的数据。</li>
+<li>5min的趋势线是可以预示一个交易日行情的；15min趋势线可以预示几天的行情。</li>
+<li>1，3，5，15，30，60，120，240，360，480分钟到趋势线分别为前趋势线的压力位和支撑位。</li>
+</ol>
+<h3 id="趋势交易"><a class="markdownIt-Anchor" href="#趋势交易"></a> 趋势交易</h3>
+<p>如何定义趋势：一段时间内价格在单方向上的大幅运动。</p>
+<blockquote>
+<p>设置合理的时间间隔。1min或者5min的k线图也能反应一定的趋势和方向。但是太过于短线，不能带来价格的大幅波动。一般不被认为是趋势。通常4h和日线中寻找到的趋势会更稳定。</p>
+</blockquote>
+<p>趋势交易的特点：</p>
+<ol>
+<li>趋势交易的本质就是动量交易。在趋势方向上，市场更容易爆发动量。</li>
+</ol>
+<blockquote>
+<p>趋势中几乎一定可以出现连续的大阳线或大阴线，大幅推动价格快速上涨或下跌。同时，这种动量会使得趋势具有惯性，这就是趋势会持续的本质原因。因此，我们可以大胆的说：当市场在趋势方向上爆发动量时，当前趋势持续下去的可能性更大，市场短期几乎不可能反转。</p>
+</blockquote>
+<ol start="2">
+<li>趋势方向上的阻力很小，特别是在趋势发展的初中期。</li>
+</ol>
+<blockquote>
+<p>很多交易短线的人有一种错误的做法，就是使用上涨趋势的新高作为阻力位，反手看空。但事实上，一波发展中的趋势，突破其前期高点是非常容易的。而只有当价格突破前期高点失败，甚至是连续两次尝试都失败后，前期的这个高点才可能作为阻力位。即使是这样，此时确定趋势的逆转仍然为时尚早，市场更可能会在高位盘踞一段时间后，再来实现对前期高点的突破。</p>
+</blockquote>
+<ol start="3">
+<li>市场只在小部分时间内呈现趋势走势。</li>
+</ol>
+<blockquote>
+<p>这意味着趋势交易者要在这小部分时间内获得其大部分收益，而在市场没有趋势时，趋势交易者的表现平平，甚至可能非常糟糕。因此，趋势交易的胜率往往很低，大部分交易都是亏钱的，而少数盈利的交易却在赚大钱。正所谓“三年不开张、开张吃三年”，这正是趋势交易者的真实写照。</p>
+</blockquote>
+<p>趋势交易的注意事项：如何定义趋势的强弱？？</p>
+<ol>
+<li>寻找趋势性强的产品进行交易</li>
+<li>不要错过任何趋势，也不要试图预测趋势</li>
+<li>趋势交易都是以小仓位开始的，然后在趋势中慢慢加仓（<strong>很重要</strong>）</li>
+</ol>
+<p><strong>趋势交易必须有一个完善的加仓-减仓计划，这个计划的重要性并不亚于你对趋势的识别和追踪。千万不要低估资金管理在趋势交易中的作用！</strong></p>
+<h3 id="区间交易"><a class="markdownIt-Anchor" href="#区间交易"></a> 区间交易</h3>
+<p>如何定义区间：区间就是价格的横向运动，或者是非常不明显的趋势波动。</p>
+<blockquote>
+<p>价格运动是由市场大量参与者的活动引发的，因此在大部分时候市场的行为是有效的，符合统计学上的正态分布，这对应的就是价格的区间波动。而当市场呈现趋势时，市场行为是无效的，或者说不是那么的有效，这对应了统计学上的“胖尾”现象。</p>
+</blockquote>
+<p><strong>区间交易就是利用了正态分布中当价格偏离均值后会回归均值的思想。</strong></p>
+<p>区间交易的特点：</p>
+<ol>
+<li>机会多、胜率高、收益小。</li>
+</ol>
+<blockquote>
+<p>区间交易的本质是逆趋势的，因此无法利用趋势中的动量，结果就是每笔交易的收益都很小。因为市场大部分时候为区间波动，因此区间交易机会更多。再辅以一个成熟的区间交易方法，可以实现的胜率也较高，至少是比趋势交易的胜率高得多。区间交易就是“积沙成塔”，回撤比例一般不大，账户相对稳定。</p>
+</blockquote>
+<ol start="2">
+<li>区间交易一般不能加仓，因此初始仓位不能太小。</li>
+</ol>
+<blockquote>
+<p>单笔区间交易的盈利多少主要取决于区间的大小，而事实上大部分区间都不大，所以你很难有一个很高的盈利预期，这就迫使你在初始入场时的头寸不能太小，否则你很难赚钱。</p>
+</blockquote>
+<ol start="3">
+<li>区间交易本身是逆趋势的，很难利用“时间止损”。</li>
+</ol>
+<blockquote>
+<p>区间交易都是对原有价格运动的反方向进行交易，所以说是“逆趋势”的。在趋势中，我们会很容易看到价格同方向的快速运动。而在区间中，价格从区间的一侧运动到另一侧可能“非常曲折”，即使最终实现了盈利，在时间上也很难判断，因为我们很难看到逆趋势的快速运动，这将很考验我们的耐心！</p>
+</blockquote>
+<ol start="4">
+<li>区间交易的止损不大。</li>
+</ol>
+<blockquote>
+<p>我们总是希望价格从区间的一侧波动到区间的另外一侧。而当我们判断错误时，即价格突破了原区间范围后，我们会选择止损离开，此时对应的损失不大。当然，这样的情况发生后，你可以认为原区间被突破了，趋势已经开始，你可以基于区间突破进行趋势交易。</p>
+</blockquote>
+<p>区间交易的注意事项：</p>
+<ol>
+<li>不要羡慕趋势，也不要妄图把区间交易过度成趋势交易</li>
+</ol>
+<blockquote>
+<p>任何时点上，都有人买入和卖出，交易者只要基于自己的计划就可以实现盈利，你是做不完所有行情的——即使你同时进行趋势交易和区间交易。同时，市场中真正的趋势并不多，不要妄想按照区间计划入场的行情可以走很远。</p>
+</blockquote>
+<ol start="2">
+<li>
+<p>寻找区间性更强的产品交易。</p>
+</li>
+<li>
+<p>在区间足够大时入场交易。</p>
+</li>
+</ol>
+<blockquote>
+<p>并不是所有的横盘市场都适合做区间交易。使用布林线的交易者会发现，当布林线上下轨收缩的很窄时，价格横盘运动，此时进行区间操作的空间是几乎没有，相反它却是后市趋势突破的征兆。</p>
+</blockquote>
+<ol start="4">
+<li>不要轻视区间交易的盈利能力。</li>
+</ol>
+<blockquote>
+<p>很多人交易的第一天，学会的就是“趋势是我们的朋友”。是的，这没有错。但这并不意味着“区间就是我们的敌人”。区间交易的优势很大，只要操作得当，长期下来获得的平均收益也是非常可观的，因此不要认为区间就不能赚大钱。趋势交易的潜力很大，可能一年下来盈利80%，而区间交易也的确无法做到。但趋势方法不稳定，遇到不给力的市场情况，趋势交易会持续亏损。因此长期平均下来，区间方法并不见得差。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag"><i class="fa fa-tag"></i> 量化交易</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="tag"><i class="fa fa-tag"></i> 技术分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/unmark/stock/build-trading-system.html" rel="prev" title="Build Trading System">
+      <i class="fa fa-chevron-left"></i> Build Trading System
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#交易系统设计原理与实践"><span class="nav-number">1.</span> <span class="nav-text"> 交易系统设计原理与实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#趋势交易"><span class="nav-number">1.1.</span> <span class="nav-text"> 趋势交易</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区间交易"><span class="nav-number">1.2.</span> <span class="nav-text"> 区间交易</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fayhot"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Fayhot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fayhot" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fayhot" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuguoqing228@gmail.com" title="E-Mail → mailto:liuguoqing228@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/shisanyaowan" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;shisanyaowan" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fayhot</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
